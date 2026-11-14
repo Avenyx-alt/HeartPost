@@ -1,7 +1,7 @@
 # HeartPost demo video script (2:00, three voices)
 
 A screen recording with voice-over; no editing needed beyond joining the parts. Don't say names or schools: Round 1 is judged blind.
-About 270 words in total. Speak calmly, and keep the mouse slow so judges can follow.
+About 275 words in total. Speak calmly, and keep the mouse slow so judges can follow.
 
 ---
 
@@ -23,7 +23,7 @@ About 270 words in total. Speak calmly, and keep the mouse slow so judges can fo
 ## Part 4 · Speaker C · 1:15–1:45 · How we tested it
 **Screen:** scroll to **"Every patient the model never saw"**. Drag the threshold right, then back. Untick **"Separate threshold for women"**, then tick it again.
 
-> We trained on one US hospital and tested on three others the model never saw. Here are all 678 test patients. Move the threshold: you catch more sick people, but get more false alarms. A textbook model with thirteen tests missed 93 sick patients in the new hospitals. Ours missed 43. Now switch off the women's threshold, and ten sick women turn red: missed.
+> We trained on one US hospital and tested on three others the model never saw. Here are all 678 test patients. Move the threshold: you catch more sick people, but get more false alarms. A textbook model with thirteen tests missed 93 sick patients in the new hospitals. The simplest baseline rule missed 83. Ours missed 43. Now switch off the women's threshold, and ten sick women turn red: missed.
 
 ## Part 5 · Speaker A (captain) · 1:45–2:00 · Limitation and next step
 **Screen:** click **"Remote follow-up (demo)"** in the header and show the clinician dashboard.
