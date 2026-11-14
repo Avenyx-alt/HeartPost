@@ -1,7 +1,7 @@
 # HeartPost: heart-disease triage for rural clinics without a cardiologist
 
 **Track:** Health
-**Team:** _[name 1], [name 2], [name 3]_
+**Team:** Yeva (captain), Ipatiy, Ariana
 
 > **This project is a prototype and is not medical advice.**
 
