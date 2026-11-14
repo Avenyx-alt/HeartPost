@@ -37,17 +37,21 @@ We started from the suggested project *4.1.2 Heart disease risk from checkup dat
 ## Results
 All numbers are on patients the model never saw. FN = sick patients missed, FP = false alarms.
 
-| Method (threshold 0.29 unless noted) | Cleveland test (28 sick / 33 healthy) | 3 new hospitals (370 sick / 247 healthy) |
+| Method | Cleveland test (28 sick / 33 healthy) | 3 new hospitals (370 sick / 247 healthy) |
 |---|---|---|
-| Baseline: nobody is sick | 28 FN · 0 FP | 370 FN · 0 FP |
-| Baseline: refer everyone | 0 FN · 33 FP | 0 FN · 247 FP |
-| Baseline: one rule ("refer if no chest pain"†) | 6 FN · 5 FP | 83 FN · 65 FP |
-| **Ours: clinic model** | **2 FN · 9 FP** (recall 0.93) | **43 FN · 87 FP** (recall 0.88) |
-| Textbook 13-input model | 0 FN · 11 FP (recall 1.00) | **93 FN** · 58 FP (recall 0.75) |
+| Baseline: most common class ("nobody is sick") | 28 FN · 0 FP · recall 0.00 · accuracy 0.54 | 370 FN · 0 FP · recall 0.00 · accuracy 0.40 |
+| Baseline: refer everyone | 0 FN · 33 FP · recall 1.00 · accuracy 0.46 | 0 FN · 247 FP · recall 1.00 · accuracy 0.60 |
+| Baseline: one rule ("refer if no chest pain"†) | 6 FN · 5 FP · recall 0.79 · accuracy 0.82 | 83 FN · 65 FP · recall 0.78 · accuracy 0.76 |
+| **Ours: clinic model** | **2 FN · 9 FP · recall 0.93 · accuracy 0.82** | **43 FN · 87 FP · recall 0.88 · accuracy 0.79** |
+| Textbook 13-input model | 0 FN · 11 FP · recall 1.00 · accuracy 0.82 | **93 FN** · 58 FP · recall 0.75 · accuracy 0.76 |
 
 † "Asymptomatic" chest pain was the strongest single rule learned from the training data.
 
 ![Sick patients missed in the three unseen hospitals, by model](figures/missed_external.png)
+
+Accuracy alone hides what matters here. On the Cleveland test, our model, the one-rule baseline and the 13-input model all score 0.82, but they miss 2, 6 and 0 sick patients. For a screening tool, missed cases are the number to watch, so we chose thresholds for recall (≥90% in training cross-validation, 0.29) rather than for accuracy.
+
+**Most important measurements** (logistic-regression coefficients on standardised inputs): having **no chest pain** at all ("asymptomatic", +1.63) pushes risk up most, then **male sex** (+0.92) and **age** (+0.45). Atypical (−0.67), typical (−0.50) and non-anginal (−0.45) chest pain push it down. Blood pressure (+0.26), cholesterol (+0.23) and an LVH pattern on the ECG (+0.30) matter much less, and fasting glucose barely matters (+0.01). See `figures/what_drives_score.png`.
 
 **Main takeaway:** the 13-input model looks perfect at home and then **misses more than twice as many sick patients in new hospitals** (93 vs 43). It needs test results that are missing in those hospitals. Filling them with Cleveland's typical values ("0 blocked vessels", "normal thallium scan") makes every patient look healthy. This was true in **all 100** random re-splits we tried (median 33 vs 83 missed). AUC of our model: 0.87 Cleveland, 0.84 Hungary, 0.75 Switzerland, 0.71 VA.
 
@@ -65,9 +69,10 @@ All numbers are on patients the model never saw. FN = sick patients missed, FP =
 
 ## Sources
 * Data: Janosi, Steinbrunn, Pfisterer & Detrano (1988), *Heart Disease*, UCI Machine Learning Repository, https://doi.org/10.24432/C52P4X (CC BY 4.0). Files mirrored from https://github.com/nyuvis/datasets.
-* Libraries: scikit-learn, pandas, NumPy, Matplotlib. The app is plain HTML/JavaScript.
+* Libraries: [scikit-learn](https://scikit-learn.org), [pandas](https://pandas.pydata.org), [NumPy](https://numpy.org), [Matplotlib](https://matplotlib.org). The app is plain HTML/JavaScript with no external libraries. Hosted on [GitHub Pages](https://pages.github.com).
 * Context: CDC NCHS Data Brief No. 417 (2021), *Trends in Death Rates in Urban and Rural Areas: United States, 1999–2019*, https://www.cdc.gov/nchs/products/databriefs/db417.htm. Kim, Warraich et al. (2024), research letter in *JACC* on counties without a cardiologist, summarised by the American College of Cardiology: https://www.acc.org/Latest-in-Cardiology/Articles/2024/07/08/11/54/No-Practicing-Cardiologist-in-Nearly-Half-of-US-Counties
-* AI tools: Claude (Anthropic) helped write code and text. Every part was reviewed by the team, who can explain it.
+* AI tools: [Claude](https://claude.ai) (Anthropic) helped write code, text and the Spanish translation. Every part was reviewed by the team, who can explain it.
+* Starting point: suggested project 4.1.2 "Heart disease risk from checkup data" from the Veritas AI Project Briefs. No pretrained models or other tutorials were used.
 
 ---
 ### Repository
