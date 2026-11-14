@@ -42,14 +42,54 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0}
 .intro p{color:var(--ink-soft);max-width:70ch;margin:12px 0 0}
 .demo-note{margin:16px 0 0;border-left:3px solid var(--red);padding:2px 0 2px 12px;font-size:.88rem;color:var(--ink-soft);max-width:90ch}
 
-/* role switch */
-.roles{display:flex;gap:10px;margin:26px 0 22px;flex-wrap:wrap}
-.role{display:flex;align-items:center;gap:12px;border:1px solid var(--field);background:var(--card);border-radius:12px;padding:12px 18px;cursor:pointer;text-align:left;min-width:250px}
-.role b{display:block;font-family:var(--serif);font-size:1.08rem}
-.role small{color:var(--ink-soft);font-size:.84rem}
-.role svg{width:30px;height:30px;flex-shrink:0}
-.role[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
-[hidden]{display:none!important}
+/* role chooser */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0 10px}
+.role{display:flex;align-items:center;gap:16px;border:2px solid var(--rule);background:var(--card);border-radius:16px;padding:18px 22px;cursor:pointer;text-align:left;transition:border-color .15s, box-shadow .15s}
+.role svg{width:40px;height:40px;flex-shrink:0}
+.role b{display:block;font-family:var(--serif);font-size:1.25rem}
+.role small{color:var(--ink-soft);font-size:.9rem}
+.role.r-patient{color:var(--green)} .role.r-doctor{color:var(--ink)}
+.role b,.role small{color:var(--ink)} .role small{color:var(--ink-soft)}
+.role:hover{border-color:var(--field)}
+.role.r-patient[aria-pressed="true"]{border-color:var(--green);box-shadow:0 0 0 3px #d5eadc}
+.role.r-doctor[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 3px #d8dde8}
+.choose-hint{margin:0 0 26px;color:var(--ink-soft);font-size:.92rem}
+.view{border-radius:18px;overflow:hidden;margin-bottom:56px;border:1px solid var(--rule)}
+.view-band{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:16px 24px;color:#fff}
+.view-band h2{font-size:1.45rem}
+.vb-tag{font-size:.78rem;font-weight:700;border:1.5px solid rgba(255,255,255,.7);border-radius:999px;padding:2px 10px}
+.vb-sub{font-size:.9rem;opacity:.85}
+.v-patient .view-band{background:var(--green)}
+.v-doctor .view-band{background:var(--ink)}
+.v-patient{background:#f3f8f5}
+.v-doctor{background:#f5f7fb}
+.pv-layout{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:40px;padding:26px 28px 34px;align-items:start}
+.phone{border:10px solid #1f2937;border-radius:38px;background:var(--paper);overflow:hidden;box-shadow:0 18px 40px -22px rgba(28,43,74,.5)}
+.phone-top{display:flex;justify-content:space-between;align-items:center;background:var(--green);color:#fff;padding:14px 18px 12px}
+.ph-app{font:700 1.05rem var(--serif)} .ph-name{font-size:.84rem;opacity:.9}
+.phone-body{padding:16px;display:grid;gap:14px}
+.phone .reminder{margin:0;padding:12px 14px}
+.phone h3{font-size:1.1rem;margin:0}
+.ci{display:grid;gap:14px}
+.ci .opts{margin-top:6px}
+.fcol{display:flex;flex-direction:column;gap:5px}
+.btn.small{padding:8px 12px;min-height:38px;font-size:.84rem}
+.mine{border-top:1px solid var(--rule);padding-top:12px}
+.explain{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;position:sticky;top:16px}
+.explain h3{font-size:1.15rem;margin:0 0 10px}
+.explain h3:not(:first-child){margin-top:22px}
+.ex-list{margin:0;display:grid;gap:12px}
+.ex-list dt{font-weight:700;font-size:.95rem}
+.ex-list dd{margin:2px 0 0;font-size:.9rem;color:var(--ink-soft);line-height:1.5}
+.ex-steps{margin:0;padding-left:20px;font-size:.92rem;display:grid;gap:6px}
+.dash{padding:22px 24px 30px}
+.rules{margin-top:26px;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:20px 22px}
+.rules h3{font-size:1.2rem}
+.rtable{width:100%;border-collapse:collapse;font-size:.9rem}
+.rtable th,.rtable td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+.rtable th{font-weight:600;color:var(--ink-soft);font-size:.82rem}
+.rtable td:first-child{white-space:nowrap}
+.notes{margin:14px 0 0;padding-left:20px;font-size:.88rem;color:var(--ink-soft);display:grid;gap:6px;max-width:90ch}
 
 /* shared */
 .card{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:22px 24px}
@@ -67,8 +107,8 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .btn.ghost:hover{background:var(--ink);color:var(--paper)}
 
 /* patient view */
-.pgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:28px;align-items:start;padding-bottom:60px}
-.whoami{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+
+.whoami{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .whoami label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--ink-soft)}
 .whoami select{width:auto;min-width:240px}
 .reminder{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#fff7f6;border:1px solid var(--grid);border-radius:12px;padding:14px 18px;margin-bottom:16px}
@@ -125,19 +165,20 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 table{border-collapse:collapse;width:100%;font-size:.84rem;margin-top:8px}
 th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--rule)}
 th{font-weight:600}
-.howto{margin:30px 0 60px}
-.howto ol{padding-left:20px;max-width:80ch}
-.howto li{margin-bottom:6px}
+
 footer{border-top:1px solid var(--rule);padding:16px 0 40px;font-size:.8rem;color:var(--ink-soft)}
 
 @media (max-width:959px){
   .shell{padding:0 18px}
-  .pgrid,.detail{grid-template-columns:1fr}
+  .detail{grid-template-columns:1fr}
+  .pv-layout{grid-template-columns:1fr;padding:18px 14px 24px;gap:22px}
+  .explain{position:static}
+  .dash{padding:16px 12px 22px}
   .qhead{display:none}
   .row > button{grid-template-columns:minmax(0,1fr) auto 20px;grid-template-areas:"n z c" "w w w" "d d d"}
   .row > button .pname{grid-area:n}.row > button .zcell{grid-area:z}.row > button .why{grid-area:w}.row > button .days{grid-area:d}.row > button .caret{grid-area:c}
 }
-@media (max-width:560px){ .nav{order:3;width:100%} .nav a{flex:1;text-align:center;padding:8px 6px;font-size:.84rem} .two{grid-template-columns:1fr} .role{min-width:0;flex:1 1 100%} .card{padding:18px} }
+@media (max-width:560px){ .roles{grid-template-columns:1fr} .phone{border-width:6px;border-radius:26px} .rtable td:first-child{white-space:normal} .nav{order:3;width:100%} .nav a{flex:1;text-align:center;padding:8px 6px;font-size:.84rem} .two{grid-template-columns:1fr} .role{min-width:0;flex:1 1 100%} .card{padding:18px} }
 </style>
 </head>
 <body>
@@ -158,6 +199,7 @@ footer{border-top:1px solid var(--rule);padding:16px 0 40px;font-size:.8rem;colo
     <div class="lang" role="group" aria-label="Language / Idioma">
       <button type="button" data-lang="en" aria-pressed="true">EN</button>
       <button type="button" data-lang="es" aria-pressed="false">ES</button>
+      <button type="button" data-lang="ru" aria-pressed="false">RU</button>
     </div>
   </div>
 </header>
@@ -169,96 +211,101 @@ footer{border-top:1px solid var(--rule);padding:16px 0 40px;font-size:.8rem;colo
     <p class="demo-note" data-i18n="demoNote"></p>
   </section>
 
+  <!-- role chooser: always visible, the chosen role is clearly marked -->
   <div class="roles" role="group" aria-label="Role">
-    <button type="button" class="role" data-role="patient" aria-pressed="true">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="11" r="6" fill="none" stroke="#1c2b4a" stroke-width="2"/><path d="M5 29c1.5-6 5.5-9 11-9s9.5 3 11 9" fill="none" stroke="#1c2b4a" stroke-width="2" stroke-linecap="round"/></svg>
+    <button type="button" class="role r-patient" data-role="patient" aria-pressed="false">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="3" width="14" height="26" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 25h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       <span><b data-i18n="rolePatient"></b><small data-i18n="rolePatientSub"></small></span>
     </button>
-    <button type="button" class="role" data-role="doctor" aria-pressed="false">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 4v8a7 7 0 0 0 14 0V4" fill="none" stroke="#1c2b4a" stroke-width="2" stroke-linecap="round"/><path d="M16 19v3a6 6 0 0 0 12 0v-3" fill="none" stroke="#1c2b4a" stroke-width="2"/><circle cx="28" cy="16" r="2.5" fill="none" stroke="#b3261e" stroke-width="2"/></svg>
+    <button type="button" class="role r-doctor" data-role="doctor" aria-pressed="false">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="5" width="26" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 27h10M16 22v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15h5l2-4 3 7 2-3h6" fill="none" stroke="#b3261e" stroke-width="1.8" stroke-linejoin="round"/></svg>
       <span><b data-i18n="roleDoctor"></b><small data-i18n="roleDoctorSub"></small></span>
     </button>
   </div>
+  <p class="choose-hint" id="chooseHint" data-i18n="chooseHint"></p>
 
-  <!-- ================= PATIENT ================= -->
-  <section id="patientView" aria-labelledby="pTitle">
-    <h2 id="pTitle" class="visually" hidden></h2>
-    <div class="whoami">
-      <label><span data-i18n="signedInAs"></span><select id="who"></select></label>
-      <span class="hint" data-i18n="whoHint"></span>
-    </div>
-    <div class="reminder" id="reminder">
-      <div><b id="remTitle"></b><div class="hint" id="remBody"></div></div>
-      <button type="button" class="btn ghost" id="notifyBtn" data-i18n="notifyBtn"></button>
-    </div>
-    <div class="pgrid">
-      <form class="card ci" id="ci" novalidate>
-        <h3 style="font-size:1.2rem" data-i18n="ciTitle"></h3>
-        <fieldset>
-          <legend class="legend" data-i18n="qPain"></legend>
-          <div class="opts" style="margin-top:8px">
-            <label class="opt"><input type="radio" name="pain" value="none" checked><span data-i18n="painNone"></span></label>
-            <label class="opt"><input type="radio" name="pain" value="exertion"><span data-i18n="painExertion"></span></label>
-            <label class="opt"><input type="radio" name="pain" value="worse"><span data-i18n="painWorse"></span></label>
-            <label class="opt danger"><input type="radio" name="pain" value="rest"><span data-i18n="painRest"></span></label>
-          </div>
-        </fieldset>
-        <fieldset>
-          <legend class="legend" data-i18n="qOther"></legend>
-          <div class="opts" style="margin-top:8px">
-            <label class="opt danger"><input type="checkbox" name="flag" value="breath"><span data-i18n="flagBreath"></span></label>
-            <label class="opt danger"><input type="checkbox" name="flag" value="faint"><span data-i18n="flagFaint"></span></label>
-            <label class="opt"><input type="checkbox" name="flag" value="swelling"><span data-i18n="flagSwelling"></span></label>
-          </div>
-        </fieldset>
-        <div class="two">
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <label for="sbp" data-i18n="qBP"></label>
-            <input id="sbp" type="number" inputmode="numeric" min="70" max="250">
-            <span class="hint" data-i18n="bpHint"></span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <label for="hr" data-i18n="qHR"></label>
-            <input id="hr" type="number" inputmode="numeric" min="30" max="200">
-            <span class="hint" data-i18n="hrHint"></span>
-          </div>
+  <!-- ================= PATIENT: a phone app ================= -->
+  <section id="patientView" class="view v-patient" hidden aria-labelledby="pvTitle">
+    <div class="view-band"><span class="vb-tag" data-i18n="pvTag"></span><h2 id="pvTitle" data-i18n="pvTitle"></h2><span class="vb-sub" data-i18n="pvSub"></span></div>
+    <div class="pv-layout">
+      <div>
+        <div class="whoami">
+          <label><span data-i18n="signedInAs"></span><select id="who"></select></label>
         </div>
-        <div class="band">
-          <label for="bandFile" data-i18n="bandLabel"></label>
-          <input type="file" id="bandFile" accept=".csv,text/csv">
-          <span class="hint" id="bandMsg" data-i18n="bandHint"></span>
-        </div>
-        <p class="hint" id="ciErr" role="alert" style="color:var(--red);font-weight:600" hidden></p>
-        <button class="btn" type="submit" data-i18n="send"></button>
-      </form>
-
-      <div style="display:grid;gap:16px">
-        <div id="ciResult" aria-live="polite"></div>
-        <div class="card">
-          <h3 data-i18n="myHistory"></h3>
-          <div class="streak" id="myStreak"></div>
-          <div class="hint" data-i18n="streakHint"></div>
-          <svg class="mini" id="myChart" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true"></svg>
-          <div class="hint" data-i18n="chartHint"></div>
+        <div class="phone">
+          <div class="phone-top"><span class="ph-app">HeartPost</span><span class="ph-name" id="phName"></span></div>
+          <div class="phone-body">
+            <div class="reminder" id="reminder">
+              <div><b id="remTitle"></b><div class="hint" id="remBody"></div></div>
+              <button type="button" class="btn ghost small" id="notifyBtn" data-i18n="notifyBtn"></button>
+            </div>
+            <form class="ci" id="ci" novalidate>
+              <h3 data-i18n="ciTitle"></h3>
+              <fieldset>
+                <legend class="legend" data-i18n="qPain"></legend>
+                <div class="opts">
+                  <label class="opt"><input type="radio" name="pain" value="none" checked><span data-i18n="painNone"></span></label>
+                  <label class="opt"><input type="radio" name="pain" value="exertion"><span data-i18n="painExertion"></span></label>
+                  <label class="opt"><input type="radio" name="pain" value="worse"><span data-i18n="painWorse"></span></label>
+                  <label class="opt danger"><input type="radio" name="pain" value="rest"><span data-i18n="painRest"></span></label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend class="legend" data-i18n="qOther"></legend>
+                <div class="opts">
+                  <label class="opt danger"><input type="checkbox" name="flag" value="breath"><span data-i18n="flagBreath"></span></label>
+                  <label class="opt danger"><input type="checkbox" name="flag" value="faint"><span data-i18n="flagFaint"></span></label>
+                  <label class="opt"><input type="checkbox" name="flag" value="swelling"><span data-i18n="flagSwelling"></span></label>
+                </div>
+              </fieldset>
+              <div class="two">
+                <div class="fcol"><label for="sbp" data-i18n="qBP"></label><input id="sbp" type="number" inputmode="numeric" min="70" max="250"><span class="hint" data-i18n="bpHint"></span></div>
+                <div class="fcol"><label for="hr" data-i18n="qHR"></label><input id="hr" type="number" inputmode="numeric" min="30" max="200"><span class="hint" data-i18n="hrHint"></span></div>
+              </div>
+              <div class="band">
+                <label for="bandFile" data-i18n="bandLabel"></label>
+                <input type="file" id="bandFile" accept=".csv,text/csv">
+                <span class="hint" id="bandMsg" data-i18n="bandHint"></span>
+              </div>
+              <p class="hint" id="ciErr" role="alert" style="color:var(--red);font-weight:600" hidden></p>
+              <button class="btn" type="submit" data-i18n="send"></button>
+            </form>
+            <div id="ciResult" aria-live="polite"></div>
+            <div class="mine">
+              <h3 data-i18n="myHistory"></h3>
+              <div class="streak" id="myStreak"></div>
+              <div class="hint" data-i18n="streakHint"></div>
+              <svg class="mini" id="myChart" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true"></svg>
+              <div class="hint" data-i18n="chartHint"></div>
+            </div>
+          </div>
         </div>
       </div>
+      <aside class="explain" aria-labelledby="pxTitle">
+        <h3 id="pxTitle" data-i18n="pxTitle"></h3>
+        <dl class="ex-list" id="pxList"></dl>
+        <h3 data-i18n="pxNextTitle"></h3>
+        <ol class="ex-steps" id="pxNext"></ol>
+      </aside>
     </div>
   </section>
 
-  <!-- ================= DOCTOR ================= -->
-  <section id="doctorView" hidden aria-labelledby="dTitle">
-    <div class="dhead">
-      <div>
-        <h2 id="dTitle" style="font-size:1.6rem" data-i18n="dTitle"></h2>
-        <p class="hint" style="margin:6px 0 0;max-width:70ch" data-i18n="dLead"></p>
+  <!-- ================= DOCTOR: a desktop dashboard ================= -->
+  <section id="doctorView" class="view v-doctor" hidden aria-labelledby="dvTitle">
+    <div class="view-band"><span class="vb-tag" data-i18n="dvTag"></span><h2 id="dvTitle" data-i18n="dTitle"></h2><span class="vb-sub" id="dvDate"></span></div>
+    <div class="dash">
+      <div class="dhead">
+        <p class="hint" style="margin:0;max-width:70ch" data-i18n="dLead"></p>
+        <div class="counts" id="counts"></div>
       </div>
-      <div class="counts" id="counts"></div>
+      <div class="queue" id="queue"></div>
+      <section class="rules" aria-labelledby="rTitle">
+        <h3 id="rTitle" data-i18n="rulesTitle"></h3>
+        <p class="hint" style="margin:4px 0 12px;max-width:80ch" data-i18n="rulesLead"></p>
+        <table class="rtable"><thead><tr><th data-i18n="rtCol1"></th><th data-i18n="rtCol2"></th><th data-i18n="rtCol3"></th></tr></thead><tbody id="rulesBody"></tbody></table>
+        <ul class="notes" id="rulesNotes"></ul>
+      </section>
     </div>
-    <div class="queue" id="queue"></div>
-    <section class="howto">
-      <h2 style="font-size:1.25rem;margin-bottom:8px" data-i18n="howTitle"></h2>
-      <ol id="howList"></ol>
-    </section>
   </section>
 </main>
 <footer><div class="shell" data-i18n="footer"></div></footer>
@@ -269,96 +316,186 @@ const T={
  en:{
   navClinic:"Clinic tool", navFollow:"Remote follow-up (demo)",
   title:"Follow-up from home, without the 87-mile trip",
-  lead:"After a clinic visit, patients check in from home once a day: symptoms, home blood pressure and the resting pulse from a fitness band. The cardiologist in the city doesn't read everyone's numbers. They get a queue sorted by who needs a call today.",
+  lead:"After a clinic visit, patients check in from home once a day. The cardiologist in the city doesn't read everyone's numbers: they get a queue sorted by who needs a call today.",
   demoNote:"Demo with synthetic patients. No accounts and no real data: check-ins are saved only in this browser, and the doctor view reads from the same browser to show the whole loop. Not medical advice.",
-  rolePatient:"I'm a patient", rolePatientSub:"Daily check-in", roleDoctor:"I'm a doctor", roleDoctorSub:"Today's follow-up queue",
-  signedInAs:"Signed in as (demo patient)", whoHint:"Pick any synthetic patient. Your check-in appears in the doctor's queue.",
-  remDue:"Today's check-in is due", remDueBody:"It takes under a minute. Your care team sees the result, not your raw numbers.",
+  rolePatient:"Patient app", rolePatientSub:"A daily one-minute check-in on the phone", roleDoctor:"Clinician dashboard", roleDoctorSub:"Today's queue: who needs a call",
+  chooseHint:"Choose who you are. Try the patient first, send a check-in, then open the clinician dashboard to see it arrive.",
+  pvTag:"PATIENT", pvTitle:"My daily check-in", pvSub:"What a patient sees on their phone",
+  dvTag:"CLINICIAN", dTitle:"Today's follow-up queue",
+  signedInAs:"Demo: sign in as",
+  remDue:"Today's check-in is due", remDueBody:"It takes under a minute.",
   remDone:"Checked in today", remDoneBody:"Thank you. See you tomorrow.",
-  notifyBtn:"Remind me every day", notifyOn:"Reminders on (while the app is open)", notifyNo:"This browser blocked notifications. You'll still see the reminder here.",
-  ciTitle:"Today's check-in",
+  notifyBtn:"Remind me daily", notifyOn:"Reminders on", notifyNo:"This browser blocked notifications. You'll still see the reminder here.",
+  ciTitle:"How are you today?",
   qPain:"Chest pain or pressure today?", painNone:"None", painExertion:"Only with exertion, and it went away with rest",
   painWorse:"More often, stronger, or with less exertion than usual", painRest:"At rest, or lasting more than 15 minutes",
   qOther:"Anything else today?", flagBreath:"Short of breath at rest", flagFaint:"Fainted or nearly fainted", flagSwelling:"New swelling in ankles or legs",
-  qBP:"Home blood pressure, systolic (mmHg)", bpHint:"Optional. From a home cuff.",
-  qHR:"Resting pulse (beats per minute)", hrHint:"Optional. From your fitness band or by hand.",
-  bandLabel:"Import from fitness band", bandHint:"A CSV export with a date column and a resting heart rate column. Read only on this device.",
+  qBP:"Blood pressure (top number)", bpHint:"Optional. Home cuff, mmHg.",
+  qHR:"Resting pulse", hrHint:"Optional. Band or by hand, beats/min.",
+  bandLabel:"Import from fitness band", bandHint:"CSV with a date and a resting heart rate column. Read only on this device.",
   bandOk:(n,hr)=>`Imported ${n} days. Latest resting pulse: ${hr}.`, bandBad:"Couldn't find date and heart-rate columns in this file.",
   send:"Send check-in", errBP:"Blood pressure must be 70–250 mmHg, or leave it blank.", errHR:"Pulse must be 30–200, or leave it blank.",
   urgentT:"Call 911 now", urgentB:"Chest pain at rest, shortness of breath at rest or fainting can be a heart attack. Don't wait for a call back. Your care team has also been alerted.",
   sentT:"Sent to your care team", sentReview:"Your doctor's office will review this and may call you.", sentStable:"Nothing new for your doctor to act on today.",
-  myHistory:"Your last 21 days", streakHint:"Green: stable · Amber: doctor reviews · Red: urgent · Grey: no check-in",
-  chartHint:"Home blood pressure (dark) and resting pulse (red dashed).",
-  dTitle:"Today's follow-up queue", dLead:"Sorted by urgency. You see each patient's status and the reason in one line; open a row only when you need the details.",
+  myHistory:"My last 21 days", streakHint:"Green: stable · Amber: doctor reviews · Red: urgent · Grey: no check-in",
+  chartHint:"Blood pressure (dark) and resting pulse (red dashed).",
+  pxTitle:"What the patient sends, and why",
+  px:[["Chest pain","The main warning sign of a blocked heart artery. Pain at rest or lasting over 15 minutes can be a heart attack, so it shows \"Call 911\" right away and puts the patient at the top of the doctor's queue. Pain that is getting worse, or new pain on exertion, asks the doctor to review."],
+      ["Breathlessness, fainting, swelling","Breathlessness at rest or fainting can mean the heart is failing to pump enough blood: urgent. New ankle swelling can mean fluid building up because the heart pumps less well: the doctor reviews."],
+      ["Blood pressure","High or rising pressure makes the heart work harder. This week's home average replaces the clinic reading in the risk model, so the risk zone stays up to date."],
+      ["Resting pulse (fitness band)","A pulse that stays above 100 at rest can mean strain or a rhythm problem, so it asks the doctor to review. It is not used in the risk score: our training data had no resting pulse, so we can't say how much it should count."]],
+  pxNextTitle:"What happens after \"Send\"",
+  pxNext:["The check-in is saved (in this demo: only in this browser).","Safety rules turn it into a status: stable, review today or call now.","The model recalculates the risk zone with this week's blood pressure.","The doctor sees one line per patient (status, reason, zone), not a page of numbers."],
+  dLead:"Sorted by urgency. One line per patient: risk zone, today's status and the reason. Open a row only when you need the details.",
   cUrgent:"call now", cReview:"review today", cStable:"stable", cMissing:"no recent check-in",
   sUrgent:"Call now", sReview:"Review", sStable:"Stable", sMissing:"No check-in",
   zone:{green:"Green", yellow:"Yellow", red:"Red"}, zoneTitle:"Risk zone (model)",
+  hPatient:"Patient", hToday:"Today (safety rules)", hDays:"Last 21 days",
   rRest:"Chest pain at rest today", rBreath:"Short of breath at rest today", rFaint:"Fainted or nearly fainted today",
   rWorse:"Chest pain getting worse (reported in last 3 days)", rExertion:"New pain on exertion this week",
   rBP:(a)=>`Home blood pressure averaging ${a} mmHg this week`, rBPup:(d)=>`Blood pressure up ${d} mmHg vs last week`,
   rHR:"Resting pulse above 100 on 3 of the last 5 days", rSwelling:"New ankle or leg swelling", rMissing:(n)=>`No check-in for ${n} days`,
   rStable:"No new symptoms; readings in usual range", lastCI:(d)=>`last check-in ${d}`, today:"today", yesterday:"yesterday", daysAgo:(n)=>`${n} days ago`,
-  hPatient:"Patient", hToday:"Today (safety rules)", hDays:"Last 21 days",
-  dWhy:"Why this risk zone (model, from the clinic visit + this week's blood pressure)", dLog:"Recent check-ins",
+  dWhy:"Why this risk zone (model: clinic visit + this week's blood pressure)", dLog:"Recent check-ins",
   dCols:["Date","Pain","Other","BP","Pulse"], dNote:"Pulse is shown for context only: the model was not trained on it.",
   pain:{none:"none", exertion:"on exertion", worse:"worse", rest:"AT REST"}, flags:{breath:"breathless", faint:"fainted", swelling:"swelling"},
   f:{age:"Age", sex:"Sex", trestbps:"Blood pressure", chol:"Cholesterol", fbs:"Fasting glucose", cp:"Chest-pain type (clinic)", restecg:"Resting ECG"},
   ageSex:(a,s)=>`${a}, ${s===0?"female":"male"}`,
-  howTitle:"How the queue is built",
-  how:["<b>Risk zone</b> comes from the HeartPost model: the patient's clinic-visit measurements, with blood pressure updated to this week's home average. It's the same model and thresholds as the clinic tool.",
-       "<b>Status</b> comes from simple safety rules on the daily check-ins, not from the model: pain at rest, breathlessness at rest or fainting → <b>call now</b>; worsening pain, new pain on exertion, high or rising blood pressure, fast resting pulse, new swelling or 3+ days without a check-in → <b>review today</b>.",
-       "We don't let daily symptoms change the model's chest-pain input. In the 1980s training data, 'no chest pain' meant <i>higher</i> risk, so a patient who felt better would turn red. That's a data artefact, so daily symptoms only go through the safety rules.",
-       "Resting pulse from a fitness band is shown and can raise a review, but it's not in the model: our training data has no resting pulse."],
+  rulesTitle:"How each line is decided",
+  rulesLead:"Two separate things: the status comes from simple safety rules on today's check-in; the risk zone comes from the HeartPost model.",
+  rtCol1:"Status", rtCol2:"Triggered by", rtCol3:"Decided by",
+  rules:[["Call now","s-urgent","Chest pain at rest or lasting over 15 min · shortness of breath at rest · fainting","Safety rule (and the patient sees \"Call 911\")"],
+         ["Review","s-review","Pain getting worse · new pain on exertion · home BP averaging ≥160 or up ≥15 vs last week · resting pulse >100 on 3 of 5 days · new swelling","Safety rule"],
+         ["No check-in","s-missing","3 or more days without a check-in","Safety rule"],
+         ["Stable","s-stable","None of the above","Safety rule"],
+         ["Green / Yellow / Red","z-yellow","Clinic-visit measurements, with blood pressure updated to this week's home average. Same thresholds as the clinic tool: 0.29 men, 0.07 women, 0.72 red","HeartPost model"]],
+  notes:["Why daily symptoms don't go into the model: in the 1980s training data, \"no chest pain\" meant <i>higher</i> risk, so a patient who felt better would turn red. That is a data artefact, so symptoms only go through the safety rules.",
+         "The safety rules are simple and visible on purpose. In a real service a cardiologist would set and review them."],
   footer:"HeartPost · remote follow-up demo with synthetic patients · prototype for the Veritas AI International High School Hackathon 2026 · not medical advice"
  },
  es:{
   navClinic:"Herramienta de clínica", navFollow:"Seguimiento remoto (demo)",
   title:"Seguimiento desde casa, sin el viaje de 87 millas",
-  lead:"Después de una consulta, los pacientes reportan desde casa una vez al día: síntomas, presión arterial en casa y el pulso en reposo de su pulsera. El cardiólogo en la ciudad no lee los números de todos. Recibe una lista ordenada por quién necesita una llamada hoy.",
+  lead:"Después de una consulta, los pacientes reportan desde casa una vez al día. El cardiólogo en la ciudad no lee los números de todos: recibe una lista ordenada por quién necesita una llamada hoy.",
   demoNote:"Demo con pacientes sintéticos. Sin cuentas ni datos reales: los reportes se guardan solo en este navegador, y la vista del médico lee del mismo navegador para mostrar el ciclo completo. No es consejo médico.",
-  rolePatient:"Soy paciente", rolePatientSub:"Reporte diario", roleDoctor:"Soy médico", roleDoctorSub:"Lista de seguimiento de hoy",
-  signedInAs:"Sesión como (paciente de demo)", whoHint:"Elija cualquier paciente sintético. Su reporte aparece en la lista del médico.",
-  remDue:"Falta el reporte de hoy", remDueBody:"Toma menos de un minuto. Su equipo de salud ve el resultado, no sus números.",
+  rolePatient:"App del paciente", rolePatientSub:"Un reporte diario de un minuto en el teléfono", roleDoctor:"Panel del médico", roleDoctorSub:"Lista de hoy: a quién llamar",
+  chooseHint:"Elija quién es usted. Pruebe primero como paciente, envíe un reporte y luego abra el panel del médico para verlo llegar.",
+  pvTag:"PACIENTE", pvTitle:"Mi reporte diario", pvSub:"Lo que el paciente ve en su teléfono",
+  dvTag:"MÉDICO", dTitle:"Lista de seguimiento de hoy",
+  signedInAs:"Demo: entrar como",
+  remDue:"Falta el reporte de hoy", remDueBody:"Toma menos de un minuto.",
   remDone:"Reporte de hoy enviado", remDoneBody:"Gracias. Hasta mañana.",
-  notifyBtn:"Recordarme cada día", notifyOn:"Recordatorios activados (con la app abierta)", notifyNo:"Este navegador bloqueó las notificaciones. Igual verá el recordatorio aquí.",
-  ciTitle:"Reporte de hoy",
+  notifyBtn:"Recordarme cada día", notifyOn:"Recordatorios activados", notifyNo:"Este navegador bloqueó las notificaciones. Igual verá el recordatorio aquí.",
+  ciTitle:"¿Cómo está hoy?",
   qPain:"¿Dolor u opresión en el pecho hoy?", painNone:"Ninguno", painExertion:"Solo con esfuerzo, y se quitó con reposo",
   painWorse:"Más frecuente, más fuerte o con menos esfuerzo que de costumbre", painRest:"En reposo, o dura más de 15 minutos",
   qOther:"¿Algo más hoy?", flagBreath:"Falta de aire en reposo", flagFaint:"Se desmayó o casi se desmaya", flagSwelling:"Hinchazón nueva en tobillos o piernas",
-  qBP:"Presión arterial en casa, sistólica (mmHg)", bpHint:"Opcional. De un tensiómetro en casa.",
-  qHR:"Pulso en reposo (latidos por minuto)", hrHint:"Opcional. De su pulsera o tomado a mano.",
-  bandLabel:"Importar de la pulsera", bandHint:"Un CSV con una columna de fecha y una de frecuencia cardíaca en reposo. Se lee solo en este dispositivo.",
+  qBP:"Presión arterial (número alto)", bpHint:"Opcional. Tensiómetro en casa, mmHg.",
+  qHR:"Pulso en reposo", hrHint:"Opcional. Pulsera o a mano, latidos/min.",
+  bandLabel:"Importar de la pulsera", bandHint:"CSV con una columna de fecha y una de frecuencia cardíaca en reposo. Se lee solo en este dispositivo.",
   bandOk:(n,hr)=>`Se importaron ${n} días. Último pulso en reposo: ${hr}.`, bandBad:"No se encontraron columnas de fecha y frecuencia cardíaca en el archivo.",
   send:"Enviar reporte", errBP:"La presión debe estar entre 70 y 250 mmHg, o deje el campo en blanco.", errHR:"El pulso debe estar entre 30 y 200, o deje el campo en blanco.",
   urgentT:"Llame al 911 ahora", urgentB:"Dolor de pecho en reposo, falta de aire en reposo o desmayo pueden ser un infarto. No espere una llamada. Su equipo de salud también fue alertado.",
   sentT:"Enviado a su equipo de salud", sentReview:"El consultorio de su médico lo revisará y puede llamarle.", sentStable:"Hoy no hay nada nuevo que su médico deba atender.",
-  myHistory:"Sus últimos 21 días", streakHint:"Verde: estable · Ámbar: el médico revisa · Rojo: urgente · Gris: sin reporte",
-  chartHint:"Presión arterial en casa (oscuro) y pulso en reposo (rojo punteado).",
-  dTitle:"Lista de seguimiento de hoy", dLead:"Ordenada por urgencia. Ve el estado de cada paciente y el motivo en una línea; abra una fila solo si necesita los detalles.",
+  myHistory:"Mis últimos 21 días", streakHint:"Verde: estable · Ámbar: el médico revisa · Rojo: urgente · Gris: sin reporte",
+  chartHint:"Presión arterial (oscuro) y pulso en reposo (rojo punteado).",
+  pxTitle:"Qué envía el paciente y por qué",
+  px:[["Dolor de pecho","La principal señal de una arteria del corazón tapada. El dolor en reposo o que dura más de 15 minutos puede ser un infarto, así que muestra \"Llame al 911\" de inmediato y pone al paciente al inicio de la lista del médico. El dolor que empeora o el dolor nuevo con esfuerzo pide una revisión."],
+      ["Falta de aire, desmayo, hinchazón","La falta de aire en reposo o el desmayo pueden significar que el corazón no bombea suficiente sangre: urgente. La hinchazón nueva en los tobillos puede ser líquido acumulado porque el corazón bombea peor: el médico revisa."],
+      ["Presión arterial","La presión alta o en aumento hace trabajar más al corazón. El promedio en casa de esta semana reemplaza la medición de la consulta en el modelo, así la zona de riesgo se mantiene al día."],
+      ["Pulso en reposo (pulsera)","Un pulso que se mantiene por encima de 100 en reposo puede indicar esfuerzo o un problema de ritmo, así que pide una revisión. No se usa en el puntaje de riesgo: nuestros datos no tenían pulso en reposo, así que no sabemos cuánto debería contar."]],
+  pxNextTitle:"Qué pasa después de \"Enviar\"",
+  pxNext:["El reporte se guarda (en esta demo: solo en este navegador).","Las reglas de seguridad lo convierten en un estado: estable, revisar hoy o llamar ya.","El modelo recalcula la zona de riesgo con la presión de esta semana.","El médico ve una línea por paciente (estado, motivo, zona), no una página de números."],
+  dLead:"Ordenada por urgencia. Una línea por paciente: zona de riesgo, estado de hoy y el motivo. Abra una fila solo si necesita los detalles.",
   cUrgent:"llamar ya", cReview:"revisar hoy", cStable:"estables", cMissing:"sin reporte reciente",
   sUrgent:"Llamar ya", sReview:"Revisar", sStable:"Estable", sMissing:"Sin reporte",
   zone:{green:"Verde", yellow:"Amarilla", red:"Roja"}, zoneTitle:"Zona de riesgo (modelo)",
+  hPatient:"Paciente", hToday:"Hoy (reglas de seguridad)", hDays:"Últimos 21 días",
   rRest:"Dolor de pecho en reposo hoy", rBreath:"Falta de aire en reposo hoy", rFaint:"Desmayo o casi desmayo hoy",
   rWorse:"Dolor de pecho empeorando (últimos 3 días)", rExertion:"Dolor nuevo con esfuerzo esta semana",
   rBP:(a)=>`Presión en casa con promedio de ${a} mmHg esta semana`, rBPup:(d)=>`Presión ${d} mmHg más alta que la semana pasada`,
   rHR:"Pulso en reposo mayor de 100 en 3 de los últimos 5 días", rSwelling:"Hinchazón nueva en tobillos o piernas", rMissing:(n)=>`Sin reporte desde hace ${n} días`,
   rStable:"Sin síntomas nuevos; valores en su rango habitual", lastCI:(d)=>`último reporte ${d}`, today:"hoy", yesterday:"ayer", daysAgo:(n)=>`hace ${n} días`,
-  hPatient:"Paciente", hToday:"Hoy (reglas de seguridad)", hDays:"Últimos 21 días",
-  dWhy:"Por qué esta zona de riesgo (modelo, con la consulta + la presión de esta semana)", dLog:"Reportes recientes",
+  dWhy:"Por qué esta zona de riesgo (modelo: consulta + presión de esta semana)", dLog:"Reportes recientes",
   dCols:["Fecha","Dolor","Otros","Presión","Pulso"], dNote:"El pulso se muestra solo como contexto: el modelo no se entrenó con él.",
   pain:{none:"ninguno", exertion:"con esfuerzo", worse:"peor", rest:"EN REPOSO"}, flags:{breath:"falta de aire", faint:"desmayo", swelling:"hinchazón"},
   f:{age:"Edad", sex:"Sexo", trestbps:"Presión arterial", chol:"Colesterol", fbs:"Glucosa en ayunas", cp:"Tipo de dolor (consulta)", restecg:"ECG en reposo"},
   ageSex:(a,s)=>`${a}, ${s===0?"mujer":"hombre"}`,
-  howTitle:"Cómo se arma la lista",
-  how:["<b>La zona de riesgo</b> viene del modelo HeartPost: las mediciones de la consulta, con la presión actualizada al promedio en casa de esta semana. Es el mismo modelo y los mismos umbrales que la herramienta de clínica.",
-       "<b>El estado</b> viene de reglas de seguridad simples sobre los reportes diarios, no del modelo: dolor en reposo, falta de aire en reposo o desmayo → <b>llamar ya</b>; dolor que empeora, dolor nuevo con esfuerzo, presión alta o en aumento, pulso rápido en reposo, hinchazón nueva o 3+ días sin reporte → <b>revisar hoy</b>.",
-       "Los síntomas diarios no cambian el tipo de dolor que usa el modelo. En los datos de los años 80, 'sin dolor de pecho' significaba <i>más</i> riesgo, así que un paciente que se siente mejor se pondría en rojo. Es un defecto de los datos, por eso los síntomas diarios solo pasan por las reglas de seguridad.",
-       "El pulso en reposo de la pulsera se muestra y puede pedir una revisión, pero no está en el modelo: nuestros datos de entrenamiento no tienen pulso en reposo."],
+  rulesTitle:"Cómo se decide cada línea",
+  rulesLead:"Son dos cosas distintas: el estado viene de reglas de seguridad simples sobre el reporte de hoy; la zona de riesgo viene del modelo HeartPost.",
+  rtCol1:"Estado", rtCol2:"Se activa por", rtCol3:"Lo decide",
+  rules:[["Llamar ya","s-urgent","Dolor de pecho en reposo o de más de 15 min · falta de aire en reposo · desmayo","Regla de seguridad (y el paciente ve \"Llame al 911\")"],
+         ["Revisar","s-review","Dolor que empeora · dolor nuevo con esfuerzo · presión en casa con promedio ≥160 o ≥15 más que la semana pasada · pulso en reposo >100 en 3 de 5 días · hinchazón nueva","Regla de seguridad"],
+         ["Sin reporte","s-missing","3 o más días sin reporte","Regla de seguridad"],
+         ["Estable","s-stable","Nada de lo anterior","Regla de seguridad"],
+         ["Verde / Amarilla / Roja","z-yellow","Mediciones de la consulta, con la presión actualizada al promedio en casa de esta semana. Mismos umbrales que la herramienta de clínica: 0.29 hombres, 0.07 mujeres, 0.72 roja","Modelo HeartPost"]],
+  notes:["Por qué los síntomas diarios no entran al modelo: en los datos de los años 80, \"sin dolor de pecho\" significaba <i>más</i> riesgo, así que un paciente que se siente mejor se pondría en rojo. Es un defecto de los datos, por eso los síntomas solo pasan por las reglas de seguridad.",
+         "Las reglas de seguridad son simples y visibles a propósito. En un servicio real, un cardiólogo las definiría y revisaría."],
   footer:"HeartPost · demo de seguimiento remoto con pacientes sintéticos · prototipo para el Veritas AI International High School Hackathon 2026 · no es consejo médico"
+ },
+ ru:{
+  navClinic:"Инструмент клиники", navFollow:"Удалённое наблюдение (демо)",
+  title:"Наблюдение из дома, без поездки в 87 миль",
+  lead:"После приёма в клинике пациенты раз в день отмечаются из дома. Кардиолог в городе не читает цифры каждого: он получает очередь, отсортированную по тому, кому нужно позвонить сегодня.",
+  demoNote:"Демо с вымышленными пациентами. Никаких аккаунтов и реальных данных: отметки хранятся только в этом браузере, а панель врача читает из того же браузера, чтобы показать весь цикл. Не медицинский совет.",
+  rolePatient:"Приложение пациента", rolePatientSub:"Ежедневная отметка за минуту в телефоне", roleDoctor:"Панель врача", roleDoctorSub:"Очередь на сегодня: кому позвонить",
+  chooseHint:"Выберите, кто вы. Сначала попробуйте как пациент, отправьте отметку, а потом откройте панель врача — и увидите, как она пришла.",
+  pvTag:"ПАЦИЕНТ", pvTitle:"Моя ежедневная отметка", pvSub:"Что пациент видит в телефоне",
+  dvTag:"ВРАЧ", dTitle:"Очередь наблюдения на сегодня",
+  signedInAs:"Демо: войти как",
+  remDue:"Пора сделать отметку за сегодня", remDueBody:"Это займёт меньше минуты.",
+  remDone:"Отметка за сегодня сделана", remDoneBody:"Спасибо. До завтра.",
+  notifyBtn:"Напоминать каждый день", notifyOn:"Напоминания включены", notifyNo:"Браузер заблокировал уведомления. Напоминание всё равно будет видно здесь.",
+  ciTitle:"Как вы сегодня?",
+  qPain:"Была ли сегодня боль или давление в груди?", painNone:"Нет", painExertion:"Только при нагрузке, и прошла в покое",
+  painWorse:"Чаще, сильнее или при меньшей нагрузке, чем обычно", painRest:"В покое или дольше 15 минут",
+  qOther:"Что-то ещё сегодня?", flagBreath:"Одышка в покое", flagFaint:"Обморок или почти обморок", flagSwelling:"Новые отёки на лодыжках или ногах",
+  qBP:"Давление (верхнее число)", bpHint:"Необязательно. Домашний тонометр, мм рт. ст.",
+  qHR:"Пульс в покое", hrHint:"Необязательно. С браслета или вручную, уд/мин.",
+  bandLabel:"Загрузить с фитнес-браслета", bandHint:"CSV с колонкой даты и колонкой пульса в покое. Читается только на этом устройстве.",
+  bandOk:(n,hr)=>`Загружено дней: ${n}. Последний пульс в покое: ${hr}.`, bandBad:"В файле не нашлись колонки даты и пульса.",
+  send:"Отправить отметку", errBP:"Давление должно быть от 70 до 250 мм рт. ст. или оставьте поле пустым.", errHR:"Пульс должен быть от 30 до 200 или оставьте поле пустым.",
+  urgentT:"Звоните 911 прямо сейчас", urgentB:"Боль в груди в покое, одышка в покое или обморок могут быть инфарктом. Не ждите звонка. Ваша медицинская команда тоже получила тревогу.",
+  sentT:"Отправлено вашей медицинской команде", sentReview:"Врач посмотрит отметку и может вам позвонить.", sentStable:"Сегодня для врача ничего нового.",
+  myHistory:"Мои последние 21 день", streakHint:"Зелёный: стабильно · Жёлтый: посмотрит врач · Красный: срочно · Серый: нет отметки",
+  chartHint:"Давление (тёмная линия) и пульс в покое (красный пунктир).",
+  pxTitle:"Что отправляет пациент и зачем",
+  px:[["Боль в груди","Главный сигнал закупорки артерии сердца. Боль в покое или дольше 15 минут может быть инфарктом, поэтому сразу появляется «Звоните 911», а пациент встаёт первым в очереди врача. Усиливающаяся боль или новая боль при нагрузке — повод для проверки врачом."],
+      ["Одышка, обморок, отёки","Одышка в покое или обморок могут значить, что сердце не перекачивает достаточно крови: это срочно. Новые отёки на лодыжках — возможно, скапливается жидкость, потому что сердце качает хуже: врач проверит."],
+      ["Давление","Высокое или растущее давление заставляет сердце работать тяжелее. Среднее домашнее давление за неделю заменяет в модели давление с приёма, поэтому зона риска остаётся актуальной."],
+      ["Пульс в покое (браслет)","Пульс в покое выше 100 несколько дней подряд может говорить о перегрузке или нарушении ритма, поэтому врач проверит. В оценку риска он не входит: в наших обучающих данных не было пульса в покое, и мы не знаем, какой вес ему давать."]],
+  pxNextTitle:"Что происходит после «Отправить»",
+  pxNext:["Отметка сохраняется (в этом демо — только в этом браузере).","Правила безопасности превращают её в статус: стабильно, проверить сегодня или звонить сейчас.","Модель пересчитывает зону риска с давлением за эту неделю.","Врач видит одну строку на пациента (статус, причина, зона), а не страницу цифр."],
+  dLead:"Отсортировано по срочности. Одна строка на пациента: зона риска, статус на сегодня и причина. Открывайте строку, только когда нужны подробности.",
+  cUrgent:"позвонить сейчас", cReview:"проверить сегодня", cStable:"стабильно", cMissing:"давно нет отметки",
+  sUrgent:"Позвонить", sReview:"Проверить", sStable:"Стабильно", sMissing:"Нет отметки",
+  zone:{green:"Зелёная", yellow:"Жёлтая", red:"Красная"}, zoneTitle:"Зона риска (модель)",
+  hPatient:"Пациент", hToday:"Сегодня (правила безопасности)", hDays:"Последние 21 день",
+  rRest:"Сегодня боль в груди в покое", rBreath:"Сегодня одышка в покое", rFaint:"Сегодня обморок или почти обморок",
+  rWorse:"Боль в груди усиливается (за последние 3 дня)", rExertion:"Новая боль при нагрузке на этой неделе",
+  rBP:(a)=>`Среднее домашнее давление ${a} мм рт. ст. за неделю`, rBPup:(d)=>`Давление выросло на ${d} мм рт. ст. по сравнению с прошлой неделей`,
+  rHR:"Пульс в покое выше 100 в 3 из последних 5 дней", rSwelling:"Новые отёки на лодыжках или ногах", rMissing:(n)=>`Нет отметки ${n} дн.`,
+  rStable:"Новых симптомов нет; показатели в обычных пределах", lastCI:(d)=>`последняя отметка ${d}`, today:"сегодня", yesterday:"вчера", daysAgo:(n)=>`${n} дн. назад`,
+  dWhy:"Почему такая зона риска (модель: данные приёма + давление за неделю)", dLog:"Последние отметки",
+  dCols:["Дата","Боль","Другое","Давление","Пульс"], dNote:"Пульс показан только для контекста: модель на нём не обучалась.",
+  pain:{none:"нет", exertion:"при нагрузке", worse:"сильнее", rest:"В ПОКОЕ"}, flags:{breath:"одышка", faint:"обморок", swelling:"отёки"},
+  f:{age:"Возраст", sex:"Пол", trestbps:"Давление", chol:"Холестерин", fbs:"Сахар натощак", cp:"Тип боли (с приёма)", restecg:"ЭКГ в покое"},
+  ageSex:(a,s)=>`${a}, ${s===0?"женщина":"мужчина"}`,
+  rulesTitle:"Как определяется каждая строка",
+  rulesLead:"Это две разные вещи: статус ставят простые правила безопасности по сегодняшней отметке, а зону риска считает модель HeartPost.",
+  rtCol1:"Статус", rtCol2:"Когда ставится", rtCol3:"Кто решает",
+  rules:[["Позвонить","s-urgent","Боль в груди в покое или дольше 15 мин · одышка в покое · обморок","Правило безопасности (а пациент видит «Звоните 911»)"],
+         ["Проверить","s-review","Боль усиливается · новая боль при нагрузке · среднее домашнее давление ≥160 или выросло на ≥15 за неделю · пульс в покое >100 в 3 из 5 дней · новые отёки","Правило безопасности"],
+         ["Нет отметки","s-missing","3 и больше дней без отметки","Правило безопасности"],
+         ["Стабильно","s-stable","Ничего из перечисленного","Правило безопасности"],
+         ["Зелёная / Жёлтая / Красная","z-yellow","Данные с приёма, давление заменено средним домашним за неделю. Те же пороги, что в инструменте клиники: 0,29 мужчины, 0,07 женщины, 0,72 красная","Модель HeartPost"]],
+  notes:["Почему ежедневные симптомы не идут в модель: в обучающих данных 1980-х «нет боли в груди» означало <i>более высокий</i> риск, и пациент, которому стало лучше, «покраснел» бы. Это дефект данных, поэтому симптомы проходят только через правила безопасности.",
+         "Правила безопасности нарочно простые и видны всем. В реальном сервисе их задавал бы и проверял кардиолог."],
+  footer:"HeartPost · демо удалённого наблюдения с вымышленными пациентами · прототип для Veritas AI International High School Hackathon 2026 · не медицинский совет"
  }
 };
 let lang="en";
-try{ const s=localStorage.getItem("hpLang"); if(s&&T[s]) lang=s; else if((navigator.language||"").startsWith("es")) lang="es"; }catch(e){}
+try{ const s=localStorage.getItem("hpLang"); if(s&&T[s]) lang=s; else if((navigator.language||"").startsWith("es")) lang="es"; else if((navigator.language||"").startsWith("ru")) lang="ru"; }catch(e){}
 const $=id=>document.getElementById(id);
 
 /* ---------- the model (same maths as the clinic tool) ---------- */
@@ -375,7 +512,8 @@ const DAY=86400000;
 const key=d=>{const z=new Date(d); return `${z.getFullYear()}-${String(z.getMonth()+1).padStart(2,"0")}-${String(z.getDate()).padStart(2,"0")}`;};
 const TODAY=new Date(); TODAY.setHours(12,0,0,0);
 const DAYS=[...Array(21)].map((_,i)=>key(TODAY.getTime()-(20-i)*DAY));   // oldest → today
-const fmtDate=k=>new Date(k+"T12:00:00").toLocaleDateString(lang==="es"?"es-US":"en-US",{month:"short",day:"numeric"});
+const LOC={en:"en-US",es:"es-US",ru:"ru-RU"};
+const fmtDate=k=>new Date(k+"T12:00:00").toLocaleDateString(LOC[lang],{month:"short",day:"numeric"});
 
 /* ---------- synthetic cohort (invented people, generated deterministically) ---------- */
 function rng(seed){ let s=seed>>>0; return ()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
@@ -470,7 +608,7 @@ function renderDoctor(){
     ${openId===p.id?detail(p,a):""}
    </div>`).join("");
   document.querySelectorAll(".row > button").forEach(b=>b.addEventListener("click",()=>{ const id=b.parentElement.dataset.id; openId=openId===id?null:id; renderDoctor(); }));
-  $("howList").innerHTML=t.how.map(h=>`<li>${h}</li>`).join("");
+
 }
 function detail(p,a){
   const t=T[lang], maxAbs=Math.max(.5,...a.contrib.map(c=>Math.abs(c.c)));
@@ -487,6 +625,7 @@ function renderPatient(){
   const t=T[lang], p=COHORT.find(c=>c.id===me), a=assess(p), done=!!a.ci[DAYS[20]];
   $("who").innerHTML=COHORT.map(c=>`<option value="${c.id}" ${c.id===me?"selected":""}>${c.name} (${t.ageSex(c.age,c.sex)})</option>`).join("");
   $("reminder").classList.toggle("done",done);
+  $("phName").textContent=p.name;
   $("remTitle").textContent=done?t.remDone:t.remDue; $("remBody").textContent=done?t.remDoneBody:t.remDueBody;
   $("myStreak").innerHTML=a.dayStatus.map((s,i)=>`<span class="${s}${i===20?" today":""}" title="${fmtDate(DAYS[i])}"></span>`).join("");
   // small chart: blood pressure and pulse
@@ -548,11 +687,14 @@ $("ci").addEventListener("submit",e=>{
 });
 
 /* ---------- roles, language ---------- */
+let role=null;   // nothing chosen until the visitor picks a role
 function setRole(r){
+  role=r;
   document.querySelectorAll(".role").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.role===r)));
   $("patientView").hidden=r!=="patient"; $("doctorView").hidden=r!=="doctor";
-  if(r==="doctor") renderDoctor(); else renderPatient();
-  if(location.hash!=="#"+r) history.replaceState(null,"","#"+r);
+  $("chooseHint").hidden=!!r;
+  if(r==="doctor") renderDoctor(); else if(r==="patient") renderPatient();
+  if(r && location.hash!=="#"+r) history.replaceState(null,"","#"+r);
 }
 document.querySelectorAll(".role").forEach(b=>b.addEventListener("click",()=>setRole(b.dataset.role)));
 function applyLang(){
@@ -560,12 +702,18 @@ function applyLang(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{const v=t[el.dataset.i18n]; if(typeof v==="string") el.textContent=v;});
   document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
   try{ if(localStorage.getItem("hpRemind")==="on") $("notifyBtn").textContent=t.notifyOn; }catch(e){}
+  $("pxList").innerHTML=t.px.map(([q,a])=>`<dt>${q}</dt><dd>${a}</dd>`).join("");
+  $("pxNext").innerHTML=t.pxNext.map(x=>`<li>${x}</li>`).join("");
+  $("rulesBody").innerHTML=t.rules.map(([st,cls,trig,who])=>`<tr><td><span class="chip ${cls}">${st}</span></td><td>${trig}</td><td>${who}</td></tr>`).join("");
+  $("rulesNotes").innerHTML=t.notes.map(x=>`<li>${x}</li>`).join("");
+  $("dvDate").textContent=TODAY.toLocaleDateString(LOC[lang],{weekday:"long",month:"long",day:"numeric"});
   renderPatient(); if(!$("doctorView").hidden) renderDoctor();
 }
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang; try{localStorage.setItem("hpLang",lang);}catch(e){} applyLang();}));
-addEventListener("hashchange",()=>setRole(location.hash==="#doctor"?"doctor":"patient"));
+const roleFromHash=()=>location.hash==="#doctor"?"doctor":location.hash==="#patient"?"patient":null;
+addEventListener("hashchange",()=>setRole(roleFromHash()));
 applyLang();
-setRole(location.hash==="#doctor"?"doctor":"patient");
+setRole(roleFromHash());
 notifyIfDue();
 </script>
 </body>

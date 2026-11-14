@@ -158,6 +158,31 @@ th{font-weight:600}
 .small{font-size:.85rem;color:var(--ink-soft)}
 footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-size:.8rem;color:var(--ink-soft)}
 
+/* ---------- explanations ---------- */
+.whyq{margin-top:2px}
+.whyq summary{cursor:pointer;font-size:.8rem;font-weight:600;color:var(--blue,#2f5fae);list-style:none;display:inline-flex;align-items:center;gap:5px}
+.whyq summary::-webkit-details-marker{display:none}
+.whyq summary::before{content:"?";display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1.4px solid currentColor;font-size:.68rem;font-weight:700}
+.whyq p{margin:6px 0 2px;font-size:.84rem;line-height:1.45;color:var(--ink-soft);background:#f6f8fc;border-radius:8px;padding:8px 10px}
+.calc{margin-top:12px}
+.calc summary{cursor:pointer;font:600 1.02rem var(--serif)}
+.calc-intro{font-size:.88rem;margin:8px 0}
+.calc-t{width:100%;border-collapse:collapse;font-size:.88rem;font-variant-numeric:tabular-nums}
+.calc-t th,.calc-t td{padding:5px 6px;border-bottom:1px solid var(--rule);text-align:left}
+.calc-t td:last-child,.calc-t th:last-child{text-align:right;white-space:nowrap}
+.calc-t tr.sum td{font-weight:700;border-top:2px solid var(--ink)}
+.calc-t .pos{color:var(--red)} .calc-t .neg{color:var(--green)}
+.calc-step{font-size:.88rem;margin:8px 0 0}
+.decide{padding:56px 0 50px;border-top:1px solid var(--rule)}
+.decide h2{font-size:clamp(1.5rem,2.6vw,2rem);margin-bottom:8px}
+.dc-lead{margin:0 0 22px;max-width:70ch;color:var(--ink-soft)}
+.dc-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;counter-reset:s}
+.dc-steps li{position:relative;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:18px 18px 16px}
+.dc-steps li:not(:last-child)::after{content:"";position:absolute;right:-13px;top:34px;width:10px;height:10px;border-top:2px solid var(--red);border-right:2px solid var(--red);transform:rotate(45deg);z-index:1}
+.dc-steps .n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--paper);font-weight:700;font-size:.9rem;margin-bottom:10px}
+.dc-steps h3{font:600 1.05rem/1.25 var(--serif);margin:0 0 6px}
+.dc-steps p{margin:0;font-size:.9rem;line-height:1.5}
+
 /* ---------- explorer: every unseen patient ---------- */
 .explorer{padding:56px 0 52px;border-top:1px solid var(--rule)}
 .x-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:22px}
@@ -212,6 +237,8 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
   .story-grid,.about-grid{grid-template-columns:1fr}
   .d-perf{grid-row:auto}
   .x-counters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dc-steps{grid-template-columns:1fr 1fr}
+  .dc-steps li::after{display:none}
   .hero-grid{grid-template-columns:1fr;gap:26px;margin-top:28px}
   .top{flex-wrap:wrap}.nav{order:3;width:100%;margin:8px 0 0}
 }
@@ -224,6 +251,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
   .duel .row{grid-template-columns:1fr;gap:4px}
   th,td{padding:5px 3px}
   .strip{padding:18px 16px 20px}
+  .dc-steps{grid-template-columns:1fr}
 }
 @media print{.lang,button.run,.examples,.note-row,.story,.about,.hero-trace{display:none}.workspace{display:block}.strip{break-inside:avoid}}
 </style>
@@ -248,6 +276,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
       <div class="lang" role="group" aria-label="Language / Idioma">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="es" aria-pressed="false">ES</button>
+        <button type="button" data-lang="ru" aria-pressed="false">RU</button>
       </div>
     </div>
     <div class="hero-grid">
@@ -285,6 +314,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
       <div class="field">
         <label for="age" data-i18n="age"></label>
         <input id="age" type="number" inputmode="numeric" min="18" max="100" required>
+        <details class="whyq"><summary data-i18n="whyQ"></summary><p data-i18n="wAge"></p></details>
       </div>
       <fieldset class="field">
         <legend class="legend" data-i18n="sex"></legend>
@@ -292,6 +322,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
           <label><input type="radio" name="sex" value="0" required><span data-i18n="female"></span></label>
           <label><input type="radio" name="sex" value="1"><span data-i18n="male"></span></label>
         </div>
+        <details class="whyq"><summary data-i18n="whyQ"></summary><p data-i18n="wSex"></p></details>
       </fieldset>
       <div class="field wide">
         <label for="cp" data-i18n="cp"></label>
@@ -303,16 +334,19 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
           <option value="4" data-i18n="cp4"></option>
         </select>
         <span class="hint" data-i18n="cpHint"></span>
+        <details class="whyq"><summary data-i18n="whyQ"></summary><p data-i18n="wCp"></p></details>
       </div>
       <div class="field">
         <label for="trestbps" data-i18n="bp"></label>
         <input id="trestbps" type="number" inputmode="numeric" min="70" max="250">
         <span class="hint" data-i18n="blank"></span>
+        <details class="whyq"><summary data-i18n="whyQ"></summary><p data-i18n="wBp"></p></details>
       </div>
       <div class="field">
         <label for="chol" data-i18n="chol"></label>
         <input id="chol" type="number" inputmode="decimal" step="0.1" min="2" max="700">
         <span class="hint" data-i18n="cholHint"></span>
+        <details class="whyq"><summary data-i18n="whyQ"></summary><p data-i18n="wChol"></p></details>
       </div>
       <fieldset class="field wide">
         <legend class="legend" data-i18n="fbs"></legend>
@@ -321,6 +355,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
           <label><input type="radio" name="fbs" value="0"><span data-i18n="no"></span></label>
           <label><input type="radio" name="fbs" value="" checked><span data-i18n="unknown"></span></label>
         </div>
+        <details class="whyq"><summary data-i18n="whyQ"></summary><p data-i18n="wFbs"></p></details>
       </fieldset>
       <div class="field wide">
         <label for="restecg" data-i18n="ecg"></label>
@@ -330,6 +365,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
           <option value="1" data-i18n="ecg1"></option>
           <option value="2" data-i18n="ecg2"></option>
         </select>
+        <details class="whyq"><summary data-i18n="whyQ"></summary><p data-i18n="wEcg"></p></details>
       </div>
       <p class="error" id="err" role="alert" hidden></p>
       <button class="run" type="submit" data-i18n="run"></button>
@@ -357,7 +393,15 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
         <div class="why panel">
           <h3 data-i18n="why"></h3>
           <ul class="factors" id="factors"></ul>
+          <p class="hint" style="margin:8px 0 0" data-i18n="barsNote"></p>
         </div>
+        <details class="calc panel" id="calcBox">
+          <summary data-i18n="calcTitle"></summary>
+          <p class="calc-intro" data-i18n="calcIntro"></p>
+          <table class="calc-t"><thead><tr><th data-i18n="calcC1"></th><th data-i18n="calcC2"></th><th data-i18n="calcC3"></th></tr></thead><tbody id="calcBody"></tbody></table>
+          <p class="calc-step" id="calcScore"></p>
+          <p class="calc-step" id="calcZone"></p>
+        </details>
         <div class="truth" id="truth" hidden></div>
         <p class="warn" id="warnTypical" hidden data-i18n="warnTypical"></p>
         <p class="warn" id="warnYoung" hidden data-i18n="warnYoung"></p>
@@ -371,6 +415,19 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
     </section>
   </div>
 </main>
+
+<section class="decide" aria-labelledby="dcTitle">
+  <div class="shell">
+    <h2 id="dcTitle" data-i18n="dcTitle"></h2>
+    <p class="dc-lead" data-i18n="dcLead"></p>
+    <ol class="dc-steps">
+      <li><span class="n">1</span><h3 data-i18n="dc1t"></h3><p data-i18n="dc1"></p></li>
+      <li><span class="n">2</span><h3 data-i18n="dc2t"></h3><p data-i18n="dc2"></p></li>
+      <li><span class="n">3</span><h3 data-i18n="dc3t"></h3><p data-i18n="dc3"></p></li>
+      <li><span class="n">4</span><h3 data-i18n="dc4t"></h3><p data-i18n="dc4"></p></li>
+    </ol>
+  </div>
+</section>
 
 <section class="explorer" id="explorer" aria-labelledby="xTitle">
   <div class="shell">
@@ -464,6 +521,26 @@ const UNSEEN = /*UNSEEN_JSON*/null;  // [score, sick, sex(0=f), age, site]
 
 const T = {
  en:{
+  whyQ:"Why we ask",
+  wAge:"Fatty plaques build up in the heart's arteries over a lifetime, so the risk rises with age. Each extra year adds a little to the score.",
+  wSex:"On average, men develop coronary disease earlier. Women's symptoms are often less typical and easier to miss, which is why women get a lower referral threshold.",
+  wCp:"The type of chest pain is the strongest clue in our data. Pain on exertion that eases with rest suggests the heart isn't getting enough blood. Caution: in this 1980s data, patients with no chest pain were sick more often (see the warning in the result).",
+  wBp:"Years of high blood pressure damage the artery walls, and plaques form more easily on damaged walls. In our model its effect is small.",
+  wChol:"Cholesterol is what plaques are made of: more of it in the blood means faster plaque growth. In our model its effect is small.",
+  wFbs:"High blood sugar (diabetes) damages blood vessels from the inside. In our data it barely changed the score.",
+  wEcg:"An ECG records the heart's electrical activity. A thickened heart muscle (from years of high blood pressure) or a lack of oxygen can show up on it.",
+  barsNote:"Bars compare this patient with an average patient: red pushes the score up, green pulls it down.",
+  calcTitle:"How this score was calculated",
+  calcIntro:"The model works like a points system. It starts from a fixed value, and each measurement adds or subtracts points. The weights were learned from 242 Cleveland patients whose arteries were checked by angiography.",
+  calcC1:"Measurement", calcC2:"This patient", calcC3:"Points", calcStart:"Starting value", calcTotal:"Total points",
+  calcScore:(tot,p)=>`<b>Score</b> = 1 ÷ (1 + e<sup>−(${tot})</sup>) = <b>${p}</b>. This formula turns any total into a number between 0 and 1: more points, closer to 1.`,
+  calcZone:(p,tr,tu,z,w)=>`<b>Zone</b>: below ${tr} (the threshold for ${w?"women":"men"}) → green; from ${tr} to ${tu} → yellow; ${tu} or higher → red. ${p} → <b>${z}</b>.`,
+  dcTitle:"How HeartPost decides, in four steps",
+  dcLead:"No magic, just a short calculation you can check by hand. Open \"How this score was calculated\" under any result to see the numbers for that patient.",
+  dc1t:"Seven measurements", dc1:"Age, sex, type of chest pain, blood pressure, cholesterol, fasting glucose and resting ECG: things a small clinic can measure in one visit. Cholesterol, glucose and ECG can be left blank.",
+  dc2t:"Points for each one", dc2:"Each measurement adds or subtracts points. The weights were learned from 242 real patients whose arteries were checked by angiography. Chest-pain type, sex and age matter most.",
+  dc3t:"A score from 0 to 1", dc3:"The total is turned into a score between 0 and 1 by the logistic formula. A higher score means the patient looks more like the sick patients in the training data.",
+  dc4t:"A zone", dc4:"Thresholds turn the score into an action. 0.29 for men and 0.07 for women were chosen so that at least 90% of sick patients were caught in training; 0.72 or higher is red. The score is not a percent chance, so we show zones.",
   xTitle:"Every patient the model never saw",
   xLead:`Each mark is one of the ${UNSEEN.length} real test patients from four hospitals, placed by the score our model gave them. Patients who had heart disease are above the line; patients who didn't are below. Drag the threshold across the chart and watch the trade-off between missed patients and false alarms.`,
   xHospital:"Hospital", xAll:"All four", xH:"Hungary", xS:"Switzerland", xAllPeople:"Everyone", xWomen:"Women", xMen:"Men",
@@ -539,6 +616,26 @@ const T = {
   setNames:{}
  },
  es:{
+  whyQ:"Por qué preguntamos",
+  wAge:"Las placas de grasa se acumulan en las arterias del corazón durante toda la vida, así que el riesgo sube con la edad. Cada año suma un poco al puntaje.",
+  wSex:"En promedio, los hombres desarrollan enfermedad coronaria antes. En las mujeres los síntomas suelen ser menos típicos y más fáciles de pasar por alto; por eso las mujeres tienen un umbral de referencia más bajo.",
+  wCp:"El tipo de dolor de pecho es la pista más fuerte en nuestros datos. El dolor con esfuerzo que se alivia con reposo sugiere que al corazón no le llega suficiente sangre. Atención: en estos datos de los años 80, los pacientes sin dolor de pecho estaban enfermos más a menudo (vea la advertencia en el resultado).",
+  wBp:"Años de presión alta dañan las paredes de las arterias, y en paredes dañadas se forman placas con más facilidad. En nuestro modelo su efecto es pequeño.",
+  wChol:"El colesterol es el material de las placas: más colesterol en la sangre significa placas que crecen más rápido. En nuestro modelo su efecto es pequeño.",
+  wFbs:"El azúcar alto (diabetes) daña los vasos sanguíneos por dentro. En nuestros datos casi no cambió el puntaje.",
+  wEcg:"El ECG registra la actividad eléctrica del corazón. Un músculo cardíaco engrosado (por años de presión alta) o la falta de oxígeno pueden verse en él.",
+  barsNote:"Las barras comparan a este paciente con un paciente promedio: rojo sube el puntaje, verde lo baja.",
+  calcTitle:"Cómo se calculó este puntaje",
+  calcIntro:"El modelo funciona como un sistema de puntos. Parte de un valor fijo, y cada medición suma o resta puntos. Los pesos se aprendieron de 242 pacientes de Cleveland cuyas arterias se revisaron por angiografía.",
+  calcC1:"Medición", calcC2:"Este paciente", calcC3:"Puntos", calcStart:"Valor inicial", calcTotal:"Total de puntos",
+  calcScore:(tot,p)=>`<b>Puntaje</b> = 1 ÷ (1 + e<sup>−(${tot})</sup>) = <b>${p}</b>. Esta fórmula convierte cualquier total en un número entre 0 y 1: más puntos, más cerca de 1.`,
+  calcZone:(p,tr,tu,z,w)=>`<b>Zona</b>: menos de ${tr} (el umbral para ${w?"mujeres":"hombres"}) → verde; de ${tr} a ${tu} → amarilla; ${tu} o más → roja. ${p} → <b>${z}</b>.`,
+  dcTitle:"Cómo decide HeartPost, en cuatro pasos",
+  dcLead:"Sin magia: un cálculo corto que se puede revisar a mano. Abra \"Cómo se calculó este puntaje\" debajo de cualquier resultado para ver los números de ese paciente.",
+  dc1t:"Siete mediciones", dc1:"Edad, sexo, tipo de dolor de pecho, presión arterial, colesterol, glucosa en ayunas y ECG en reposo: lo que una clínica pequeña puede medir en una consulta. Colesterol, glucosa y ECG pueden quedar en blanco.",
+  dc2t:"Puntos por cada una", dc2:"Cada medición suma o resta puntos. Los pesos se aprendieron de 242 pacientes reales cuyas arterias se revisaron por angiografía. Lo que más pesa: tipo de dolor de pecho, sexo y edad.",
+  dc3t:"Un puntaje de 0 a 1", dc3:"El total se convierte en un puntaje entre 0 y 1 con la fórmula logística. Un puntaje más alto significa que el paciente se parece más a los enfermos de los datos de entrenamiento.",
+  dc4t:"Una zona", dc4:"Los umbrales convierten el puntaje en una acción. 0.29 para hombres y 0.07 para mujeres se eligieron para detectar al menos el 90% de los enfermos en el entrenamiento; 0.72 o más es rojo. El puntaje no es un porcentaje de probabilidad, por eso mostramos zonas.",
   xTitle:"Cada paciente que el modelo nunca vio",
   xLead:`Cada marca es uno de los ${UNSEEN.length} pacientes reales de prueba de cuatro hospitales, ubicado según el puntaje que le dio el modelo. Los que tenían enfermedad cardíaca están arriba de la línea; los que no, abajo. Arrastre el umbral por el gráfico y vea el equilibrio entre pacientes no detectados y falsas alarmas.`,
   xHospital:"Hospital", xAll:"Los cuatro", xH:"Hungría", xS:"Suiza", xAllPeople:"Todos", xWomen:"Mujeres", xMen:"Hombres",
@@ -612,6 +709,101 @@ const T = {
   privacyTitle:"Datos del paciente", privacyBody:"No se envía nada por internet ni se guarda nada. Después de la primera carga, la página funciona sin conexión, algo importante donde el internet rural no es confiable.",
   footer:"HeartPost · prototipo para el Veritas AI International High School Hackathon 2026 · no es consejo médico",
   setNames:{"Cleveland (internal test)":"Cleveland (prueba)","Hungary":"Hungría","Switzerland":"Suiza","Long Beach VA":"Long Beach VA","Women, all unseen":"Mujeres, total","Men, all unseen":"Hombres, total"}
+ },
+ ru:{
+  xTitle:"Каждый пациент, которого модель не видела",
+  xLead:`Каждая отметка — один из ${UNSEEN.length} реальных тестовых пациентов из четырёх больниц, поставленный по оценке модели. Те, у кого была болезнь сердца, — над линией; здоровые — под ней. Перетащите порог по графику и посмотрите на компромисс между пропущенными больными и ложными тревогами.`,
+  xHospital:"Больница", xAll:"Все четыре", xH:"Венгрия", xS:"Швейцария", xAllPeople:"Все", xWomen:"Женщины", xMen:"Мужчины",
+  cCaught:"больных направлено", cMissed:"больных пропущено", cFA:"ложных тревог (здоровых направили)",
+  cTrips:(mi)=>`здоровых избежали поездки (${mi} миль дороги)`,
+  laneSick:"была болезнь сердца (ангиография)", laneHealthy:"болезни сердца нет", axisLabel:"оценка модели →",
+  thrMen:"мужчины", thrAll:"все", thrWomen:"женщины", pin:"ваш пациент",
+  thrSlider:(w)=>w?"Порог направления для мужчин":"Порог направления для всех",
+  xToggle:`Отдельный порог для женщин (${MODEL.t_women.toFixed(2)})`, xReset:"Вернуть наши настройки",
+  fair:(w,m)=>`<b>Женщины:</b> найдено ${w.c} из ${w.s} больных, ложных тревог ${w.a}. &nbsp; <b>Мужчины:</b> найдено ${m.c} из ${m.s} больных, ложных тревог ${m.a}. Выключите порог для женщин — и увидите разрыв, который мы нашли.`,
+  lgHit:"болен, направлен", lgMiss:"болен, пропущен", lgOk:"здоров, остался в клинике", lgFA:"здоров, направлен (ложная тревога)", lgShape:"● женщины   ■ мужчины",
+  tip:(u,ref,site)=>`${u[2]===0?"Женщина":"Мужчина"}, ${u[3]} · ${site}<br>оценка ${u[0].toFixed(2)} · ${u[1]?"была болезнь сердца":"болезни сердца нет"} · <b>${u[1]?(ref?"найден":"пропущен"):(ref?"ложная тревога":"остался в клинике")}</b>`,
+  navClinic:"Инструмент клиники", navFollow:"Удалённое наблюдение (демо)",
+  heroTitle:"Кому нужна поездка в 87 миль?",
+  factsTitle:"Почему это важно",
+  fact1:"округов США без практикующего кардиолога, среди сельских округов — 86%",
+  fact2:"в среднем туда и обратно до ближайшего кардиолога из округа, где его нет",
+  fact3:"выше смертность от болезней сердца в сельской местности, чем в городах (2019)",
+  factSrc:"Источники: American College of Cardiology (2024); CDC NCHS Data Brief 417 (2021).",
+  tagline:"В сельской Америке до ближайшего кардиолога часто 87 миль туда и обратно. HeartPost помогает клинике решить, кому из пациентов с болью в груди нужна эта поездка, используя только то, что может измерить маленькая клиника.",
+  emptyTitle:"Здесь появится результат",
+  emptyBody:"Заполните форму или выберите реального пациента слева. Каждый пациент попадает в одну из трёх зон:",
+  legGreen:"наблюдение в клинике", legYellow:"плановое направление к кардиологу", legRed:"направить скорее; если боль прямо сейчас — звонить 911",
+  disclaimer:"Прототип для хакатона. Не медицинский совет и не диагноз. Решение всегда принимает медработник.",
+  exTitle:"Попробуйте на реальном пациенте", exBody:"Модель не видела этих пациентов при обучении. После оценки мы покажем их настоящий результат ангиографии — включая случай, где модель ошибается.",
+  exLabel:(e)=>`${e.sex===0?"Женщина":"Мужчина"}, ${e.age}`, siteName:{"Cleveland":"Кливленд","Hungary":"Венгрия","Switzerland":"Швейцария","Long Beach VA":"Лонг-Бич"},
+  age:"Возраст, лет", sex:"Пол", female:"Женщина", male:"Мужчина",
+  cp:"Боль в груди", choose:"Выберите вариант",
+  cp1:"Типичная стенокардия: давящая боль при нагрузке, проходит в покое или от нитроглицерина",
+  cp2:"Атипичная стенокардия: только 2 из этих 3 признаков",
+  cp3:"Неангинозная боль: не похожа на стенокардию",
+  cp4:"Боли в груди нет (бессимптомно)",
+  cpHint:"Признаки стенокардии: 1) боль за грудиной, 2) появляется при нагрузке или стрессе, 3) проходит в покое или от нитроглицерина.",
+  bp:"Систолическое (верхнее) давление в покое (мм рт. ст.)", blank:"Можно оставить пустым",
+  chol:"Общий холестерин", cholHint:"мг/дл (или ммоль/л — единицы определятся сами). Можно оставить пустым.",
+  fbs:"Сахар натощак выше 120 мг/дл (6,7 ммоль/л)?", yes:"Да", no:"Нет", unknown:"Не измеряли",
+  ecg:"ЭКГ в покое", unknownEcg:"Не делали", ecg0:"Норма", ecg1:"Изменения сегмента ST-T", ecg2:"Гипертрофия левого желудочка",
+  run:"Оценить риск",
+  errAge:"Укажите возраст от 18 до 100 лет.", errSex:"Укажите пол пациента.", errCp:"Выберите тип боли в груди.",
+  errBp:"Давление должно быть от 70 до 250 мм рт. ст. или оставьте поле пустым.", errChol:"Проверьте холестерин: 80–700 мг/дл (или 2–18 ммоль/л).",
+  green:"Зелёная зона", yellow:"Жёлтая зона", red:"Красная зона",
+  actGreen:"Наблюдение в клинике. Повторный осмотр через 12 месяцев или раньше, если появятся или усилятся симптомы.",
+  actYellow:"Плановое направление к кардиологу на нагрузочный тест.",
+  actRed:"Направить к кардиологу как можно скорее. Если боль в груди прямо сейчас — звоните 911 и действуйте по протоколу острого коронарного синдрома.",
+  lower:"ниже риск", higher:"выше риск",
+  score:(p,t)=>`Оценка модели: ${p}. Порог направления для этого пациента: ${t}. Это не вероятность болезни в вашем районе, поэтому ориентируйтесь на зону.`,
+  why:"Что повлияло на оценку",
+  fAge:"Возраст", fSex:"Пол", fBp:"Давление", fChol:"Холестерин", fFbs:"Сахар натощак", fCp:"Тип боли в груди", fEcg:"ЭКГ в покое",
+  filled:"не указано, взято среднее",
+  warnTypical:"Внимание: модель занижает риск при типичной стенокардии. Это следствие её обучающих данных 1980-х и медицински неверно. Опирайтесь на клиническое суждение: при типичной стенокардии направление обычно оправдано.",
+  warnYoung:"Пациенты младше 50 лет с нетипичной болью — самая частая ошибка модели (в этой группе она пропустила 21% больных). К зелёной зоне здесь относитесь особенно осторожно.",
+  always:"Зелёная зона не значит «здоров». Если боль усиливается, появляется в покое, есть одышка или обмороки — направлять независимо от зоны.",
+  truthSick:"Результат ангиографии: болезнь сердца подтверждена", truthHealthy:"Результат ангиографии: болезни сердца нет",
+  verdictRight:"Модель решила верно.", verdictMiss:"Модель ошиблась: отнесла больную пациентку к зелёной зоне. Такие пациенты — её слабое место.",
+  verdictFA:"Ложная тревога: модель направила здорового человека.",
+  fixedNote:"Без отдельного порога для женщин она попала бы в зелёную зону и была бы пропущена.",
+  copyNote:"Скопировать текст направления", copiedOk:"Скопировано", copiedFail:"Выделите текст ниже и скопируйте",
+  noteHead:"Направление к кардиологу (подготовлено с HeartPost)",
+  noteLines:(x,t,z,p,th)=>[`Пациент: ${x.sex===0?"женщина":"мужчина"}, ${x.age} лет`,`Боль в груди: ${t["cp"+x.cp]}`,`Давление в покое: ${x.trestbps??"не измеряли"}`,`Общий холестерин: ${x.chol??"не измеряли"}`,`Сахар натощак >120 мг/дл: ${x.fbs==null?"не измеряли":x.fbs?"да":"нет"}`,`ЭКГ в покое: ${x.restecg==null?"не делали":t["ecg"+x.restecg]}`,`HeartPost: ${t[z]} (оценка ${p}, порог ${th})`,"Прототип, не диагноз. Решение принял лечащий медработник."],
+  storyTitle:"Почему только 7 показателей",
+  story1:`Классические модели используют 13 показателей, но для 6 из них нужен нагрузочный тест или визуализация сердца, которых в маленькой клинике нет. Мы проверили обе модели в трёх больницах, которых они не видели (${STORY.ext_sick} больных).`,
+  duelFull:"13 показателей", duelOurs:"7 показателей клиники (HeartPost)", duelCap1:"пропущено больных (меньше — лучше)",
+  story2:"С одним порогом модель пропускала половину больных женщин. Отдельный порог, выбранный на обучающих данных, исправил большую часть этого:",
+  duelBefore:"один порог", duelAfter:"отдельный порог для женщин", duelCap2:(n)=>`найдено больных женщин из ${n}`,
+  aboutTitle:"О модели", howTitle:"Как это работает",
+  howBody:"Логистическая регрессия на 7 показателях, которые есть в сельской клинике. Обучена на 242 пациентах Cleveland Clinic (UCI Heart Disease, 1988) и проверена в трёх больницах, которых не видела: Будапешт (Венгрия), Цюрих и Базель (Швейцария) и госпиталь VA в Лонг-Бич (Калифорния). Для женщин порог направления ниже (0,07 против 0,29 у мужчин): с одним порогом модель пропускала половину больных женщин. Всё считается прямо в вашем браузере.",
+  perfTitle:"Насколько ей можно доверять", perfNote:"Пациенты, которых модель не видела при обучении. «Болен» — сужение коронарной артерии более чем на 50% по ангиографии.",
+  tSet:"Где проверяли", tSick:"Больных", tCaught:"Направлено", tMissed:"Пропущено", tFA:"Ложные тревоги",
+  limitsTitle:"Ограничения",
+  limits:["Данные 1980-х, в основном пожилые мужчины; на современном сельском населении США не проверялась.","В тесте всего 32 больные женщины, поэтому оценка для женщин неточная.","Модель занижает риск при типичной стенокардии (дефект данных).","Чаще всего ошибается у пациентов младше 50 лет с нетипичной болью и нормальной ЭКГ.","Оценка — не вероятность болезни в вашем районе: доля больных в больницах была от 36% до 93%."],
+  privacyTitle:"Данные пациента", privacyBody:"Ничего не отправляется в интернет и не сохраняется. После первой загрузки страница работает без сети — это важно там, где сельский интернет ненадёжен.",
+  footer:"HeartPost · прототип для Veritas AI International High School Hackathon 2026 · не медицинский совет",
+  setNames:{"Cleveland (internal test)":"Кливленд (тест)","Hungary":"Венгрия","Switzerland":"Швейцария","Long Beach VA":"Лонг-Бич VA","Women, all unseen":"Женщины, все","Men, all unseen":"Мужчины, все"},
+  whyQ:"Зачем мы это спрашиваем",
+  wAge:"Жировые бляшки копятся в артериях сердца всю жизнь, поэтому с возрастом риск растёт. Каждый год немного добавляет к оценке.",
+  wSex:"В среднем у мужчин болезнь сердца развивается раньше. У женщин симптомы часто менее типичные, и их легче пропустить — поэтому для женщин порог направления ниже.",
+  wCp:"Тип боли в груди — самая сильная подсказка в наших данных. Боль при нагрузке, которая проходит в покое, говорит о том, что сердцу не хватает крови. Осторожно: в этих данных 1980-х пациенты без боли в груди болели чаще (см. предупреждение в результате).",
+  wBp:"Годы высокого давления повреждают стенки артерий, а на повреждённых стенках легче образуются бляшки. В нашей модели его влияние небольшое.",
+  wChol:"Холестерин — это то, из чего состоят бляшки: чем его больше в крови, тем быстрее они растут. В нашей модели его влияние небольшое.",
+  wFbs:"Высокий сахар (диабет) повреждает сосуды изнутри. В наших данных он почти не менял оценку.",
+  wEcg:"ЭКГ записывает электрическую работу сердца. На ней видно утолщение сердечной мышцы (от многолетнего высокого давления) или нехватку кислорода.",
+  barsNote:"Полоски сравнивают пациента со средним пациентом: красное повышает оценку, зелёное понижает.",
+  calcTitle:"Как посчитана эта оценка",
+  calcIntro:"Модель работает как система баллов. Она начинает с фиксированного значения, а каждый показатель добавляет или отнимает баллы. Веса модель выучила на 242 пациентах из Кливленда, которым проверили артерии ангиографией.",
+  calcC1:"Показатель", calcC2:"У этого пациента", calcC3:"Баллы", calcStart:"Начальное значение", calcTotal:"Сумма баллов",
+  calcScore:(tot,p)=>`<b>Оценка</b> = 1 ÷ (1 + e<sup>−(${tot})</sup>) = <b>${p}</b>. Эта формула превращает любую сумму в число от 0 до 1: чем больше баллов, тем ближе к 1.`,
+  calcZone:(p,tr,tu,z,w)=>`<b>Зона</b>: меньше ${tr} (порог для ${w?"женщин":"мужчин"}) → зелёная; от ${tr} до ${tu} → жёлтая; ${tu} и выше → красная. ${p} → <b>${z}</b>.`,
+  dcTitle:"Как HeartPost принимает решение: четыре шага",
+  dcLead:"Никакой магии — короткий расчёт, который можно проверить вручную. Откройте «Как посчитана эта оценка» под любым результатом, чтобы увидеть цифры для этого пациента.",
+  dc1t:"Семь показателей", dc1:"Возраст, пол, тип боли в груди, давление, холестерин, сахар натощак и ЭКГ в покое — то, что маленькая клиника может измерить за один приём. Холестерин, сахар и ЭКГ можно не заполнять.",
+  dc2t:"Баллы за каждый", dc2:"Каждый показатель добавляет или отнимает баллы. Веса выучены на 242 реальных пациентах, которым проверили артерии ангиографией. Сильнее всего влияют тип боли, пол и возраст.",
+  dc3t:"Оценка от 0 до 1", dc3:"Сумма баллов превращается в оценку от 0 до 1 логистической формулой. Чем выше оценка, тем больше пациент похож на больных из обучающих данных.",
+  dc4t:"Зона", dc4:"Пороги превращают оценку в действие. 0,29 для мужчин и 0,07 для женщин выбраны так, чтобы при обучении находилось не меньше 90% больных; от 0,72 — красная зона. Оценка — не процент вероятности, поэтому мы показываем зоны."
  }
 };
 let lang="en", last=null, activeExample=null;
@@ -683,6 +875,22 @@ function tracePath(zone){
   while(x<700){ d+=` L${x+40} 38 L${x+48} 33 L${x+56} 38 L${x+66} 38 L${x+70} 44 L${x+76} ${38-amp} L${x+82} 48 L${x+88} 38 L${x+110} 38 L${x+122} 31 L${x+134} 38 L${x+140} 38`; x+=140; }
   return d;
 }
+function renderCalc(x,p,zone,tRefer){
+  const t=T[lang], M=MODEL, xm={...x, chol:cholToMgdl(x.chol)};
+  const names={age:t.fAge,sex:t.fSex,trestbps:t.fBp,chol:t.fChol,fbs:t.fFbs,cp:t.fCp,restecg:t.fEcg};
+  const shown={age:v=>v, sex:v=>v===0?t.female:t.male, trestbps:v=>v+" mmHg", chol:v=>Math.round(v)+" mg/dL", fbs:v=>v?t.yes:t.no,
+               cp:v=>t["cp"+v].split(":")[0], restecg:v=>t["ecg"+v]};
+  const fmt=v=>(v>=0?"+":"−")+Math.abs(v).toFixed(2);
+  let rows=[`<tr><td>${t.calcStart}</td><td></td><td>${fmt(M.intercept)}</td></tr>`], total=M.intercept, k=0;
+  for(const f of M.features_num){ const miss=xm[f]==null; const v=miss?M.num_median[f]:xm[f]; const c=M.coef[k++]*(v-M.num_mean[f])/M.num_scale[f]; total+=c;
+    rows.push(`<tr><td>${names[f]}</td><td>${miss?`<span class="hint">${t.filled}</span>`:shown[f](xm[f])}</td><td class="${c>=0?"pos":"neg"}">${fmt(c)}</td></tr>`); }
+  for(const f of M.features_cat){ const miss=xm[f]==null; const v=miss?M.cat_mode[f]:xm[f]; const lv=M.cat_levels[f], idx=lv.indexOf(v), c=idx>=0?M.coef[k+idx]:0; k+=lv.length; total+=c;
+    rows.push(`<tr><td>${names[f]}</td><td>${miss?`<span class="hint">${t.filled}</span>`:shown[f](xm[f])}</td><td class="${c>=0?"pos":"neg"}">${fmt(c)}</td></tr>`); }
+  rows.push(`<tr class="sum"><td>${t.calcTotal}</td><td></td><td>${(total>=0?"+":"−")+Math.abs(total).toFixed(3)}</td></tr>`);
+  $("calcBody").innerHTML=rows.join("");
+  $("calcScore").innerHTML=t.calcScore((total>=0?"+":"−")+Math.abs(total).toFixed(3), p.toFixed(3));
+  $("calcZone").innerHTML=t.calcZone(p.toFixed(2), tRefer.toFixed(2), MODEL.t_urgent.toFixed(2), t[zone], x.sex===0);
+}
 function zoneOf(x,p){ const tr=x.sex===0?MODEL.t_women:MODEL.t_men; return [p>=MODEL.t_urgent?"red":p>=tr?"yellow":"green",tr]; }
 
 function render(state){
@@ -704,6 +912,8 @@ function render(state){
     const w=Math.abs(c.c)/maxAbs*50, left=c.c>=0?50:50-w;
     return `<li><span>${names[c.f]}${c.filled?` <span class="hint">(${t.filled})</span>`:""}</span><span class="bar" role="img" aria-label="${c.c>=0?"+":"−"}${Math.abs(c.c).toFixed(2)}"><i style="left:${left}%;width:${w}%;background:${c.c>=0?"var(--red)":"var(--green)"}"></i></span></li>`;
   }).join("");
+  // step-by-step calculation, exactly as the model does it
+  renderCalc(x,p,zone,tRefer);
   // real-patient truth reveal
   const tb=$("truth");
   if(ex){
@@ -755,7 +965,7 @@ $("copyNote").addEventListener("click",async()=>{
   catch(e){ const nb=$("noteBox"); nb.value=text; nb.hidden=false; nb.focus(); nb.select(); $("copied").textContent=t.copiedFail; }
 });
 
-try{ const s=localStorage.getItem("hpLang"); if(s&&T[s]) lang=s; else if((navigator.language||"").startsWith("es")) lang="es"; }catch(e){}
+try{ const s=localStorage.getItem("hpLang"); if(s&&T[s]) lang=s; else if((navigator.language||"").startsWith("es")) lang="es"; else if((navigator.language||"").startsWith("ru")) lang="ru"; }catch(e){}
 /* ---------- explorer: every unseen patient, live ---------- */
 const X={tM:MODEL.t_men, womenOn:true, site:"", sex:"", pin:null, drag:false, dots:[], geo:null, intro:false};
 const SITE_FULL={C:"Cleveland",H:"Hungary",S:"Switzerland",V:"Long Beach VA"};
@@ -819,7 +1029,7 @@ function xUpdate(){
     if(on){ if(u[1]){sick++; ref?caught++:missed++;} else { ref?fa++:spared++; } }
   }
   $("cCaught").textContent=`${caught} / ${sick}`; $("cMissed").textContent=missed; $("cFA").textContent=fa;
-  $("cTrips").textContent=spared; $("cTripsLabel").textContent=t.cTrips((spared*87).toLocaleString(lang==="es"?"es-US":"en-US"));
+  $("cTrips").textContent=spared; $("cTripsLabel").textContent=t.cTrips((spared*87).toLocaleString(lang==="es"?"es-US":lang==="ru"?"ru-RU":"en-US"));
   // threshold lines
   const gp=X.geo.lineG; gp.innerHTML="";
   const xOf=v=>X.geo.padL+X.geo.plotW*v;
