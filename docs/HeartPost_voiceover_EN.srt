@@ -1,0 +1,91 @@
+1
+00:00:00,000 --> 00:00:03,113
+YEVA: Almost half of US counties have no cardiologist.
+
+2
+00:00:03,163 --> 00:00:07,462
+YEVA: In rural areas, the nearest one is an 87-mile round trip.
+
+3
+00:00:07,512 --> 00:00:14,973
+YEVA: So a nurse at a small clinic has to decide: which patient with chest pain really needs that trip?
+
+4
+00:00:15,023 --> 00:00:16,950
+YEVA: That's what HeartPost helps with.
+
+5
+00:00:17,000 --> 00:00:25,531
+YEVA: HeartPost uses only seven things a small clinic can measure, like age, type of chest pain and blood pressure.
+
+6
+00:00:25,581 --> 00:00:31,402
+YEVA: This is a real patient our model never saw. Red zone: refer soon.
+
+7
+00:00:31,452 --> 00:00:34,111
+YEVA: And it isn't a black box.
+
+8
+00:00:34,161 --> 00:00:39,982
+YEVA: Every score is a short sum of points you can check by hand.
+
+9
+00:00:40,032 --> 00:00:44,950
+YEVA: His real angiography result: heart disease. The model got it right.
+
+10
+00:00:45,000 --> 00:00:47,223
+IPATIY: This woman was sick too.
+
+11
+00:00:47,273 --> 00:00:51,768
+IPATIY: With one threshold for everyone, she'd have been sent home.
+
+12
+00:00:51,818 --> 00:01:00,859
+IPATIY: We found the model was missing half of sick women, so women get their own threshold, and now she's caught.
+
+13
+00:01:00,909 --> 00:01:03,132
+IPATIY: But we don't hide mistakes.
+
+14
+00:01:03,182 --> 00:01:08,132
+IPATIY: This woman also had heart disease, and the model said green.
+
+15
+00:01:08,182 --> 00:01:14,950
+IPATIY: Young patients with unusual pain are its weak spot, and the app warns about it.
+
+16
+00:01:15,000 --> 00:01:21,379
+ARIANA: We trained on one US hospital and tested on three others the model never saw.
+
+17
+00:01:21,429 --> 00:01:23,950
+ARIANA: Here are all 678 test patients.
+
+18
+00:01:24,000 --> 00:01:29,521
+ARIANA: Move the threshold: you catch more sick people, but get more false alarms.
+
+19
+00:01:29,571 --> 00:01:35,521
+ARIANA: A textbook model with thirteen tests missed 93 sick patients in the new hospitals.
+
+20
+00:01:35,571 --> 00:01:39,379
+ARIANA: The simplest baseline rule missed 83. Ours missed 43.
+
+21
+00:01:39,429 --> 00:01:44,950
+ARIANA: Now switch off the women's threshold, and ten sick women turn red: missed.
+
+22
+00:01:45,000 --> 00:01:54,656
+YEVA: Our data is from the 1980s, so next we'd test on today's patients with real clinicians, and grow this home follow-up demo.
+
+23
+00:01:54,706 --> 00:01:59,950
+YEVA: HeartPost: seven simple measurements, fair to women, and honest about its mistakes.
