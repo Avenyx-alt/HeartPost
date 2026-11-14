@@ -8,84 +8,115 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M14 58V16a18 18 0 0 1 36 0v42z' fill='none' stroke='%231c2b4a' stroke-width='5'/%3E%3Cpath d='M2 34h15l4-6 5 15 6-27 5 18h25' fill='none' stroke='%23b3261e' stroke-width='5' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 :root{
-  --ink:#1c2b4a; --ink-soft:#4a5875; --paper:#fffdfb;
-  --grid:#f2c9c4; --grid-fine:#f9e3e0;
+  --ink:#1c2b4a; --ink-soft:#4a5875; --paper:#fffdfb; --card:#ffffff;
+  --grid:#f2c9c4; --grid-fine:#f9e3e0; --wash:#f4f1ee;
   --green:#2d7a4b; --amber:#b9790c; --red:#b3261e;
-  --rule:#d9dde6; --field:#b8c0d0;
+  --rule:#e2e5ec; --field:#c3cad8;
   --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}
-.wrap{max-width:720px;margin:0 auto;padding:18px 18px 64px}
 button{font:inherit;color:inherit}
 :focus-visible{outline:3px solid #4b7bd8;outline-offset:2px}
+.shell{max-width:1180px;margin:0 auto;padding:0 32px}
+h2{font:600 1.35rem/1.25 var(--serif);margin:0 0 10px}
 
-/* header */
-header.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{display:flex;align-items:center;gap:12px}
-.mark{width:52px;height:52px;flex-shrink:0}
-h1{font:600 1.9rem/1 var(--serif);margin:0;letter-spacing:-.01em}
-.tagline{color:var(--ink-soft);margin:10px 0 0;font-size:1rem;max-width:46ch}
-.lang{display:flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden;flex-shrink:0;align-self:flex-start}
-.lang button{border:0;background:transparent;font-weight:600;font-size:.82rem;padding:7px 9px;cursor:pointer;min-width:40px}
+/* ---------- hero ---------- */
+.hero{position:relative;padding:22px 0 0;overflow:hidden;
+  background-image:linear-gradient(var(--grid-fine) 1px,transparent 1px),linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px);
+  background-size:24px 24px;border-bottom:1px solid var(--grid)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,253,251,.92) 0%,rgba(255,253,251,.55) 100%);pointer-events:none}
+.hero > *{position:relative;z-index:1}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:40px;height:40px;flex-shrink:0}
+.name{font:600 1.3rem/1 var(--serif);letter-spacing:-.01em}
+.lang{display:flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--card)}
+.lang button{border:0;background:transparent;font-weight:600;font-size:.82rem;padding:7px 11px;cursor:pointer;min-width:42px}
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.disclaimer{font-size:.9rem;color:var(--ink-soft);border-left:3px solid var(--red);padding:3px 0 3px 10px;margin:16px 0 20px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:56px;align-items:end;margin-top:40px}
+.hero h1{font:600 clamp(2.1rem,5vw,3.8rem)/1.04 var(--serif);letter-spacing:-.02em;margin:0 0 16px;max-width:14ch}
+.facts{background:rgba(255,255,255,.94);border:1px solid var(--grid);border-radius:8px;padding:18px 22px 14px}
+.facts h2{font:600 .98rem var(--serif);margin:0 0 6px;color:var(--ink-soft)}
+.facts dl{margin:0;display:grid}
+.facts dl > div{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--rule)}
+.facts dl > div:last-child{border-bottom:0}
+.facts dt{font:700 1.7rem/1 var(--serif);color:var(--red);letter-spacing:-.01em}
+.facts dd{margin:0;font-size:.93rem;line-height:1.4}
+.facts .src{font-size:.74rem;color:var(--ink-soft);margin:6px 0 0}
+.tagline{font-size:clamp(1.02rem,1.6vw,1.2rem);color:var(--ink-soft);margin:0;max-width:52ch}
+.disclaimer{font-size:.88rem;color:var(--ink-soft);border-left:3px solid var(--red);padding:2px 0 2px 10px;margin:18px 0 0;max-width:70ch}
+.hero-trace{display:block;width:100%;height:70px;margin-top:18px}
+.hero-trace path{fill:none;stroke:var(--red);stroke-width:2.4;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+@media (prefers-reduced-motion:no-preference){
+  .hero-trace path{stroke-dasharray:2200;stroke-dashoffset:2200;animation:draw 2.2s .2s ease-out forwards}
+}
 
-/* real patients */
-.examples{margin:0 0 22px;padding:14px 14px 12px;border:1px dashed var(--field);border-radius:8px;background:#fff}
-.examples h2{font:600 1rem var(--serif);margin:0 0 4px}
-.examples p{margin:0 0 10px;font-size:.86rem;color:var(--ink-soft)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--field);background:var(--paper);border-radius:999px;padding:7px 13px;cursor:pointer;font-size:.88rem;min-height:40px;text-align:left;line-height:1.25}
+/* ---------- workspace: input left, result right ---------- */
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;padding-top:40px;padding-bottom:64px;align-items:start}
+.col-result{position:sticky;top:20px}
+
+.examples{margin:0 0 26px}
+.examples h2{font-size:1.15rem;margin-bottom:4px}
+.examples p{margin:0 0 12px;font-size:.9rem;color:var(--ink-soft);max-width:56ch}
+.chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.chip{border:1px solid var(--field);background:var(--card);border-radius:10px;padding:9px 13px;cursor:pointer;font-size:.92rem;font-weight:600;text-align:left;line-height:1.25;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .chip:hover{border-color:var(--ink)}
-.chip small{display:block;color:var(--ink-soft);font-size:.74rem}
+.chip[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.chip small{color:var(--ink-soft);font-size:.76rem;font-weight:400}
 
-/* form */
-form{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+form{display:grid;grid-template-columns:1fr 1fr;gap:18px 18px;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:24px}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field.wide{grid-column:1/-1}
-label,.legend{font-weight:600;font-size:.95rem}
+label,.legend{font-weight:600;font-size:.94rem}
 .hint{font-size:.8rem;color:var(--ink-soft);font-weight:400}
-input[type=number],select{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:6px;padding:10px 12px;min-height:44px;width:100%}
+input[type=number],select{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:8px;padding:10px 12px;min-height:46px;width:100%}
 select{text-overflow:ellipsis}
 fieldset{border:0;padding:0;margin:0;min-width:0}
 .seg{display:flex;flex-wrap:wrap;gap:8px}
-.seg label{font-weight:500;border:1px solid var(--field);border-radius:6px;padding:9px 12px;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;background:#fff}
+.seg label{font-weight:500;border:1px solid var(--field);border-radius:8px;padding:9px 14px;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;background:#fff}
 .seg input{accent-color:var(--ink)}
 .seg label:has(input:checked){border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
-button.run{grid-column:1/-1;font-weight:600;font-size:1.05rem;background:var(--ink);color:var(--paper);border:0;border-radius:8px;padding:14px;cursor:pointer;min-height:50px}
+button.run{grid-column:1/-1;font-weight:600;font-size:1.05rem;background:var(--ink);color:var(--paper);border:0;border-radius:10px;padding:14px;cursor:pointer;min-height:52px;margin-top:4px}
 button.run:hover{background:#2a3d63}
 .error{grid-column:1/-1;color:var(--red);font-weight:600;margin:0}
 
-/* the one bold element: the ECG-paper result strip */
-.strip{margin-top:28px;border-radius:4px;padding:20px 20px 20px;
+/* ---------- the one bold element: the ECG-paper result strip ---------- */
+.strip{border-radius:6px;padding:22px 24px 24px;scroll-margin-top:12px;
   background-color:#fff7f6;
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px),
     linear-gradient(var(--grid-fine) 1px,transparent 1px),linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px);
-  background-size:25px 25px,25px 25px,5px 5px,5px 5px;border:1px solid var(--grid);scroll-margin-top:12px}
-.strip[hidden]{display:none}
-.trace{display:block;width:100%;height:56px;margin:-4px 0 6px}
+  background-size:25px 25px,25px 25px,5px 5px,5px 5px;border:1px solid var(--grid)}
+.strip.empty .filled,.strip:not(.empty) .placeholder{display:none}
+.strip.empty .trace path{stroke:var(--grid);animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+.trace{display:block;width:100%;height:56px;margin:-4px 0 8px}
 .trace path{fill:none;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
-@media (prefers-reduced-motion:no-preference){.trace path{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 1.4s ease-out forwards}}
+@media (prefers-reduced-motion:no-preference){.strip:not(.empty) .trace path{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 1.4s ease-out forwards}}
 @keyframes draw{to{stroke-dashoffset:0}}
-.verdict{font:700 1.75rem/1.15 var(--serif);margin:0 0 6px}
-.action{font-size:1.05rem;margin:0 0 14px;max-width:60ch}
+.verdict{font:700 1.85rem/1.15 var(--serif);margin:0 0 6px}
+.placeholder .verdict{color:var(--ink-soft);font-weight:600}
+.action{font-size:1.05rem;margin:0 0 16px;max-width:58ch}
+.zones-legend{display:grid;gap:10px;background:rgba(255,255,255,.9);border-radius:6px;padding:14px 16px}
+.zones-legend div{display:grid;grid-template-columns:14px auto 1fr;gap:4px 10px;align-items:baseline}
+.zones-legend i{width:12px;height:12px;border-radius:3px;align-self:center}
+.zones-legend span{font-weight:700}
+.zones-legend small{color:var(--ink-soft);font-size:.86rem}
 .scale-wrap{position:relative;margin-bottom:6px}
 .scale{height:14px;border-radius:7px;display:flex;overflow:hidden}
 .scale span{display:block;height:100%}
 .marker{position:absolute;top:-6px;width:4px;height:26px;background:var(--ink);border-radius:2px;transform:translateX(-2px);box-shadow:0 0 0 2px #fff7f6}
 .scale-labels{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink-soft)}
-.score{font-size:.88rem;color:var(--ink-soft);margin:6px 0 16px}
-.panel{background:rgba(255,255,255,.88);border-radius:4px;padding:10px 12px}
-.why h3,.card h2,.story h2{font:600 1.1rem var(--serif);margin:0 0 8px}
+.score{font-size:.86rem;color:var(--ink-soft);margin:6px 0 16px}
+.panel{background:rgba(255,255,255,.9);border-radius:6px;padding:12px 14px}
+.why h3{font:600 1.05rem var(--serif);margin:0 0 8px}
 .factors{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.factors li{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:10px;align-items:center;font-size:.92rem}
+.factors li{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:10px;align-items:center;font-size:.92rem}
 .bar{height:10px;position:relative;background:linear-gradient(90deg,transparent calc(50% - .5px),#9aa3b5 calc(50% - .5px),#9aa3b5 calc(50% + .5px),transparent calc(50% + .5px))}
 .bar i{position:absolute;top:0;height:100%;border-radius:2px}
-.warn{background:#fff;border:2px solid var(--amber);border-radius:6px;padding:10px 12px;margin:12px 0 0;font-size:.94rem}
-.truth{background:#fff;border:2px solid var(--ink);border-radius:6px;padding:10px 12px;margin:12px 0 0;font-size:.95rem}
+.warn{background:#fff;border:2px solid var(--amber);border-radius:8px;padding:10px 12px;margin:12px 0 0;font-size:.94rem}
+.truth{background:#fff;border:2px solid var(--ink);border-radius:8px;padding:10px 12px;margin:12px 0 0;font-size:.95rem}
 .truth b{font-family:var(--serif)}
 .always{font-size:.9rem;margin:12px 0 0}
 .note-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
@@ -94,148 +125,213 @@ button.run:hover{background:#2a3d63}
 .copied{font-size:.88rem;color:var(--green);font-weight:600}
 textarea.note{width:100%;min-height:150px;font:14px/1.45 var(--sans);border:1px solid var(--field);border-radius:6px;padding:10px;margin-top:10px}
 
-/* story */
-.story{margin-top:40px}
-.story > p{margin:0 0 14px;max-width:62ch}
-.duel{display:grid;gap:8px;margin:4px 0 22px}
-.duel .row{display:grid;grid-template-columns:minmax(0,190px) 1fr;gap:12px;align-items:center;font-size:.9rem}
-.duel .track{position:relative;height:26px;background:repeating-linear-gradient(90deg,var(--grid-fine) 0 1px,transparent 1px 10px)}
-.duel .fill{position:absolute;inset:0 auto 0 0;border-radius:2px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;color:#fff;font-weight:700;font-size:.85rem;min-width:30px}
-.duel .cap{font-size:.8rem;color:var(--ink-soft);margin:0}
+/* ---------- story ---------- */
+.story{background:var(--wash);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:56px 0 60px}
+.story h2{font-size:clamp(1.5rem,2.6vw,2rem);margin-bottom:22px}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.story figure{margin:0;background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:22px 24px}
+.story figure > p{margin:0 0 18px;max-width:52ch}
+.duel{display:grid;gap:10px}
+.duel .row{display:grid;grid-template-columns:minmax(0,150px) 1fr;gap:12px;align-items:center;font-size:.9rem}
+.duel .track{position:relative;height:30px;background:repeating-linear-gradient(90deg,var(--grid-fine) 0 1px,transparent 1px 10px);border-radius:3px}
+.duel .fill{position:absolute;inset:0 auto 0 0;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-weight:700;font-size:.9rem;min-width:34px}
+.duel .cap{font-size:.8rem;color:var(--ink-soft);margin:2px 0 0}
 
-/* about */
-.card{margin-top:34px;border-top:1px solid var(--rule);padding-top:20px}
-details{border-top:1px solid var(--rule);padding:12px 0}
-details:last-of-type{border-bottom:1px solid var(--rule)}
-summary{cursor:pointer;font-weight:600}
-table{border-collapse:collapse;width:100%;font-size:.86rem;margin-top:10px}
-th,td{text-align:right;padding:6px 5px;border-bottom:1px solid var(--rule)}
+/* ---------- about ---------- */
+.about{padding-top:52px;padding-bottom:56px}
+.about > h2{font-size:clamp(1.5rem,2.6vw,2rem);margin-bottom:18px}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
+.d-perf{grid-row:span 2}
+details{border-top:1px solid var(--rule);padding:14px 0}
+summary{cursor:pointer;font-weight:600;font-size:1.02rem}
+details p,details ul{max-width:62ch}
+details ul{padding-left:20px}
+details li{margin-bottom:4px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:10px}
+th,td{text-align:right;padding:7px 6px;border-bottom:1px solid var(--rule)}
 th:first-child,td:first-child{text-align:left}
 th{font-weight:600}
 .small{font-size:.85rem;color:var(--ink-soft)}
-footer{margin-top:28px;font-size:.8rem;color:var(--ink-soft)}
-@media (max-width:560px){
-  form{grid-template-columns:1fr} h1{font-size:1.6rem} .mark{width:44px;height:44px}
-  .factors li{grid-template-columns:minmax(0,1fr) 84px}
-  .duel .row{grid-template-columns:1fr} th,td{padding:5px 3px}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-size:.8rem;color:var(--ink-soft)}
+
+/* ---------- narrow screens: one column, result appears after the form ---------- */
+@media (max-width:959px){
+  .shell{padding:0 18px}
+  .workspace{grid-template-columns:1fr;gap:28px;padding-top:28px}
+  .col-result{position:static}
+  .strip.empty{display:none}
+  .story-grid,.about-grid{grid-template-columns:1fr}
+  .d-perf{grid-row:auto}
+  .hero-grid{grid-template-columns:1fr;gap:26px;margin-top:28px}
 }
-@media print{.lang,button.run,.examples,.note-row,.story,.card{display:none}.strip{break-inside:avoid}}
+@media (max-width:560px){
+  form{grid-template-columns:1fr;padding:18px}
+  .facts dl > div{grid-template-columns:70px 1fr;gap:10px}
+  .facts dt{font-size:1.35rem}
+  .chips{grid-template-columns:1fr}
+  .factors li{grid-template-columns:minmax(0,1fr) 84px}
+  .duel .row{grid-template-columns:1fr;gap:4px}
+  th,td{padding:5px 3px}
+  .strip{padding:18px 16px 20px}
+}
+@media print{.lang,button.run,.examples,.note-row,.story,.about,.hero-trace{display:none}.workspace{display:block}.strip{break-inside:avoid}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div class="brand">
-      <!-- a roadside mile marker: the long drive to the nearest cardiologist, crossed by one heartbeat -->
-      <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M14 58V16a18 18 0 0 1 36 0v42z" fill="none" stroke="#1c2b4a" stroke-width="3.2" stroke-linejoin="round"/>
-        <path d="M24 58h16" stroke="#1c2b4a" stroke-width="3.2" stroke-linecap="round"/>
-        <path d="M2 34h15l4-6 5 15 6-27 5 18h25" fill="none" stroke="#b3261e" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
-      </svg>
-      <h1>HeartPost</h1>
-    </div>
-    <div class="lang" role="group" aria-label="Language / Idioma">
-      <button type="button" data-lang="en" aria-pressed="true">EN</button>
-      <button type="button" data-lang="es" aria-pressed="false">ES</button>
-    </div>
-  </header>
-  <p class="tagline" data-i18n="tagline"></p>
-  <p class="disclaimer" data-i18n="disclaimer"></p>
-
-  <section class="examples" aria-labelledby="exTitle">
-    <h2 id="exTitle" data-i18n="exTitle"></h2>
-    <p data-i18n="exBody"></p>
-    <div class="chips" id="chips"></div>
-  </section>
-
-  <form id="f" novalidate>
-    <div class="field">
-      <label for="age" data-i18n="age"></label>
-      <input id="age" type="number" inputmode="numeric" min="18" max="100" required>
-    </div>
-    <fieldset class="field">
-      <legend class="legend" data-i18n="sex"></legend>
-      <div class="seg">
-        <label><input type="radio" name="sex" value="0" required><span data-i18n="female"></span></label>
-        <label><input type="radio" name="sex" value="1"><span data-i18n="male"></span></label>
+<header class="hero">
+  <div class="shell">
+    <div class="top">
+      <div class="brand">
+        <!-- a roadside mile marker: the long drive to the nearest cardiologist, crossed by one heartbeat -->
+        <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M14 58V16a18 18 0 0 1 36 0v42z" fill="none" stroke="#1c2b4a" stroke-width="3.2" stroke-linejoin="round"/>
+          <path d="M24 58h16" stroke="#1c2b4a" stroke-width="3.2" stroke-linecap="round"/>
+          <path d="M2 34h15l4-6 5 15 6-27 5 18h25" fill="none" stroke="#b3261e" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+        <span class="name">HeartPost</span>
       </div>
-    </fieldset>
-    <div class="field wide">
-      <label for="cp" data-i18n="cp"></label>
-      <select id="cp" required>
-        <option value="" data-i18n="choose"></option>
-        <option value="1" data-i18n="cp1"></option>
-        <option value="2" data-i18n="cp2"></option>
-        <option value="3" data-i18n="cp3"></option>
-        <option value="4" data-i18n="cp4"></option>
-      </select>
-      <span class="hint" data-i18n="cpHint"></span>
-    </div>
-    <div class="field">
-      <label for="trestbps" data-i18n="bp"></label>
-      <input id="trestbps" type="number" inputmode="numeric" min="70" max="250">
-      <span class="hint" data-i18n="blank"></span>
-    </div>
-    <div class="field">
-      <label for="chol" data-i18n="chol"></label>
-      <input id="chol" type="number" inputmode="decimal" step="0.1" min="2" max="700">
-      <span class="hint" data-i18n="cholHint"></span>
-    </div>
-    <fieldset class="field">
-      <legend class="legend" data-i18n="fbs"></legend>
-      <div class="seg">
-        <label><input type="radio" name="fbs" value="1"><span data-i18n="yes"></span></label>
-        <label><input type="radio" name="fbs" value="0"><span data-i18n="no"></span></label>
-        <label><input type="radio" name="fbs" value="" checked><span data-i18n="unknown"></span></label>
+      <div class="lang" role="group" aria-label="Language / Idioma">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
       </div>
-    </fieldset>
-    <div class="field">
-      <label for="restecg" data-i18n="ecg"></label>
-      <select id="restecg">
-        <option value="" data-i18n="unknownEcg"></option>
-        <option value="0" data-i18n="ecg0"></option>
-        <option value="1" data-i18n="ecg1"></option>
-        <option value="2" data-i18n="ecg2"></option>
-      </select>
     </div>
-    <p class="error" id="err" role="alert" hidden></p>
-    <button class="run" type="submit" data-i18n="run"></button>
-  </form>
+    <div class="hero-grid">
+      <div>
+        <h1 data-i18n="heroTitle"></h1>
+        <p class="tagline" data-i18n="tagline"></p>
+        <p class="disclaimer" data-i18n="disclaimer"></p>
+      </div>
+      <aside class="facts" aria-labelledby="factsTitle">
+        <h2 id="factsTitle" data-i18n="factsTitle"></h2>
+        <dl>
+          <div><dt>46%</dt><dd data-i18n="fact1"></dd></div>
+          <div><dt>87 mi</dt><dd data-i18n="fact2"></dd></div>
+          <div><dt>+21%</dt><dd data-i18n="fact3"></dd></div>
+        </dl>
+        <p class="src" data-i18n="factSrc"></p>
+      </aside>
+    </div>
+  </div>
+  <!-- one long strip of heartbeat across the whole page width -->
+  <svg class="hero-trace" viewBox="0 0 1600 70" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 48H520l8-9 8 9h18l6 8 10-46 10 52 8-14h22l14-10 14 10H1600"/>
+  </svg>
+</header>
 
-  <section class="strip" id="result" hidden aria-live="polite">
-    <svg class="trace" viewBox="0 0 700 56" preserveAspectRatio="none" aria-hidden="true"><path id="tracePath" d=""/></svg>
-    <p class="verdict" id="verdict"></p>
-    <p class="action" id="action"></p>
-    <div class="scale-wrap"><div class="scale" id="scale"></div><div class="marker" id="marker"></div></div>
-    <div class="scale-labels"><span data-i18n="lower"></span><span data-i18n="higher"></span></div>
-    <p class="score" id="score"></p>
-    <div class="why panel">
-      <h3 data-i18n="why"></h3>
-      <ul class="factors" id="factors"></ul>
-    </div>
-    <div class="truth" id="truth" hidden></div>
-    <p class="warn" id="warnTypical" hidden data-i18n="warnTypical"></p>
-    <p class="warn" id="warnYoung" hidden data-i18n="warnYoung"></p>
-    <p class="always panel" data-i18n="always"></p>
-    <div class="note-row">
-      <button type="button" class="copy" id="copyNote" data-i18n="copyNote"></button>
-      <span class="copied" id="copied" role="status"></span>
-    </div>
-    <textarea class="note" id="noteBox" hidden readonly></textarea>
-  </section>
+<main class="shell workspace">
+  <div class="col-input">
+    <section class="examples" aria-labelledby="exTitle">
+      <h2 id="exTitle" data-i18n="exTitle"></h2>
+      <p data-i18n="exBody"></p>
+      <div class="chips" id="chips"></div>
+    </section>
 
-  <section class="story" aria-labelledby="storyTitle">
+    <form id="f" novalidate>
+      <div class="field">
+        <label for="age" data-i18n="age"></label>
+        <input id="age" type="number" inputmode="numeric" min="18" max="100" required>
+      </div>
+      <fieldset class="field">
+        <legend class="legend" data-i18n="sex"></legend>
+        <div class="seg">
+          <label><input type="radio" name="sex" value="0" required><span data-i18n="female"></span></label>
+          <label><input type="radio" name="sex" value="1"><span data-i18n="male"></span></label>
+        </div>
+      </fieldset>
+      <div class="field wide">
+        <label for="cp" data-i18n="cp"></label>
+        <select id="cp" required>
+          <option value="" data-i18n="choose"></option>
+          <option value="1" data-i18n="cp1"></option>
+          <option value="2" data-i18n="cp2"></option>
+          <option value="3" data-i18n="cp3"></option>
+          <option value="4" data-i18n="cp4"></option>
+        </select>
+        <span class="hint" data-i18n="cpHint"></span>
+      </div>
+      <div class="field">
+        <label for="trestbps" data-i18n="bp"></label>
+        <input id="trestbps" type="number" inputmode="numeric" min="70" max="250">
+        <span class="hint" data-i18n="blank"></span>
+      </div>
+      <div class="field">
+        <label for="chol" data-i18n="chol"></label>
+        <input id="chol" type="number" inputmode="decimal" step="0.1" min="2" max="700">
+        <span class="hint" data-i18n="cholHint"></span>
+      </div>
+      <fieldset class="field wide">
+        <legend class="legend" data-i18n="fbs"></legend>
+        <div class="seg">
+          <label><input type="radio" name="fbs" value="1"><span data-i18n="yes"></span></label>
+          <label><input type="radio" name="fbs" value="0"><span data-i18n="no"></span></label>
+          <label><input type="radio" name="fbs" value="" checked><span data-i18n="unknown"></span></label>
+        </div>
+      </fieldset>
+      <div class="field wide">
+        <label for="restecg" data-i18n="ecg"></label>
+        <select id="restecg">
+          <option value="" data-i18n="unknownEcg"></option>
+          <option value="0" data-i18n="ecg0"></option>
+          <option value="1" data-i18n="ecg1"></option>
+          <option value="2" data-i18n="ecg2"></option>
+        </select>
+      </div>
+      <p class="error" id="err" role="alert" hidden></p>
+      <button class="run" type="submit" data-i18n="run"></button>
+    </form>
+  </div>
+
+  <div class="col-result">
+    <section class="strip empty" id="result" aria-live="polite">
+      <svg class="trace" viewBox="0 0 700 56" preserveAspectRatio="none" aria-hidden="true"><path id="tracePath" d="M0 38H700"/></svg>
+      <div class="placeholder">
+        <p class="verdict" data-i18n="emptyTitle"></p>
+        <p class="action" data-i18n="emptyBody"></p>
+        <div class="zones-legend">
+          <div><i style="background:var(--green)"></i><span data-i18n="green"></span><small data-i18n="legGreen"></small></div>
+          <div><i style="background:var(--amber)"></i><span data-i18n="yellow"></span><small data-i18n="legYellow"></small></div>
+          <div><i style="background:var(--red)"></i><span data-i18n="red"></span><small data-i18n="legRed"></small></div>
+        </div>
+      </div>
+      <div class="filled">
+        <p class="verdict" id="verdict"></p>
+        <p class="action" id="action"></p>
+        <div class="scale-wrap"><div class="scale" id="scale"></div><div class="marker" id="marker"></div></div>
+        <div class="scale-labels"><span data-i18n="lower"></span><span data-i18n="higher"></span></div>
+        <p class="score" id="score"></p>
+        <div class="why panel">
+          <h3 data-i18n="why"></h3>
+          <ul class="factors" id="factors"></ul>
+        </div>
+        <div class="truth" id="truth" hidden></div>
+        <p class="warn" id="warnTypical" hidden data-i18n="warnTypical"></p>
+        <p class="warn" id="warnYoung" hidden data-i18n="warnYoung"></p>
+        <p class="always panel" data-i18n="always"></p>
+        <div class="note-row">
+          <button type="button" class="copy" id="copyNote" data-i18n="copyNote"></button>
+          <span class="copied" id="copied" role="status"></span>
+        </div>
+        <textarea class="note" id="noteBox" hidden readonly></textarea>
+      </div>
+    </section>
+  </div>
+</main>
+
+<section class="story" aria-labelledby="storyTitle">
+  <div class="shell">
     <h2 id="storyTitle" data-i18n="storyTitle"></h2>
-    <p data-i18n="story1"></p>
-    <div class="duel" id="duel1"></div>
-    <p data-i18n="story2"></p>
-    <div class="duel" id="duel2"></div>
-  </section>
+    <div class="story-grid">
+      <figure><p data-i18n="story1"></p><div class="duel" id="duel1"></div></figure>
+      <figure><p data-i18n="story2"></p><div class="duel" id="duel2"></div></figure>
+    </div>
+  </div>
+</section>
 
-  <section class="card">
-    <h2 data-i18n="aboutTitle"></h2>
-    <details><summary data-i18n="howTitle"></summary><p data-i18n="howBody"></p></details>
-    <details>
+<section class="shell about">
+  <h2 data-i18n="aboutTitle"></h2>
+  <div class="about-grid">
+    <details class="d-how"><summary data-i18n="howTitle"></summary><p data-i18n="howBody"></p></details>
+    <details class="d-perf">
       <summary data-i18n="perfTitle"></summary>
       <p class="small" data-i18n="perfNote"></p>
       <table>
@@ -243,11 +339,11 @@ footer{margin-top:28px;font-size:.8rem;color:var(--ink-soft)}
         <tbody id="perfBody"></tbody>
       </table>
     </details>
-    <details><summary data-i18n="limitsTitle"></summary><ul id="limits"></ul></details>
-    <details><summary data-i18n="privacyTitle"></summary><p data-i18n="privacyBody"></p></details>
-  </section>
+    <details class="d-lim"><summary data-i18n="limitsTitle"></summary><ul id="limits"></ul></details>
+    <details class="d-priv"><summary data-i18n="privacyTitle"></summary><p data-i18n="privacyBody"></p></details>
+  </div>
   <footer data-i18n="footer"></footer>
-</div>
+</section>
 
 <script>
 const MODEL = {"features_num": ["age", "sex", "trestbps", "chol", "fbs"], "features_cat": ["cp", "restecg"], "num_median": {"age": 56.0, "sex": 1.0, "trestbps": 130.0, "chol": 244.5, "fbs": 0.0}, "num_mean": {"age": 54.549586776859506, "sex": 0.6818181818181818, "trestbps": 130.95867768595042, "chol": 249.8388429752066, "fbs": 0.1446280991735537}, "num_scale": {"age": 8.978372765440131, "sex": 0.46577048936179993, "trestbps": 17.58610302878636, "chol": 52.737566192586975, "fbs": 0.35172547832506873}, "cat_mode": {"cp": 4.0, "restecg": 0.0}, "cat_levels": {"cp": [1.0, 2.0, 3.0, 4.0], "restecg": [0.0, 1.0, 2.0]}, "coef": [0.4549022394291226, 0.9192480595925652, 0.255924909145571, 0.233075652746335, 0.009772375076422115, -0.5018171309482968, -0.6717465420304088, -0.4533069780156794, 1.6276038591826947, -0.16543654279401662, -0.13602806919230184, 0.3021978201746292], "coef_names": ["num__age", "num__sex", "num__trestbps", "num__chol", "num__fbs", "cat__cp_1.0", "cat__cp_2.0", "cat__cp_3.0", "cat__cp_4.0", "cat__restecg_0.0", "cat__restecg_1.0", "cat__restecg_2.0"], "intercept": -0.8844766536884222, "t_women": 0.07045935639107609, "t_men": 0.2865113762406525, "t_urgent": 0.7249177522993991, "trained_on": "UCI Heart Disease, Cleveland, 242 patients (80% stratified split, seed 42)"};
@@ -257,7 +353,16 @@ const STORY = {"ext_sick": 370, "missed_full": 93, "missed_ours": 43, "women_sic
 
 const T = {
  en:{
-  tagline:"For rural clinics without a cardiologist: which patients with chest pain to refer",
+  heroTitle:"Who needs the 87‑mile trip?",
+  factsTitle:"Why this matters",
+  fact1:"of US counties have no practicing cardiologist, including 86% of rural counties",
+  fact2:"average round trip to the nearest cardiologist from a county without one",
+  fact3:"higher heart-disease death rate in rural areas than in cities (2019)",
+  factSrc:"Sources: American College of Cardiology (2024); CDC NCHS Data Brief 417 (2021).",
+  tagline:"In rural America, the nearest cardiologist is often an 87-mile round trip away. HeartPost helps a clinic decide which patients with chest pain should make it, using only what a small clinic can measure.",
+  emptyTitle:"The result prints here",
+  emptyBody:"Fill in the form, or pick a real patient on the left. Every patient lands in one of three zones:",
+  legGreen:"follow up at the clinic", legYellow:"routine cardiology referral", legRed:"refer soon; call 911 if pain is happening now",
   disclaimer:"Hackathon prototype. Not medical advice and not a diagnosis. A clinician always makes the decision.",
   exTitle:"Try a real patient", exBody:"The model never saw these patients in training. After the estimate we show their real angiography result, including one the model gets wrong.",
   exLabel:(e)=>`${e.sex===0?"Woman":"Man"}, ${e.age}`, siteName:{},
@@ -310,7 +415,16 @@ const T = {
   setNames:{}
  },
  es:{
-  tagline:"Para clínicas rurales sin cardiólogo: a qué pacientes con dolor de pecho referir",
+  heroTitle:"¿Quién necesita el viaje de 87 millas?",
+  factsTitle:"Por qué importa",
+  fact1:"de los condados de EE. UU. no tienen cardiólogo en ejercicio, incluido el 86% de los condados rurales",
+  fact2:"viaje promedio de ida y vuelta al cardiólogo más cercano desde un condado sin cardiólogo",
+  fact3:"más mortalidad por enfermedad cardíaca en zonas rurales que en ciudades (2019)",
+  factSrc:"Fuentes: American College of Cardiology (2024); CDC NCHS Data Brief 417 (2021).",
+  tagline:"En las zonas rurales de EE. UU., el cardiólogo más cercano suele estar a 87 millas ida y vuelta. HeartPost ayuda a una clínica a decidir qué pacientes con dolor de pecho deben hacer ese viaje, usando solo lo que una clínica pequeña puede medir.",
+  emptyTitle:"El resultado aparece aquí",
+  emptyBody:"Complete el formulario o elija un paciente real a la izquierda. Cada paciente cae en una de tres zonas:",
+  legGreen:"seguimiento en la clínica", legYellow:"referencia programada a cardiología", legRed:"referir pronto; llame al 911 si el dolor ocurre ahora",
   disclaimer:"Prototipo de hackathon. No es consejo médico ni un diagnóstico. La decisión siempre la toma un profesional de salud.",
   exTitle:"Pruebe con un paciente real", exBody:"El modelo nunca vio a estos pacientes durante el entrenamiento. Después de la estimación mostramos su resultado real de angiografía, incluido uno en el que el modelo se equivoca.",
   exLabel:(e)=>`${e.sex===0?"Mujer":"Hombre"}, ${e.age}`, siteName:{"Cleveland":"Cleveland","Hungary":"Hungría","Switzerland":"Suiza","Long Beach VA":"Long Beach VA"},
@@ -395,7 +509,7 @@ function applyLang(){
   document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
   $("limits").innerHTML=t.limits.map(x=>`<li>${x}</li>`).join("");
   $("perfBody").innerHTML=PERF.map(r=>`<tr><td>${t.setNames[r.set]||r.set}</td><td>${r.sick}</td><td>${r.caught} (${Math.round(100*r.caught/r.sick)}%)</td><td>${r.missed}</td><td>${r.fa}</td></tr>`).join("");
-  $("chips").innerHTML=EXAMPLES.map((e,i)=>`<button type="button" class="chip" data-ex="${i}">${t.exLabel(e)}<small>${t.siteName[e.site]||e.site}</small></button>`).join("");
+  $("chips").innerHTML=EXAMPLES.map((e,i)=>`<button type="button" class="chip" data-ex="${i}" aria-pressed="${activeExample===e}">${t.exLabel(e)}<small>${t.siteName[e.site]||e.site}</small></button>`).join("");
   $("chips").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>loadExample(+b.dataset.ex)));
   renderStory();
   if(last) render(last);
@@ -437,7 +551,7 @@ function render(state){
   const {x,p,contrib,ex}=state, t=T[lang];
   const [zone,tRefer]=zoneOf(x,p);
   const col={green:"var(--green)",yellow:"var(--amber)",red:"var(--red)"}[zone];
-  $("result").hidden=false;
+  $("result").classList.remove("empty");
   const path=$("tracePath"); path.setAttribute("d",tracePath(zone)); path.style.stroke=col;
   path.style.animation="none"; void path.getBoundingClientRect(); path.style.animation="";
   $("verdict").textContent=t[zone]; $("verdict").style.color=col;
@@ -473,11 +587,13 @@ function run(ex){
   box.hidden=true;
   const {p,contrib}=predict({...x, chol:cholToMgdl(x.chol)});
   last={x,p,contrib,ex:ex||null}; render(last);
-  $("result").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"});
+  // on a phone the result sits under the form, so bring it into view; on a wide screen it is already beside the form
+  if(!matchMedia("(min-width: 960px)").matches || $("result").getBoundingClientRect().top<0)
+    $("result").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"});
 }
 $("f").addEventListener("submit",e=>{e.preventDefault(); activeExample=null; run(null);});
 // editing the form after loading an example turns it back into your own patient
-$("f").addEventListener("input",()=>{activeExample=null;});
+$("f").addEventListener("input",()=>{activeExample=null; document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed","false"));});
 
 function loadExample(i){
   const e=EXAMPLES[i];
@@ -489,6 +605,7 @@ function loadExample(i){
   document.querySelector(`input[name=fbs][value="${e.fbs==null?"":e.fbs}"]`).checked=true;
   $("restecg").value=e.restecg==null?"":String(e.restecg);
   activeExample=e; run(e);
+  document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.ex===i)));
 }
 
 $("copyNote").addEventListener("click",async()=>{
@@ -500,6 +617,8 @@ $("copyNote").addEventListener("click",async()=>{
 });
 
 try{ const s=localStorage.getItem("hpLang"); if(s&&T[s]) lang=s; else if((navigator.language||"").startsWith("es")) lang="es"; }catch(e){}
+// on a wide screen there is room to show the "about" notes open
+if(matchMedia("(min-width: 960px)").matches) document.querySelectorAll(".about details").forEach(d=>d.open=true);
 applyLang();
 </script>
 </body>
