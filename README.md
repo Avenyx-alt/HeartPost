@@ -5,7 +5,7 @@
 
 > **This project is a prototype and is not medical advice.**
 
-**Live tool:** https://avenyx-alt.github.io/HeartPost/ ([`app/index.html`](app/index.html), works offline, English / Spanish / Russian) · **Code and all results:** [`HeartPost.ipynb`](HeartPost.ipynb) · [Open in Colab](https://colab.research.google.com/github/Avenyx-alt/HeartPost/blob/main/HeartPost.ipynb) · **Demo video:** _[YouTube link]_
+**Live tool:** https://avenyx-alt.github.io/HeartPost/ ([`app/index.html`](app/index.html), works offline, English / Spanish / Russian) · **Code and all results:** [`HeartPost.ipynb`](HeartPost.ipynb) · [Open in Colab](https://colab.research.google.com/github/Avenyx-alt/HeartPost/blob/main/HeartPost.ipynb) · **Demo video (2 min):** https://youtu.be/onxwtUJJg8Q
 
 > **In two minutes:** we built a heart-disease triage tool that uses only the 7 measurements a small rural clinic has. Trained on one US hospital, it was tested in three hospitals it never saw. There it missed **43** sick patients, while the textbook 13-measurement model missed **93**. We also found it missed half of sick women and fixed most of that: **27 of 32** caught, up from 17.
 
