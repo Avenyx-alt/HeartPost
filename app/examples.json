@@ -1,0 +1,58 @@
+[
+ {
+  "kind": "caught",
+  "site": "Long Beach VA",
+  "sick": 1,
+  "p": 0.7462,
+  "zone": "red",
+  "age": 46.0,
+  "sex": 1.0,
+  "cp": 4.0,
+  "trestbps": 134.0,
+  "chol": 310.0,
+  "fbs": 0.0,
+  "restecg": 0.0
+ },
+ {
+  "kind": "fixed",
+  "site": "Cleveland",
+  "sick": 1,
+  "p": 0.2767,
+  "zone": "yellow",
+  "age": 55.0,
+  "sex": 0.0,
+  "cp": 4.0,
+  "trestbps": 128.0,
+  "chol": 205.0,
+  "fbs": 0.0,
+  "restecg": 1.0
+ },
+ {
+  "kind": "healthy",
+  "site": "Hungary",
+  "sick": 0,
+  "p": 0.2641,
+  "zone": "green",
+  "age": 58.0,
+  "sex": 1.0,
+  "cp": 2.0,
+  "trestbps": 130.0,
+  "chol": 230.0,
+  "fbs": 0.0,
+  "restecg": 0.0
+ },
+ {
+  "kind": "missed",
+  "site": "Hungary",
+  "sick": 1,
+  "p": 0.0408,
+  "zone": "green",
+  "age": 47.0,
+  "sex": 0.0,
+  "cp": 3.0,
+  "trestbps": 135.0,
+  "chol": 248.0,
+  "fbs": 1.0,
+  "restecg": 0.0
+ }
+]

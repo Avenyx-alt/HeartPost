@@ -1,0 +1,44 @@
+[
+ {
+  "set": "Cleveland (internal test)",
+  "sick": 28,
+  "caught": 27,
+  "missed": 1,
+  "fa": 13
+ },
+ {
+  "set": "Hungary",
+  "sick": 106,
+  "caught": 90,
+  "missed": 16,
+  "fa": 61
+ },
+ {
+  "set": "Switzerland",
+  "sick": 115,
+  "caught": 107,
+  "missed": 8,
+  "fa": 3
+ },
+ {
+  "set": "Long Beach VA",
+  "sick": 149,
+  "caught": 139,
+  "missed": 10,
+  "fa": 38
+ },
+ {
+  "set": "Women, all unseen",
+  "sick": 32,
+  "caught": 27,
+  "missed": 5,
+  "fa": 24
+ },
+ {
+  "set": "Men, all unseen",
+  "sick": 366,
+  "caught": 336,
+  "missed": 30,
+  "fa": 91
+ }
+]

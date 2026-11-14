@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1c2b4a">
+<title>HeartPost — heart-disease triage for rural clinics</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M14 58V16a18 18 0 0 1 36 0v42z' fill='none' stroke='%231c2b4a' stroke-width='5'/%3E%3Cpath d='M2 34h15l4-6 5 15 6-27 5 18h25' fill='none' stroke='%23b3261e' stroke-width='5' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#1c2b4a; --ink-soft:#4a5875; --paper:#fffdfb;
+  --grid:#f2c9c4; --grid-fine:#f9e3e0;
+  --green:#2d7a4b; --amber:#b9790c; --red:#b3261e;
+  --rule:#d9dde6; --field:#b8c0d0;
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}
+.wrap{max-width:720px;margin:0 auto;padding:18px 18px 64px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #4b7bd8;outline-offset:2px}
+
+/* header */
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:52px;height:52px;flex-shrink:0}
+h1{font:600 1.9rem/1 var(--serif);margin:0;letter-spacing:-.01em}
+.tagline{color:var(--ink-soft);margin:10px 0 0;font-size:1rem;max-width:46ch}
+.lang{display:flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden;flex-shrink:0;align-self:flex-start}
+.lang button{border:0;background:transparent;font-weight:600;font-size:.82rem;padding:7px 9px;cursor:pointer;min-width:40px}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.disclaimer{font-size:.9rem;color:var(--ink-soft);border-left:3px solid var(--red);padding:3px 0 3px 10px;margin:16px 0 20px}
+
+/* real patients */
+.examples{margin:0 0 22px;padding:14px 14px 12px;border:1px dashed var(--field);border-radius:8px;background:#fff}
+.examples h2{font:600 1rem var(--serif);margin:0 0 4px}
+.examples p{margin:0 0 10px;font-size:.86rem;color:var(--ink-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--field);background:var(--paper);border-radius:999px;padding:7px 13px;cursor:pointer;font-size:.88rem;min-height:40px;text-align:left;line-height:1.25}
+.chip:hover{border-color:var(--ink)}
+.chip small{display:block;color:var(--ink-soft);font-size:.74rem}
+
+/* form */
+form{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.wide{grid-column:1/-1}
+label,.legend{font-weight:600;font-size:.95rem}
+.hint{font-size:.8rem;color:var(--ink-soft);font-weight:400}
+input[type=number],select{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:6px;padding:10px 12px;min-height:44px;width:100%}
+select{text-overflow:ellipsis}
+fieldset{border:0;padding:0;margin:0;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg label{font-weight:500;border:1px solid var(--field);border-radius:6px;padding:9px 12px;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;background:#fff}
+.seg input{accent-color:var(--ink)}
+.seg label:has(input:checked){border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+button.run{grid-column:1/-1;font-weight:600;font-size:1.05rem;background:var(--ink);color:var(--paper);border:0;border-radius:8px;padding:14px;cursor:pointer;min-height:50px}
+button.run:hover{background:#2a3d63}
+.error{grid-column:1/-1;color:var(--red);font-weight:600;margin:0}
+
+/* the one bold element: the ECG-paper result strip */
+.strip{margin-top:28px;border-radius:4px;padding:20px 20px 20px;
+  background-color:#fff7f6;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+    linear-gradient(var(--grid-fine) 1px,transparent 1px),linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px);
+  background-size:25px 25px,25px 25px,5px 5px,5px 5px;border:1px solid var(--grid);scroll-margin-top:12px}
+.strip[hidden]{display:none}
+.trace{display:block;width:100%;height:56px;margin:-4px 0 6px}
+.trace path{fill:none;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+@media (prefers-reduced-motion:no-preference){.trace path{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 1.4s ease-out forwards}}
+@keyframes draw{to{stroke-dashoffset:0}}
+.verdict{font:700 1.75rem/1.15 var(--serif);margin:0 0 6px}
+.action{font-size:1.05rem;margin:0 0 14px;max-width:60ch}
+.scale-wrap{position:relative;margin-bottom:6px}
+.scale{height:14px;border-radius:7px;display:flex;overflow:hidden}
+.scale span{display:block;height:100%}
+.marker{position:absolute;top:-6px;width:4px;height:26px;background:var(--ink);border-radius:2px;transform:translateX(-2px);box-shadow:0 0 0 2px #fff7f6}
+.scale-labels{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink-soft)}
+.score{font-size:.88rem;color:var(--ink-soft);margin:6px 0 16px}
+.panel{background:rgba(255,255,255,.88);border-radius:4px;padding:10px 12px}
+.why h3,.card h2,.story h2{font:600 1.1rem var(--serif);margin:0 0 8px}
+.factors{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.factors li{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:10px;align-items:center;font-size:.92rem}
+.bar{height:10px;position:relative;background:linear-gradient(90deg,transparent calc(50% - .5px),#9aa3b5 calc(50% - .5px),#9aa3b5 calc(50% + .5px),transparent calc(50% + .5px))}
+.bar i{position:absolute;top:0;height:100%;border-radius:2px}
+.warn{background:#fff;border:2px solid var(--amber);border-radius:6px;padding:10px 12px;margin:12px 0 0;font-size:.94rem}
+.truth{background:#fff;border:2px solid var(--ink);border-radius:6px;padding:10px 12px;margin:12px 0 0;font-size:.95rem}
+.truth b{font-family:var(--serif)}
+.always{font-size:.9rem;margin:12px 0 0}
+.note-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
+.copy{border:1px solid var(--ink);background:#fff;border-radius:8px;padding:10px 14px;font-weight:600;cursor:pointer;min-height:44px}
+.copy:hover{background:var(--ink);color:var(--paper)}
+.copied{font-size:.88rem;color:var(--green);font-weight:600}
+textarea.note{width:100%;min-height:150px;font:14px/1.45 var(--sans);border:1px solid var(--field);border-radius:6px;padding:10px;margin-top:10px}
+
+/* story */
+.story{margin-top:40px}
+.story > p{margin:0 0 14px;max-width:62ch}
+.duel{display:grid;gap:8px;margin:4px 0 22px}
+.duel .row{display:grid;grid-template-columns:minmax(0,190px) 1fr;gap:12px;align-items:center;font-size:.9rem}
+.duel .track{position:relative;height:26px;background:repeating-linear-gradient(90deg,var(--grid-fine) 0 1px,transparent 1px 10px)}
+.duel .fill{position:absolute;inset:0 auto 0 0;border-radius:2px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;color:#fff;font-weight:700;font-size:.85rem;min-width:30px}
+.duel .cap{font-size:.8rem;color:var(--ink-soft);margin:0}
+
+/* about */
+.card{margin-top:34px;border-top:1px solid var(--rule);padding-top:20px}
+details{border-top:1px solid var(--rule);padding:12px 0}
+details:last-of-type{border-bottom:1px solid var(--rule)}
+summary{cursor:pointer;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:.86rem;margin-top:10px}
+th,td{text-align:right;padding:6px 5px;border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600}
+.small{font-size:.85rem;color:var(--ink-soft)}
+footer{margin-top:28px;font-size:.8rem;color:var(--ink-soft)}
+@media (max-width:560px){
+  form{grid-template-columns:1fr} h1{font-size:1.6rem} .mark{width:44px;height:44px}
+  .factors li{grid-template-columns:minmax(0,1fr) 84px}
+  .duel .row{grid-template-columns:1fr} th,td{padding:5px 3px}
+}
+@media print{.lang,button.run,.examples,.note-row,.story,.card{display:none}.strip{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <!-- a roadside mile marker: the long drive to the nearest cardiologist, crossed by one heartbeat -->
+      <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M14 58V16a18 18 0 0 1 36 0v42z" fill="none" stroke="#1c2b4a" stroke-width="3.2" stroke-linejoin="round"/>
+        <path d="M24 58h16" stroke="#1c2b4a" stroke-width="3.2" stroke-linecap="round"/>
+        <path d="M2 34h15l4-6 5 15 6-27 5 18h25" fill="none" stroke="#b3261e" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <h1>HeartPost</h1>
+    </div>
+    <div class="lang" role="group" aria-label="Language / Idioma">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </header>
+  <p class="tagline" data-i18n="tagline"></p>
+  <p class="disclaimer" data-i18n="disclaimer"></p>
+
+  <section class="examples" aria-labelledby="exTitle">
+    <h2 id="exTitle" data-i18n="exTitle"></h2>
+    <p data-i18n="exBody"></p>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <form id="f" novalidate>
+    <div class="field">
+      <label for="age" data-i18n="age"></label>
+      <input id="age" type="number" inputmode="numeric" min="18" max="100" required>
+    </div>
+    <fieldset class="field">
+      <legend class="legend" data-i18n="sex"></legend>
+      <div class="seg">
+        <label><input type="radio" name="sex" value="0" required><span data-i18n="female"></span></label>
+        <label><input type="radio" name="sex" value="1"><span data-i18n="male"></span></label>
+      </div>
+    </fieldset>
+    <div class="field wide">
+      <label for="cp" data-i18n="cp"></label>
+      <select id="cp" required>
+        <option value="" data-i18n="choose"></option>
+        <option value="1" data-i18n="cp1"></option>
+        <option value="2" data-i18n="cp2"></option>
+        <option value="3" data-i18n="cp3"></option>
+        <option value="4" data-i18n="cp4"></option>
+      </select>
+      <span class="hint" data-i18n="cpHint"></span>
+    </div>
+    <div class="field">
+      <label for="trestbps" data-i18n="bp"></label>
+      <input id="trestbps" type="number" inputmode="numeric" min="70" max="250">
+      <span class="hint" data-i18n="blank"></span>
+    </div>
+    <div class="field">
+      <label for="chol" data-i18n="chol"></label>
+      <input id="chol" type="number" inputmode="decimal" step="0.1" min="2" max="700">
+      <span class="hint" data-i18n="cholHint"></span>
+    </div>
+    <fieldset class="field">
+      <legend class="legend" data-i18n="fbs"></legend>
+      <div class="seg">
+        <label><input type="radio" name="fbs" value="1"><span data-i18n="yes"></span></label>
+        <label><input type="radio" name="fbs" value="0"><span data-i18n="no"></span></label>
+        <label><input type="radio" name="fbs" value="" checked><span data-i18n="unknown"></span></label>
+      </div>
+    </fieldset>
+    <div class="field">
+      <label for="restecg" data-i18n="ecg"></label>
+      <select id="restecg">
+        <option value="" data-i18n="unknownEcg"></option>
+        <option value="0" data-i18n="ecg0"></option>
+        <option value="1" data-i18n="ecg1"></option>
+        <option value="2" data-i18n="ecg2"></option>
+      </select>
+    </div>
+    <p class="error" id="err" role="alert" hidden></p>
+    <button class="run" type="submit" data-i18n="run"></button>
+  </form>
+
+  <section class="strip" id="result" hidden aria-live="polite">
+    <svg class="trace" viewBox="0 0 700 56" preserveAspectRatio="none" aria-hidden="true"><path id="tracePath" d=""/></svg>
+    <p class="verdict" id="verdict"></p>
+    <p class="action" id="action"></p>
+    <div class="scale-wrap"><div class="scale" id="scale"></div><div class="marker" id="marker"></div></div>
+    <div class="scale-labels"><span data-i18n="lower"></span><span data-i18n="higher"></span></div>
+    <p class="score" id="score"></p>
+    <div class="why panel">
+      <h3 data-i18n="why"></h3>
+      <ul class="factors" id="factors"></ul>
+    </div>
+    <div class="truth" id="truth" hidden></div>
+    <p class="warn" id="warnTypical" hidden data-i18n="warnTypical"></p>
+    <p class="warn" id="warnYoung" hidden data-i18n="warnYoung"></p>
+    <p class="always panel" data-i18n="always"></p>
+    <div class="note-row">
+      <button type="button" class="copy" id="copyNote" data-i18n="copyNote"></button>
+      <span class="copied" id="copied" role="status"></span>
+    </div>
+    <textarea class="note" id="noteBox" hidden readonly></textarea>
+  </section>
+
+  <section class="story" aria-labelledby="storyTitle">
+    <h2 id="storyTitle" data-i18n="storyTitle"></h2>
+    <p data-i18n="story1"></p>
+    <div class="duel" id="duel1"></div>
+    <p data-i18n="story2"></p>
+    <div class="duel" id="duel2"></div>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="aboutTitle"></h2>
+    <details><summary data-i18n="howTitle"></summary><p data-i18n="howBody"></p></details>
+    <details>
+      <summary data-i18n="perfTitle"></summary>
+      <p class="small" data-i18n="perfNote"></p>
+      <table>
+        <thead><tr><th data-i18n="tSet"></th><th data-i18n="tSick"></th><th data-i18n="tCaught"></th><th data-i18n="tMissed"></th><th data-i18n="tFA"></th></tr></thead>
+        <tbody id="perfBody"></tbody>
+      </table>
+    </details>
+    <details><summary data-i18n="limitsTitle"></summary><ul id="limits"></ul></details>
+    <details><summary data-i18n="privacyTitle"></summary><p data-i18n="privacyBody"></p></details>
+  </section>
+  <footer data-i18n="footer"></footer>
+</div>
+
+<script>
+const MODEL = {"features_num": ["age", "sex", "trestbps", "chol", "fbs"], "features_cat": ["cp", "restecg"], "num_median": {"age": 56.0, "sex": 1.0, "trestbps": 130.0, "chol": 244.5, "fbs": 0.0}, "num_mean": {"age": 54.549586776859506, "sex": 0.6818181818181818, "trestbps": 130.95867768595042, "chol": 249.8388429752066, "fbs": 0.1446280991735537}, "num_scale": {"age": 8.978372765440131, "sex": 0.46577048936179993, "trestbps": 17.58610302878636, "chol": 52.737566192586975, "fbs": 0.35172547832506873}, "cat_mode": {"cp": 4.0, "restecg": 0.0}, "cat_levels": {"cp": [1.0, 2.0, 3.0, 4.0], "restecg": [0.0, 1.0, 2.0]}, "coef": [0.4549022394291226, 0.9192480595925652, 0.255924909145571, 0.233075652746335, 0.009772375076422115, -0.5018171309482968, -0.6717465420304088, -0.4533069780156794, 1.6276038591826947, -0.16543654279401662, -0.13602806919230184, 0.3021978201746292], "coef_names": ["num__age", "num__sex", "num__trestbps", "num__chol", "num__fbs", "cat__cp_1.0", "cat__cp_2.0", "cat__cp_3.0", "cat__cp_4.0", "cat__restecg_0.0", "cat__restecg_1.0", "cat__restecg_2.0"], "intercept": -0.8844766536884222, "t_women": 0.07045935639107609, "t_men": 0.2865113762406525, "t_urgent": 0.7249177522993991, "trained_on": "UCI Heart Disease, Cleveland, 242 patients (80% stratified split, seed 42)"};
+const PERF = [{"set": "Cleveland (internal test)", "sick": 28, "caught": 27, "missed": 1, "fa": 13}, {"set": "Hungary", "sick": 106, "caught": 90, "missed": 16, "fa": 61}, {"set": "Switzerland", "sick": 115, "caught": 107, "missed": 8, "fa": 3}, {"set": "Long Beach VA", "sick": 149, "caught": 139, "missed": 10, "fa": 38}, {"set": "Women, all unseen", "sick": 32, "caught": 27, "missed": 5, "fa": 24}, {"set": "Men, all unseen", "sick": 366, "caught": 336, "missed": 30, "fa": 91}];
+const EXAMPLES = [{"kind": "caught", "site": "Long Beach VA", "sick": 1, "p": 0.7462, "zone": "red", "age": 46.0, "sex": 1.0, "cp": 4.0, "trestbps": 134.0, "chol": 310.0, "fbs": 0.0, "restecg": 0.0}, {"kind": "fixed", "site": "Cleveland", "sick": 1, "p": 0.2767, "zone": "yellow", "age": 55.0, "sex": 0.0, "cp": 4.0, "trestbps": 128.0, "chol": 205.0, "fbs": 0.0, "restecg": 1.0}, {"kind": "healthy", "site": "Hungary", "sick": 0, "p": 0.2641, "zone": "green", "age": 58.0, "sex": 1.0, "cp": 2.0, "trestbps": 130.0, "chol": 230.0, "fbs": 0.0, "restecg": 0.0}, {"kind": "missed", "site": "Hungary", "sick": 1, "p": 0.0408, "zone": "green", "age": 47.0, "sex": 0.0, "cp": 3.0, "trestbps": 135.0, "chol": 248.0, "fbs": 1.0, "restecg": 0.0}];
+const STORY = {"ext_sick": 370, "missed_full": 93, "missed_ours": 43, "women_sick": 32, "women_caught_before": 17, "women_caught_after": 27};
+
+const T = {
+ en:{
+  tagline:"For rural clinics without a cardiologist: which patients with chest pain to refer",
+  disclaimer:"Hackathon prototype. Not medical advice and not a diagnosis. A clinician always makes the decision.",
+  exTitle:"Try a real patient", exBody:"The model never saw these patients in training. After the estimate we show their real angiography result, including one the model gets wrong.",
+  exLabel:(e)=>`${e.sex===0?"Woman":"Man"}, ${e.age}`, siteName:{},
+  age:"Age, years", sex:"Sex", female:"Female", male:"Male",
+  cp:"Chest pain", choose:"Choose one",
+  cp1:"Typical angina: pressure on exertion, relieved by rest or nitroglycerin",
+  cp2:"Atypical angina: only 2 of those 3 features",
+  cp3:"Non-anginal pain: doesn't look like angina",
+  cp4:"No chest pain (asymptomatic)",
+  cpHint:"Angina features: 1) substernal pain, 2) brought on by exertion or stress, 3) relieved by rest or nitroglycerin.",
+  bp:"Resting systolic blood pressure (mmHg)", blank:"Can be left blank",
+  chol:"Total cholesterol", cholHint:"mg/dL (or mmol/L, detected automatically). Can be left blank.",
+  fbs:"Fasting glucose above 120 mg/dL?", yes:"Yes", no:"No", unknown:"Not measured",
+  ecg:"Resting ECG", unknownEcg:"Not done", ecg0:"Normal", ecg1:"ST-T wave abnormality", ecg2:"Left ventricular hypertrophy",
+  run:"Estimate risk",
+  errAge:"Enter an age from 18 to 100.", errSex:"Choose the patient's sex.", errCp:"Choose a chest-pain type.",
+  errBp:"Blood pressure must be 70–250 mmHg, or leave it blank.", errChol:"Check cholesterol: 80–700 mg/dL (or 2–18 mmol/L).",
+  green:"Green zone", yellow:"Yellow zone", red:"Red zone",
+  actGreen:"Follow up at the clinic. Re-check in 12 months, or sooner if symptoms appear or get worse.",
+  actYellow:"Routine referral to cardiology for a stress test.",
+  actRed:"Refer to cardiology soon. If chest pain is happening now, call 911 and follow your acute coronary syndrome protocol.",
+  lower:"lower risk", higher:"higher risk",
+  score:(p,t)=>`Model score: ${p}. Referral threshold for this patient: ${t}. This is not the chance of disease in your area, so use the zone.`,
+  why:"What drove this score",
+  fAge:"Age", fSex:"Sex", fBp:"Blood pressure", fChol:"Cholesterol", fFbs:"Fasting glucose", fCp:"Chest-pain type", fEcg:"Resting ECG",
+  filled:"not given, average used",
+  warnTypical:"Caution: the model under-rates typical angina. This comes from its 1980s training data and is medically backwards. Use clinical judgement: typical angina usually justifies referral.",
+  warnYoung:"Patients under 50 with non-typical pain are the model's most common miss (it missed 21% of sick patients in this group). Treat a green result with extra caution.",
+  always:"Green does not mean healthy. Worsening pain, pain at rest, shortness of breath or fainting: refer whatever the zone.",
+  truthSick:"Angiography result: heart disease confirmed", truthHealthy:"Angiography result: no heart disease",
+  verdictRight:"The model got it right.", verdictMiss:"The model got it wrong: it put a sick patient in the green zone. Patients like her are its weak spot.",
+  verdictFA:"False alarm: the model referred a healthy patient.",
+  fixedNote:"Without the separate threshold for women she would have been green, and missed.",
+  copyNote:"Copy referral note", copiedOk:"Copied", copiedFail:"Select the text below and copy it",
+  noteHead:"Cardiology referral (prepared with HeartPost)",
+  noteLines:(x,t,z,p,th)=>[`Patient: ${x.sex===0?"female":"male"}, ${x.age} years`,`Chest pain: ${t["cp"+x.cp]}`,`Resting BP: ${x.trestbps??"not measured"}`,`Total cholesterol: ${x.chol??"not measured"}`,`Fasting glucose >120 mg/dL: ${x.fbs==null?"not measured":x.fbs?"yes":"no"}`,`Resting ECG: ${x.restecg==null?"not done":t["ecg"+x.restecg]}`,`HeartPost: ${t[z]} (score ${p}, threshold ${th})`,"Prototype, not a diagnosis. Decision made by the treating clinician."],
+  storyTitle:"Why only 7 measurements",
+  story1:`Classic models use 13 measurements, but 6 of them need a stress test or cardiac imaging, which a small clinic doesn't have. We tested both models in three hospitals they had never seen (${STORY.ext_sick} sick patients).`,
+  duelFull:"13 measurements", duelOurs:"7 clinic measurements (HeartPost)", duelCap1:"sick patients missed (fewer is better)",
+  story2:"With one threshold the model missed half of sick women. A separate threshold, chosen on training data, fixed most of that:",
+  duelBefore:"one threshold", duelAfter:"separate threshold for women", duelCap2:(n)=>`sick women found, out of ${n}`,
+  aboutTitle:"About the model", howTitle:"How it works",
+  howBody:"Logistic regression on 7 measurements a rural clinic has. Trained on 242 Cleveland Clinic patients (UCI Heart Disease, 1988) and tested in three hospitals it never saw: Budapest (Hungary), Zurich and Basel (Switzerland), and the VA Long Beach (California). Women get a lower referral threshold (0.07 vs 0.29 for men): with one threshold the model missed half of sick women. Everything is computed in your browser.",
+  perfTitle:"How far can you trust it", perfNote:"Patients the model never saw in training. \"Sick\" means more than 50% narrowing of a coronary artery on angiography.",
+  tSet:"Tested on", tSick:"Sick", tCaught:"Referred", tMissed:"Missed", tFA:"False alarms",
+  limitsTitle:"Limitations",
+  limits:["Data from the 1980s, mostly from older men; never tested on a present-day rural US population.","Only 32 sick women in the test, so the estimate for women is uncertain.","The model under-rates typical angina (a data artefact).","Most misses: patients under 50 with non-typical pain and a normal ECG.","The score is not the chance of disease in your area: disease rates ranged from 36% to 93% across hospitals."],
+  privacyTitle:"Patient data", privacyBody:"Nothing is sent over the internet or saved. After the first load the page works offline, which matters where rural internet is unreliable.",
+  footer:"HeartPost · prototype for the Veritas AI International High School Hackathon 2026 · not medical advice",
+  setNames:{}
+ },
+ es:{
+  tagline:"Para clínicas rurales sin cardiólogo: a qué pacientes con dolor de pecho referir",
+  disclaimer:"Prototipo de hackathon. No es consejo médico ni un diagnóstico. La decisión siempre la toma un profesional de salud.",
+  exTitle:"Pruebe con un paciente real", exBody:"El modelo nunca vio a estos pacientes durante el entrenamiento. Después de la estimación mostramos su resultado real de angiografía, incluido uno en el que el modelo se equivoca.",
+  exLabel:(e)=>`${e.sex===0?"Mujer":"Hombre"}, ${e.age}`, siteName:{"Cleveland":"Cleveland","Hungary":"Hungría","Switzerland":"Suiza","Long Beach VA":"Long Beach VA"},
+  age:"Edad, años", sex:"Sexo", female:"Mujer", male:"Hombre",
+  cp:"Dolor de pecho", choose:"Elija una opción",
+  cp1:"Angina típica: opresión con el esfuerzo que se alivia con reposo o nitroglicerina",
+  cp2:"Angina atípica: solo 2 de esas 3 características",
+  cp3:"Dolor no anginoso: no parece angina",
+  cp4:"Sin dolor de pecho (asintomático)",
+  cpHint:"Características de la angina: 1) dolor detrás del esternón, 2) aparece con esfuerzo o estrés, 3) se alivia con reposo o nitroglicerina.",
+  bp:"Presión arterial sistólica en reposo (mmHg)", blank:"Puede dejarse en blanco",
+  chol:"Colesterol total", cholHint:"mg/dL (o mmol/L, se detecta automáticamente). Puede dejarse en blanco.",
+  fbs:"¿Glucosa en ayunas mayor de 120 mg/dL?", yes:"Sí", no:"No", unknown:"No se midió",
+  ecg:"ECG en reposo", unknownEcg:"No se hizo", ecg0:"Normal", ecg1:"Alteración de la onda ST-T", ecg2:"Hipertrofia ventricular izquierda",
+  run:"Estimar riesgo",
+  errAge:"Ingrese una edad de 18 a 100 años.", errSex:"Elija el sexo del paciente.", errCp:"Elija un tipo de dolor de pecho.",
+  errBp:"La presión debe estar entre 70 y 250 mmHg, o deje el campo en blanco.", errChol:"Revise el colesterol: 80–700 mg/dL (o 2–18 mmol/L).",
+  green:"Zona verde", yellow:"Zona amarilla", red:"Zona roja",
+  actGreen:"Seguimiento en la clínica. Revisar en 12 meses, o antes si aparecen o empeoran los síntomas.",
+  actYellow:"Referencia programada a cardiología para una prueba de esfuerzo.",
+  actRed:"Referir a cardiología pronto. Si el dolor está ocurriendo ahora, llame al 911 y siga su protocolo de síndrome coronario agudo.",
+  lower:"menor riesgo", higher:"mayor riesgo",
+  score:(p,t)=>`Puntaje del modelo: ${p}. Umbral de referencia para este paciente: ${t}. No es la probabilidad de enfermedad en su zona; use la zona de color.`,
+  why:"Qué influyó en el puntaje",
+  fAge:"Edad", fSex:"Sexo", fBp:"Presión arterial", fChol:"Colesterol", fFbs:"Glucosa en ayunas", fCp:"Tipo de dolor de pecho", fEcg:"ECG en reposo",
+  filled:"sin dato, se usó el promedio",
+  warnTypical:"Atención: el modelo subestima la angina típica. Esto viene de sus datos de entrenamiento de los años 80 y es médicamente incorrecto. Use su criterio clínico: la angina típica suele justificar la referencia.",
+  warnYoung:"Los pacientes menores de 50 años con dolor no típico son el error más común del modelo (no detectó al 21% de los enfermos de este grupo). Tome un resultado verde con especial cautela.",
+  always:"Verde no significa sano. Dolor que empeora, dolor en reposo, falta de aire o desmayos: referir sin importar la zona.",
+  truthSick:"Resultado de la angiografía: enfermedad cardíaca confirmada", truthHealthy:"Resultado de la angiografía: sin enfermedad cardíaca",
+  verdictRight:"El modelo acertó.", verdictMiss:"El modelo se equivocó: puso a una paciente enferma en la zona verde. Pacientes como ella son su punto débil.",
+  verdictFA:"Falsa alarma: el modelo refirió a una persona sana.",
+  fixedNote:"Sin el umbral separado para mujeres habría quedado en verde y no se habría detectado.",
+  copyNote:"Copiar nota de referencia", copiedOk:"Copiado", copiedFail:"Seleccione el texto de abajo y cópielo",
+  noteHead:"Referencia a cardiología (preparada con HeartPost)",
+  noteLines:(x,t,z,p,th)=>[`Paciente: ${x.sex===0?"mujer":"hombre"}, ${x.age} años`,`Dolor de pecho: ${t["cp"+x.cp]}`,`Presión en reposo: ${x.trestbps??"no se midió"}`,`Colesterol total: ${x.chol??"no se midió"}`,`Glucosa en ayunas >120 mg/dL: ${x.fbs==null?"no se midió":x.fbs?"sí":"no"}`,`ECG en reposo: ${x.restecg==null?"no se hizo":t["ecg"+x.restecg]}`,`HeartPost: ${t[z]} (puntaje ${p}, umbral ${th})`,"Prototipo, no es un diagnóstico. Decisión tomada por el profesional tratante."],
+  storyTitle:"Por qué solo 7 mediciones",
+  story1:`Los modelos clásicos usan 13 mediciones, pero 6 requieren una prueba de esfuerzo o imágenes cardíacas que una clínica pequeña no tiene. Probamos ambos modelos en tres hospitales que nunca habían visto (${STORY.ext_sick} pacientes enfermos).`,
+  duelFull:"13 mediciones", duelOurs:"7 mediciones de clínica (HeartPost)", duelCap1:"pacientes enfermos no detectados (menos es mejor)",
+  story2:"Con un solo umbral, el modelo no detectaba a la mitad de las mujeres enfermas. Un umbral separado, elegido con los datos de entrenamiento, corrigió la mayor parte:",
+  duelBefore:"un solo umbral", duelAfter:"umbral separado para mujeres", duelCap2:(n)=>`mujeres enfermas detectadas, de ${n}`,
+  aboutTitle:"Sobre el modelo", howTitle:"Cómo funciona",
+  howBody:"Regresión logística con 7 mediciones disponibles en una clínica rural. Entrenada con 242 pacientes de la Cleveland Clinic (UCI Heart Disease, 1988) y probada en tres hospitales que nunca vio: Budapest (Hungría), Zúrich y Basilea (Suiza) y el VA de Long Beach (California). Las mujeres tienen un umbral de referencia más bajo (0.07 frente a 0.29 en hombres): con un solo umbral el modelo no detectaba a la mitad de las mujeres enfermas. Todo se calcula en su navegador.",
+  perfTitle:"Cuánto se puede confiar", perfNote:"Pacientes que el modelo no vio durante el entrenamiento. \"Enfermo\" significa un estrechamiento de más del 50% de una arteria coronaria en la angiografía.",
+  tSet:"Dónde se probó", tSick:"Enfermos", tCaught:"Referidos", tMissed:"No detectados", tFA:"Falsas alarmas",
+  limitsTitle:"Limitaciones",
+  limits:["Datos de los años 80, sobre todo de hombres mayores; nunca probado en la población rural actual de EE. UU.","Solo 32 mujeres enfermas en la prueba, así que la estimación para mujeres es incierta.","El modelo subestima la angina típica (un defecto de los datos).","Errores más comunes: menores de 50 años con dolor no típico y ECG normal.","El puntaje no es la probabilidad de enfermedad en su zona: la proporción de enfermos varió del 36% al 93% entre hospitales."],
+  privacyTitle:"Datos del paciente", privacyBody:"No se envía nada por internet ni se guarda nada. Después de la primera carga, la página funciona sin conexión, algo importante donde el internet rural no es confiable.",
+  footer:"HeartPost · prototipo para el Veritas AI International High School Hackathon 2026 · no es consejo médico",
+  setNames:{"Cleveland (internal test)":"Cleveland (prueba)","Hungary":"Hungría","Switzerland":"Suiza","Long Beach VA":"Long Beach VA","Women, all unseen":"Mujeres, total","Men, all unseen":"Hombres, total"}
+ }
+};
+let lang="en", last=null, activeExample=null;
+
+/* ---- the model: identical maths to the scikit-learn pipeline ---- */
+function predict(x){
+  const M=MODEL, contrib=[];
+  let logit=M.intercept, k=0;
+  for(const f of M.features_num){
+    const missing=(x[f]===null||x[f]===undefined||Number.isNaN(x[f]));
+    const v=missing?M.num_median[f]:x[f];
+    const c=M.coef[k++]*(v-M.num_mean[f])/M.num_scale[f]; logit+=c; contrib.push({f,c,filled:missing});
+  }
+  for(const f of M.features_cat){
+    const missing=(x[f]===null||x[f]===undefined);
+    const v=missing?M.cat_mode[f]:x[f];
+    const levels=M.cat_levels[f], coefs=levels.map((_,i)=>M.coef[k+i]);
+    const idx=levels.indexOf(v), c=idx>=0?coefs[idx]:0;
+    logit+=c; k+=levels.length;
+    contrib.push({f,c:c-coefs.reduce((a,b)=>a+b,0)/coefs.length,filled:missing}); // relative to an average level
+  }
+  return {p:1/(1+Math.exp(-logit)),contrib};
+}
+window.hpPredict=predict;
+const cholToMgdl=v=>v==null?null:(v<=18?v*38.67:v);
+const $=id=>document.getElementById(id);
+
+function applyLang(){
+  const t=T[lang];
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const v=t[el.dataset.i18n]; if(typeof v==="string") el.textContent=v;});
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
+  $("limits").innerHTML=t.limits.map(x=>`<li>${x}</li>`).join("");
+  $("perfBody").innerHTML=PERF.map(r=>`<tr><td>${t.setNames[r.set]||r.set}</td><td>${r.sick}</td><td>${r.caught} (${Math.round(100*r.caught/r.sick)}%)</td><td>${r.missed}</td><td>${r.fa}</td></tr>`).join("");
+  $("chips").innerHTML=EXAMPLES.map((e,i)=>`<button type="button" class="chip" data-ex="${i}">${t.exLabel(e)}<small>${t.siteName[e.site]||e.site}</small></button>`).join("");
+  $("chips").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>loadExample(+b.dataset.ex)));
+  renderStory();
+  if(last) render(last);
+}
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang; try{localStorage.setItem("hpLang",lang);}catch(e){} applyLang();}));
+
+function duel(el,rows,cap,max){
+  el.innerHTML=rows.map(r=>`<div class="row"><span>${r.label}</span><div class="track"><div class="fill" style="width:${Math.max(6,100*r.v/max)}%;background:${r.color}">${r.v}</div></div></div>`).join("")+`<p class="cap">${cap}</p>`;
+}
+function renderStory(){
+  const t=T[lang], S=STORY;
+  duel($("duel1"),[{label:t.duelFull,v:S.missed_full,color:"var(--red)"},{label:t.duelOurs,v:S.missed_ours,color:"var(--ink)"}],t.duelCap1,S.missed_full);
+  duel($("duel2"),[{label:t.duelBefore,v:S.women_caught_before,color:"#9aa3b5"},{label:t.duelAfter,v:S.women_caught_after,color:"var(--green)"}],t.duelCap2(S.women_sick),S.women_sick);
+}
+
+function readForm(){
+  const num=id=>{const s=$(id).value.trim(); return s===""?null:Number(s.replace(",","."));};
+  const radio=n=>{const r=document.querySelector(`input[name=${n}]:checked`); return r&&r.value!==""?Number(r.value):null;};
+  const sel=id=>{const s=$(id).value; return s===""?null:Number(s);};
+  return {age:num("age"),sex:radio("sex"),cp:sel("cp"),trestbps:num("trestbps"),chol:num("chol"),fbs:radio("fbs"),restecg:sel("restecg")};
+}
+function validate(x){
+  const t=T[lang];
+  if(x.age==null||x.age<18||x.age>100) return [t.errAge,"age"];
+  if(x.sex==null) return [t.errSex,"sex"];
+  if(x.cp==null) return [t.errCp,"cp"];
+  if(x.trestbps!=null&&(x.trestbps<70||x.trestbps>250)) return [t.errBp,"trestbps"];
+  if(x.chol!=null&&!((x.chol>=2&&x.chol<=18)||(x.chol>=80&&x.chol<=700))) return [t.errChol,"chol"];
+  return null;
+}
+function tracePath(zone){
+  const amp={green:16,yellow:26,red:36}[zone]; let d="M0 38", x=0;
+  while(x<700){ d+=` L${x+40} 38 L${x+48} 33 L${x+56} 38 L${x+66} 38 L${x+70} 44 L${x+76} ${38-amp} L${x+82} 48 L${x+88} 38 L${x+110} 38 L${x+122} 31 L${x+134} 38 L${x+140} 38`; x+=140; }
+  return d;
+}
+function zoneOf(x,p){ const tr=x.sex===0?MODEL.t_women:MODEL.t_men; return [p>=MODEL.t_urgent?"red":p>=tr?"yellow":"green",tr]; }
+
+function render(state){
+  const {x,p,contrib,ex}=state, t=T[lang];
+  const [zone,tRefer]=zoneOf(x,p);
+  const col={green:"var(--green)",yellow:"var(--amber)",red:"var(--red)"}[zone];
+  $("result").hidden=false;
+  const path=$("tracePath"); path.setAttribute("d",tracePath(zone)); path.style.stroke=col;
+  path.style.animation="none"; void path.getBoundingClientRect(); path.style.animation="";
+  $("verdict").textContent=t[zone]; $("verdict").style.color=col;
+  $("action").textContent=t["act"+zone[0].toUpperCase()+zone.slice(1)];
+  const g=tRefer*100, y=(MODEL.t_urgent-tRefer)*100, r=(1-MODEL.t_urgent)*100;
+  $("scale").innerHTML=`<span style="width:${g}%;background:var(--green)"></span><span style="width:${y}%;background:var(--amber)"></span><span style="width:${r}%;background:var(--red)"></span>`;
+  $("marker").style.left=(p*100)+"%";
+  $("score").textContent=t.score(p.toFixed(2),tRefer.toFixed(2));
+  const names={age:t.fAge,sex:t.fSex,trestbps:t.fBp,chol:t.fChol,fbs:t.fFbs,cp:t.fCp,restecg:t.fEcg};
+  const maxAbs=Math.max(0.5,...contrib.map(c=>Math.abs(c.c)));
+  $("factors").innerHTML=contrib.slice().sort((a,b)=>Math.abs(b.c)-Math.abs(a.c)).map(c=>{
+    const w=Math.abs(c.c)/maxAbs*50, left=c.c>=0?50:50-w;
+    return `<li><span>${names[c.f]}${c.filled?` <span class="hint">(${t.filled})</span>`:""}</span><span class="bar" role="img" aria-label="${c.c>=0?"+":"−"}${Math.abs(c.c).toFixed(2)}"><i style="left:${left}%;width:${w}%;background:${c.c>=0?"var(--red)":"var(--green)"}"></i></span></li>`;
+  }).join("");
+  // real-patient truth reveal
+  const tb=$("truth");
+  if(ex){
+    const referred=zone!=="green";
+    let v = ex.sick ? (referred?t.verdictRight:t.verdictMiss) : (referred?t.verdictFA:t.verdictRight);
+    if(ex.kind==="fixed") v+=" "+t.fixedNote;
+    tb.innerHTML=`<b>${ex.sick?t.truthSick:t.truthHealthy}</b> (${t.siteName[ex.site]||ex.site}). ${v}`;
+    tb.style.borderColor = (ex.sick&&!referred)?"var(--red)":"var(--ink)";
+    tb.hidden=false;
+  } else tb.hidden=true;
+  $("warnTypical").hidden = x.cp!==1;
+  $("warnYoung").hidden = !(x.age<50 && (x.cp===2||x.cp===3) && zone==="green");
+  $("copied").textContent=""; $("noteBox").hidden=true;
+}
+
+function run(ex){
+  const x=readForm(), err=validate(x), box=$("err");
+  if(err){ box.textContent=err[0]; box.hidden=false; const el=$(err[1])||document.querySelector(`input[name=${err[1]}]`); el&&el.focus(); return; }
+  box.hidden=true;
+  const {p,contrib}=predict({...x, chol:cholToMgdl(x.chol)});
+  last={x,p,contrib,ex:ex||null}; render(last);
+  $("result").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth", block:"start"});
+}
+$("f").addEventListener("submit",e=>{e.preventDefault(); activeExample=null; run(null);});
+// editing the form after loading an example turns it back into your own patient
+$("f").addEventListener("input",()=>{activeExample=null;});
+
+function loadExample(i){
+  const e=EXAMPLES[i];
+  $("age").value=e.age;
+  document.querySelector(`input[name=sex][value="${e.sex}"]`).checked=true;
+  $("cp").value=String(e.cp);
+  $("trestbps").value=e.trestbps??"";
+  $("chol").value=e.chol??"";
+  document.querySelector(`input[name=fbs][value="${e.fbs==null?"":e.fbs}"]`).checked=true;
+  $("restecg").value=e.restecg==null?"":String(e.restecg);
+  activeExample=e; run(e);
+}
+
+$("copyNote").addEventListener("click",async()=>{
+  if(!last) return;
+  const t=T[lang], x=last.x, [zone,tr]=zoneOf(x,last.p);
+  const text=[t.noteHead,...t.noteLines(x,t,zone,last.p.toFixed(2),tr.toFixed(2))].join("\n");
+  try{ await navigator.clipboard.writeText(text); $("copied").textContent=t.copiedOk; $("noteBox").hidden=true; }
+  catch(e){ const nb=$("noteBox"); nb.value=text; nb.hidden=false; nb.focus(); nb.select(); $("copied").textContent=t.copiedFail; }
+});
+
+try{ const s=localStorage.getItem("hpLang"); if(s&&T[s]) lang=s; else if((navigator.language||"").startsWith("es")) lang="es"; }catch(e){}
+applyLang();
+</script>
+</body>
+</html>
