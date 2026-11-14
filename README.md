@@ -27,6 +27,10 @@ A browser tool for the rural clinician. **In:** the 7 things a small clinic can 
 
 ![Interactive view of all 678 unseen patients with a draggable threshold](figures/app_explorer.png)
 
+**Remote follow-up (demo, synthetic patients).** On a second page ([`app/followup.html`](app/followup.html)), a patient checks in from home once a day: symptoms, home blood pressure, and resting pulse typed in or imported from a fitness-band CSV. A city cardiologist doesn't read everyone's numbers. They see a queue sorted by who needs a call today. The **risk zone** comes from the same model, using the clinic-visit measurements with blood pressure updated to the week's home average. The daily **status** (call now / review / stable / no check-in) comes from simple safety rules, *not* the model. We kept daily symptoms out of the model on purpose: in the 1980s data "no chest pain" meant *higher* risk, so a patient who felt better would turn red. Resting pulse is shown but not scored, because our training data has none. To follow the hackathon rules on personal data, there are no accounts and no real people: 9 invented patients, with check-ins stored only in the browser. A real version would need secure accounts, push reminders and clinical review of the rules.
+
+![Doctor's follow-up queue sorted by urgency](figures/followup_doctor.png)
+
 ## What we added
 We started from the suggested project *4.1.2 Heart disease risk from checkup data* and added:
 1. **Our own user and setting:** a rural clinic with no cardiologist. We limit the model to inputs such a clinic actually has. Stress tests, fluoroscopy and thallium scans are only available at the cardiology centre the patient hasn't reached yet.
@@ -85,6 +89,7 @@ Accuracy alone hides what matters here. On the Cleveland test, our model, the on
 | `HeartPost.ipynb` | Full analysis with all outputs (open in Colab: *File → Upload notebook*, or from GitHub) |
 | `notebook_src.py` | The same notebook as a plain Python script |
 | `app/index.html` | The offline triage tool (model built in) |
+| `app/followup.html` | Remote follow-up demo: patient check-in and doctor queue (synthetic patients) |
 | `app/*.json` | Exported model, test results, real example patients and story numbers (all written by the notebook) |
 | `data/` | The four UCI hospital files |
 | `figures/` | All charts (made by the notebook) and app screenshots |

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1c2b4a">
+<title>HeartPost — remote follow-up (demo)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M14 58V16a18 18 0 0 1 36 0v42z' fill='none' stroke='%231c2b4a' stroke-width='5'/%3E%3Cpath d='M2 34h15l4-6 5 15 6-27 5 18h25' fill='none' stroke='%23b3261e' stroke-width='5' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#1c2b4a; --ink-soft:#4a5875; --paper:#fffdfb; --card:#ffffff;
+  --grid:#f2c9c4; --grid-fine:#f9e3e0; --wash:#f4f1ee;
+  --green:#2d7a4b; --amber:#b9790c; --red:#b3261e; --blue:#2f5fae;
+  --rule:#e2e5ec; --field:#c3cad8;
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #4b7bd8;outline-offset:2px}
+.shell{max-width:1180px;margin:0 auto;padding:0 32px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0}
+
+/* header */
+.topbar{border-bottom:1px solid var(--grid);background-image:linear-gradient(var(--grid-fine) 1px,transparent 1px),linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px);background-size:24px 24px}
+.topbar .shell{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:16px;padding-bottom:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.mark{width:36px;height:36px}
+.name{font:600 1.25rem/1 var(--serif)}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 12px;border-radius:8px}
+.nav a[aria-current="page"]{background:var(--ink);color:var(--paper)}
+.nav a:hover:not([aria-current]){background:#fff}
+.lang{display:flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--card)}
+.lang button{border:0;background:transparent;font-weight:600;font-size:.82rem;padding:7px 11px;cursor:pointer;min-width:42px}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+.intro{padding:42px 0 8px}
+.intro h1{font-size:clamp(1.9rem,4vw,3rem);line-height:1.08;letter-spacing:-.015em;max-width:22ch}
+.intro p{color:var(--ink-soft);max-width:70ch;margin:12px 0 0}
+.demo-note{margin:16px 0 0;border-left:3px solid var(--red);padding:2px 0 2px 12px;font-size:.88rem;color:var(--ink-soft);max-width:90ch}
+
+/* role switch */
+.roles{display:flex;gap:10px;margin:26px 0 22px;flex-wrap:wrap}
+.role{display:flex;align-items:center;gap:12px;border:1px solid var(--field);background:var(--card);border-radius:12px;padding:12px 18px;cursor:pointer;text-align:left;min-width:250px}
+.role b{display:block;font-family:var(--serif);font-size:1.08rem}
+.role small{color:var(--ink-soft);font-size:.84rem}
+.role svg{width:30px;height:30px;flex-shrink:0}
+.role[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+[hidden]{display:none!important}
+
+/* shared */
+.card{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:22px 24px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.z-green{color:var(--green);background:#e6f2ea}.z-yellow{color:#8a5a00;background:#fbefd6}.z-red{color:var(--red);background:#f9e1df}
+.s-urgent{color:#fff;background:var(--red)}.s-review{color:#8a5a00;background:#fbefd6}.s-stable{color:var(--green);background:#e6f2ea}.s-missing{color:var(--ink-soft);background:#eceff4}
+.hint{font-size:.82rem;color:var(--ink-soft)}
+label,.legend{font-weight:600;font-size:.94rem}
+input[type=number],select{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--field);border-radius:8px;padding:10px 12px;min-height:46px;width:100%}
+fieldset{border:0;padding:0;margin:0;min-width:0}
+.btn{border:0;background:var(--ink);color:var(--paper);border-radius:10px;padding:12px 18px;font-weight:600;cursor:pointer;min-height:48px}
+.btn:hover{background:#2a3d63}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+
+/* patient view */
+.pgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:28px;align-items:start;padding-bottom:60px}
+.whoami{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.whoami label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--ink-soft)}
+.whoami select{width:auto;min-width:240px}
+.reminder{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#fff7f6;border:1px solid var(--grid);border-radius:12px;padding:14px 18px;margin-bottom:16px}
+.reminder b{font-family:var(--serif);font-size:1.08rem}
+.reminder.done{background:#eef6f0;border-color:#cfe5d6}
+.ci{display:grid;gap:18px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--field);border-radius:10px;padding:11px 14px;cursor:pointer;background:#fff}
+.opt input{margin-top:4px;accent-color:var(--ink);width:18px;height:18px;flex-shrink:0}
+.opt:has(input:checked){border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.danger:has(input:checked){border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red);background:#fff6f5}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.band{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.86rem}
+.band input[type=file]{font-size:.84rem;max-width:100%}
+.alarm{border:2px solid var(--red);background:#fff6f5;border-radius:12px;padding:16px 18px}
+.alarm b{display:block;font:700 1.35rem/1.2 var(--serif);color:var(--red);margin-bottom:4px}
+.okmsg{border:1px solid #cfe5d6;background:#eef6f0;border-radius:12px;padding:14px 18px}
+.okmsg b{font-family:var(--serif);font-size:1.1rem}
+.streak{display:grid;grid-template-columns:repeat(21,1fr);gap:3px;margin:10px 0 4px}
+.streak span{height:22px;border-radius:3px;background:#eceff4}
+.streak span.stable{background:#b9dcc4}.streak span.review{background:#f0cf8d}.streak span.urgent{background:var(--red)}
+.streak span.today{outline:2px solid var(--ink);outline-offset:1px}
+.mini{width:100%;height:120px;display:block}
+
+/* doctor view */
+.dhead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.counts{display:flex;gap:10px;flex-wrap:wrap}
+.counts div{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:10px 14px;min-width:120px}
+.counts b{display:block;font:700 1.6rem/1 var(--serif)}
+.counts span{font-size:.82rem;color:var(--ink-soft)}
+.counts .u b{color:var(--red)}.counts .r b{color:var(--amber)}.counts .s b{color:var(--green)}
+.queue{display:grid;gap:10px;padding-bottom:20px}
+.qhead{display:grid;grid-template-columns:minmax(0,1.3fr) 120px minmax(0,2fr) 190px 24px;gap:16px;padding:0 18px;font-size:.78rem;font-weight:600;color:var(--ink-soft)}
+.row{background:var(--card);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.row.urgent{border-color:var(--red);box-shadow:inset 4px 0 0 var(--red)}
+.row.review{box-shadow:inset 4px 0 0 var(--amber)}
+.row > button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1.3fr) 120px minmax(0,2fr) 190px 24px;gap:16px;align-items:center;width:100%;padding:14px 18px;cursor:pointer}
+.row > button:focus-visible{outline:3px solid #4b7bd8;outline-offset:-3px}
+.pname b{font-family:var(--serif);font-size:1.05rem}
+.pname small{display:block;color:var(--ink-soft);font-size:.82rem}
+.why{font-size:.9rem}
+.why small{display:block;color:var(--ink-soft);font-size:.78rem}
+.days{display:grid;grid-template-columns:repeat(21,1fr);gap:2px}
+.days span{height:16px;border-radius:2px;background:#eceff4}
+.days span.stable{background:#b9dcc4}.days span.review{background:#f0cf8d}.days span.urgent{background:var(--red)}
+.caret{transition:transform .2s;justify-self:end}
+.row[data-open="true"] .caret{transform:rotate(90deg)}
+.detail{border-top:1px solid var(--rule);padding:16px 18px 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;background:#fcfcfd}
+.detail h3{font-size:1rem;margin-bottom:8px}
+.factors{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.factors li{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:10px;align-items:center;font-size:.88rem}
+.bar{height:9px;position:relative;background:linear-gradient(90deg,transparent calc(50% - .5px),#9aa3b5 calc(50% - .5px),#9aa3b5 calc(50% + .5px),transparent calc(50% + .5px))}
+.bar i{position:absolute;top:0;height:100%;border-radius:2px}
+table{border-collapse:collapse;width:100%;font-size:.84rem;margin-top:8px}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--rule)}
+th{font-weight:600}
+.howto{margin:30px 0 60px}
+.howto ol{padding-left:20px;max-width:80ch}
+.howto li{margin-bottom:6px}
+footer{border-top:1px solid var(--rule);padding:16px 0 40px;font-size:.8rem;color:var(--ink-soft)}
+
+@media (max-width:959px){
+  .shell{padding:0 18px}
+  .pgrid,.detail{grid-template-columns:1fr}
+  .qhead{display:none}
+  .row > button{grid-template-columns:minmax(0,1fr) auto 20px;grid-template-areas:"n z c" "w w w" "d d d"}
+  .row > button .pname{grid-area:n}.row > button .zcell{grid-area:z}.row > button .why{grid-area:w}.row > button .days{grid-area:d}.row > button .caret{grid-area:c}
+}
+@media (max-width:560px){ .nav{order:3;width:100%} .nav a{flex:1;text-align:center;padding:8px 6px;font-size:.84rem} .two{grid-template-columns:1fr} .role{min-width:0;flex:1 1 100%} .card{padding:18px} }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell">
+    <a class="brand" href="./">
+      <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M14 58V16a18 18 0 0 1 36 0v42z" fill="none" stroke="#1c2b4a" stroke-width="3.2" stroke-linejoin="round"/>
+        <path d="M24 58h16" stroke="#1c2b4a" stroke-width="3.2" stroke-linecap="round"/>
+        <path d="M2 34h15l4-6 5 15 6-27 5 18h25" fill="none" stroke="#b3261e" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <span class="name">HeartPost</span>
+    </a>
+    <nav class="nav" aria-label="Pages">
+      <a href="./" data-i18n="navClinic"></a>
+      <a href="followup.html" aria-current="page" data-i18n="navFollow"></a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language / Idioma">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <section class="intro">
+    <h1 data-i18n="title"></h1>
+    <p data-i18n="lead"></p>
+    <p class="demo-note" data-i18n="demoNote"></p>
+  </section>
+
+  <div class="roles" role="group" aria-label="Role">
+    <button type="button" class="role" data-role="patient" aria-pressed="true">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="11" r="6" fill="none" stroke="#1c2b4a" stroke-width="2"/><path d="M5 29c1.5-6 5.5-9 11-9s9.5 3 11 9" fill="none" stroke="#1c2b4a" stroke-width="2" stroke-linecap="round"/></svg>
+      <span><b data-i18n="rolePatient"></b><small data-i18n="rolePatientSub"></small></span>
+    </button>
+    <button type="button" class="role" data-role="doctor" aria-pressed="false">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 4v8a7 7 0 0 0 14 0V4" fill="none" stroke="#1c2b4a" stroke-width="2" stroke-linecap="round"/><path d="M16 19v3a6 6 0 0 0 12 0v-3" fill="none" stroke="#1c2b4a" stroke-width="2"/><circle cx="28" cy="16" r="2.5" fill="none" stroke="#b3261e" stroke-width="2"/></svg>
+      <span><b data-i18n="roleDoctor"></b><small data-i18n="roleDoctorSub"></small></span>
+    </button>
+  </div>
+
+  <!-- ================= PATIENT ================= -->
+  <section id="patientView" aria-labelledby="pTitle">
+    <h2 id="pTitle" class="visually" hidden></h2>
+    <div class="whoami">
+      <label><span data-i18n="signedInAs"></span><select id="who"></select></label>
+      <span class="hint" data-i18n="whoHint"></span>
+    </div>
+    <div class="reminder" id="reminder">
+      <div><b id="remTitle"></b><div class="hint" id="remBody"></div></div>
+      <button type="button" class="btn ghost" id="notifyBtn" data-i18n="notifyBtn"></button>
+    </div>
+    <div class="pgrid">
+      <form class="card ci" id="ci" novalidate>
+        <h3 style="font-size:1.2rem" data-i18n="ciTitle"></h3>
+        <fieldset>
+          <legend class="legend" data-i18n="qPain"></legend>
+          <div class="opts" style="margin-top:8px">
+            <label class="opt"><input type="radio" name="pain" value="none" checked><span data-i18n="painNone"></span></label>
+            <label class="opt"><input type="radio" name="pain" value="exertion"><span data-i18n="painExertion"></span></label>
+            <label class="opt"><input type="radio" name="pain" value="worse"><span data-i18n="painWorse"></span></label>
+            <label class="opt danger"><input type="radio" name="pain" value="rest"><span data-i18n="painRest"></span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="legend" data-i18n="qOther"></legend>
+          <div class="opts" style="margin-top:8px">
+            <label class="opt danger"><input type="checkbox" name="flag" value="breath"><span data-i18n="flagBreath"></span></label>
+            <label class="opt danger"><input type="checkbox" name="flag" value="faint"><span data-i18n="flagFaint"></span></label>
+            <label class="opt"><input type="checkbox" name="flag" value="swelling"><span data-i18n="flagSwelling"></span></label>
+          </div>
+        </fieldset>
+        <div class="two">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="sbp" data-i18n="qBP"></label>
+            <input id="sbp" type="number" inputmode="numeric" min="70" max="250">
+            <span class="hint" data-i18n="bpHint"></span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="hr" data-i18n="qHR"></label>
+            <input id="hr" type="number" inputmode="numeric" min="30" max="200">
+            <span class="hint" data-i18n="hrHint"></span>
+          </div>
+        </div>
+        <div class="band">
+          <label for="bandFile" data-i18n="bandLabel"></label>
+          <input type="file" id="bandFile" accept=".csv,text/csv">
+          <span class="hint" id="bandMsg" data-i18n="bandHint"></span>
+        </div>
+        <p class="hint" id="ciErr" role="alert" style="color:var(--red);font-weight:600" hidden></p>
+        <button class="btn" type="submit" data-i18n="send"></button>
+      </form>
+
+      <div style="display:grid;gap:16px">
+        <div id="ciResult" aria-live="polite"></div>
+        <div class="card">
+          <h3 data-i18n="myHistory"></h3>
+          <div class="streak" id="myStreak"></div>
+          <div class="hint" data-i18n="streakHint"></div>
+          <svg class="mini" id="myChart" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="hint" data-i18n="chartHint"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DOCTOR ================= -->
+  <section id="doctorView" hidden aria-labelledby="dTitle">
+    <div class="dhead">
+      <div>
+        <h2 id="dTitle" style="font-size:1.6rem" data-i18n="dTitle"></h2>
+        <p class="hint" style="margin:6px 0 0;max-width:70ch" data-i18n="dLead"></p>
+      </div>
+      <div class="counts" id="counts"></div>
+    </div>
+    <div class="queue" id="queue"></div>
+    <section class="howto">
+      <h2 style="font-size:1.25rem;margin-bottom:8px" data-i18n="howTitle"></h2>
+      <ol id="howList"></ol>
+    </section>
+  </section>
+</main>
+<footer><div class="shell" data-i18n="footer"></div></footer>
+
+<script>
+const MODEL = /*MODEL_JSON*/null;
+const T={
+ en:{
+  navClinic:"Clinic tool", navFollow:"Remote follow-up (demo)",
+  title:"Follow-up from home, without the 87-mile trip",
+  lead:"After a clinic visit, patients check in from home once a day: symptoms, home blood pressure and the resting pulse from a fitness band. The cardiologist in the city doesn't read everyone's numbers. They get a queue sorted by who needs a call today.",
+  demoNote:"Demo with synthetic patients. No accounts and no real data: check-ins are saved only in this browser, and the doctor view reads from the same browser to show the whole loop. Not medical advice.",
+  rolePatient:"I'm a patient", rolePatientSub:"Daily check-in", roleDoctor:"I'm a doctor", roleDoctorSub:"Today's follow-up queue",
+  signedInAs:"Signed in as (demo patient)", whoHint:"Pick any synthetic patient. Your check-in appears in the doctor's queue.",
+  remDue:"Today's check-in is due", remDueBody:"It takes under a minute. Your care team sees the result, not your raw numbers.",
+  remDone:"Checked in today", remDoneBody:"Thank you. See you tomorrow.",
+  notifyBtn:"Remind me every day", notifyOn:"Reminders on (while the app is open)", notifyNo:"This browser blocked notifications. You'll still see the reminder here.",
+  ciTitle:"Today's check-in",
+  qPain:"Chest pain or pressure today?", painNone:"None", painExertion:"Only with exertion, and it went away with rest",
+  painWorse:"More often, stronger, or with less exertion than usual", painRest:"At rest, or lasting more than 15 minutes",
+  qOther:"Anything else today?", flagBreath:"Short of breath at rest", flagFaint:"Fainted or nearly fainted", flagSwelling:"New swelling in ankles or legs",
+  qBP:"Home blood pressure, systolic (mmHg)", bpHint:"Optional. From a home cuff.",
+  qHR:"Resting pulse (beats per minute)", hrHint:"Optional. From your fitness band or by hand.",
+  bandLabel:"Import from fitness band", bandHint:"A CSV export with a date column and a resting heart rate column. Read only on this device.",
+  bandOk:(n,hr)=>`Imported ${n} days. Latest resting pulse: ${hr}.`, bandBad:"Couldn't find date and heart-rate columns in this file.",
+  send:"Send check-in", errBP:"Blood pressure must be 70–250 mmHg, or leave it blank.", errHR:"Pulse must be 30–200, or leave it blank.",
+  urgentT:"Call 911 now", urgentB:"Chest pain at rest, shortness of breath at rest or fainting can be a heart attack. Don't wait for a call back. Your care team has also been alerted.",
+  sentT:"Sent to your care team", sentReview:"Your doctor's office will review this and may call you.", sentStable:"Nothing new for your doctor to act on today.",
+  myHistory:"Your last 21 days", streakHint:"Green: stable · Amber: doctor reviews · Red: urgent · Grey: no check-in",
+  chartHint:"Home blood pressure (dark) and resting pulse (red dashed).",
+  dTitle:"Today's follow-up queue", dLead:"Sorted by urgency. You see each patient's status and the reason in one line; open a row only when you need the details.",
+  cUrgent:"call now", cReview:"review today", cStable:"stable", cMissing:"no recent check-in",
+  sUrgent:"Call now", sReview:"Review", sStable:"Stable", sMissing:"No check-in",
+  zone:{green:"Green", yellow:"Yellow", red:"Red"}, zoneTitle:"Risk zone (model)",
+  rRest:"Chest pain at rest today", rBreath:"Short of breath at rest today", rFaint:"Fainted or nearly fainted today",
+  rWorse:"Chest pain getting worse (reported in last 3 days)", rExertion:"New pain on exertion this week",
+  rBP:(a)=>`Home blood pressure averaging ${a} mmHg this week`, rBPup:(d)=>`Blood pressure up ${d} mmHg vs last week`,
+  rHR:"Resting pulse above 100 on 3 of the last 5 days", rSwelling:"New ankle or leg swelling", rMissing:(n)=>`No check-in for ${n} days`,
+  rStable:"No new symptoms; readings in usual range", lastCI:(d)=>`last check-in ${d}`, today:"today", yesterday:"yesterday", daysAgo:(n)=>`${n} days ago`,
+  hPatient:"Patient", hToday:"Today (safety rules)", hDays:"Last 21 days",
+  dWhy:"Why this risk zone (model, from the clinic visit + this week's blood pressure)", dLog:"Recent check-ins",
+  dCols:["Date","Pain","Other","BP","Pulse"], dNote:"Pulse is shown for context only: the model was not trained on it.",
+  pain:{none:"none", exertion:"on exertion", worse:"worse", rest:"AT REST"}, flags:{breath:"breathless", faint:"fainted", swelling:"swelling"},
+  f:{age:"Age", sex:"Sex", trestbps:"Blood pressure", chol:"Cholesterol", fbs:"Fasting glucose", cp:"Chest-pain type (clinic)", restecg:"Resting ECG"},
+  ageSex:(a,s)=>`${a}, ${s===0?"female":"male"}`,
+  howTitle:"How the queue is built",
+  how:["<b>Risk zone</b> comes from the HeartPost model: the patient's clinic-visit measurements, with blood pressure updated to this week's home average. It's the same model and thresholds as the clinic tool.",
+       "<b>Status</b> comes from simple safety rules on the daily check-ins, not from the model: pain at rest, breathlessness at rest or fainting → <b>call now</b>; worsening pain, new pain on exertion, high or rising blood pressure, fast resting pulse, new swelling or 3+ days without a check-in → <b>review today</b>.",
+       "We don't let daily symptoms change the model's chest-pain input. In the 1980s training data, 'no chest pain' meant <i>higher</i> risk, so a patient who felt better would turn red. That's a data artefact, so daily symptoms only go through the safety rules.",
+       "Resting pulse from a fitness band is shown and can raise a review, but it's not in the model: our training data has no resting pulse."],
+  footer:"HeartPost · remote follow-up demo with synthetic patients · prototype for the Veritas AI International High School Hackathon 2026 · not medical advice"
+ },
+ es:{
+  navClinic:"Herramienta de clínica", navFollow:"Seguimiento remoto (demo)",
+  title:"Seguimiento desde casa, sin el viaje de 87 millas",
+  lead:"Después de una consulta, los pacientes reportan desde casa una vez al día: síntomas, presión arterial en casa y el pulso en reposo de su pulsera. El cardiólogo en la ciudad no lee los números de todos. Recibe una lista ordenada por quién necesita una llamada hoy.",
+  demoNote:"Demo con pacientes sintéticos. Sin cuentas ni datos reales: los reportes se guardan solo en este navegador, y la vista del médico lee del mismo navegador para mostrar el ciclo completo. No es consejo médico.",
+  rolePatient:"Soy paciente", rolePatientSub:"Reporte diario", roleDoctor:"Soy médico", roleDoctorSub:"Lista de seguimiento de hoy",
+  signedInAs:"Sesión como (paciente de demo)", whoHint:"Elija cualquier paciente sintético. Su reporte aparece en la lista del médico.",
+  remDue:"Falta el reporte de hoy", remDueBody:"Toma menos de un minuto. Su equipo de salud ve el resultado, no sus números.",
+  remDone:"Reporte de hoy enviado", remDoneBody:"Gracias. Hasta mañana.",
+  notifyBtn:"Recordarme cada día", notifyOn:"Recordatorios activados (con la app abierta)", notifyNo:"Este navegador bloqueó las notificaciones. Igual verá el recordatorio aquí.",
+  ciTitle:"Reporte de hoy",
+  qPain:"¿Dolor u opresión en el pecho hoy?", painNone:"Ninguno", painExertion:"Solo con esfuerzo, y se quitó con reposo",
+  painWorse:"Más frecuente, más fuerte o con menos esfuerzo que de costumbre", painRest:"En reposo, o dura más de 15 minutos",
+  qOther:"¿Algo más hoy?", flagBreath:"Falta de aire en reposo", flagFaint:"Se desmayó o casi se desmaya", flagSwelling:"Hinchazón nueva en tobillos o piernas",
+  qBP:"Presión arterial en casa, sistólica (mmHg)", bpHint:"Opcional. De un tensiómetro en casa.",
+  qHR:"Pulso en reposo (latidos por minuto)", hrHint:"Opcional. De su pulsera o tomado a mano.",
+  bandLabel:"Importar de la pulsera", bandHint:"Un CSV con una columna de fecha y una de frecuencia cardíaca en reposo. Se lee solo en este dispositivo.",
+  bandOk:(n,hr)=>`Se importaron ${n} días. Último pulso en reposo: ${hr}.`, bandBad:"No se encontraron columnas de fecha y frecuencia cardíaca en el archivo.",
+  send:"Enviar reporte", errBP:"La presión debe estar entre 70 y 250 mmHg, o deje el campo en blanco.", errHR:"El pulso debe estar entre 30 y 200, o deje el campo en blanco.",
+  urgentT:"Llame al 911 ahora", urgentB:"Dolor de pecho en reposo, falta de aire en reposo o desmayo pueden ser un infarto. No espere una llamada. Su equipo de salud también fue alertado.",
+  sentT:"Enviado a su equipo de salud", sentReview:"El consultorio de su médico lo revisará y puede llamarle.", sentStable:"Hoy no hay nada nuevo que su médico deba atender.",
+  myHistory:"Sus últimos 21 días", streakHint:"Verde: estable · Ámbar: el médico revisa · Rojo: urgente · Gris: sin reporte",
+  chartHint:"Presión arterial en casa (oscuro) y pulso en reposo (rojo punteado).",
+  dTitle:"Lista de seguimiento de hoy", dLead:"Ordenada por urgencia. Ve el estado de cada paciente y el motivo en una línea; abra una fila solo si necesita los detalles.",
+  cUrgent:"llamar ya", cReview:"revisar hoy", cStable:"estables", cMissing:"sin reporte reciente",
+  sUrgent:"Llamar ya", sReview:"Revisar", sStable:"Estable", sMissing:"Sin reporte",
+  zone:{green:"Verde", yellow:"Amarilla", red:"Roja"}, zoneTitle:"Zona de riesgo (modelo)",
+  rRest:"Dolor de pecho en reposo hoy", rBreath:"Falta de aire en reposo hoy", rFaint:"Desmayo o casi desmayo hoy",
+  rWorse:"Dolor de pecho empeorando (últimos 3 días)", rExertion:"Dolor nuevo con esfuerzo esta semana",
+  rBP:(a)=>`Presión en casa con promedio de ${a} mmHg esta semana`, rBPup:(d)=>`Presión ${d} mmHg más alta que la semana pasada`,
+  rHR:"Pulso en reposo mayor de 100 en 3 de los últimos 5 días", rSwelling:"Hinchazón nueva en tobillos o piernas", rMissing:(n)=>`Sin reporte desde hace ${n} días`,
+  rStable:"Sin síntomas nuevos; valores en su rango habitual", lastCI:(d)=>`último reporte ${d}`, today:"hoy", yesterday:"ayer", daysAgo:(n)=>`hace ${n} días`,
+  hPatient:"Paciente", hToday:"Hoy (reglas de seguridad)", hDays:"Últimos 21 días",
+  dWhy:"Por qué esta zona de riesgo (modelo, con la consulta + la presión de esta semana)", dLog:"Reportes recientes",
+  dCols:["Fecha","Dolor","Otros","Presión","Pulso"], dNote:"El pulso se muestra solo como contexto: el modelo no se entrenó con él.",
+  pain:{none:"ninguno", exertion:"con esfuerzo", worse:"peor", rest:"EN REPOSO"}, flags:{breath:"falta de aire", faint:"desmayo", swelling:"hinchazón"},
+  f:{age:"Edad", sex:"Sexo", trestbps:"Presión arterial", chol:"Colesterol", fbs:"Glucosa en ayunas", cp:"Tipo de dolor (consulta)", restecg:"ECG en reposo"},
+  ageSex:(a,s)=>`${a}, ${s===0?"mujer":"hombre"}`,
+  howTitle:"Cómo se arma la lista",
+  how:["<b>La zona de riesgo</b> viene del modelo HeartPost: las mediciones de la consulta, con la presión actualizada al promedio en casa de esta semana. Es el mismo modelo y los mismos umbrales que la herramienta de clínica.",
+       "<b>El estado</b> viene de reglas de seguridad simples sobre los reportes diarios, no del modelo: dolor en reposo, falta de aire en reposo o desmayo → <b>llamar ya</b>; dolor que empeora, dolor nuevo con esfuerzo, presión alta o en aumento, pulso rápido en reposo, hinchazón nueva o 3+ días sin reporte → <b>revisar hoy</b>.",
+       "Los síntomas diarios no cambian el tipo de dolor que usa el modelo. En los datos de los años 80, 'sin dolor de pecho' significaba <i>más</i> riesgo, así que un paciente que se siente mejor se pondría en rojo. Es un defecto de los datos, por eso los síntomas diarios solo pasan por las reglas de seguridad.",
+       "El pulso en reposo de la pulsera se muestra y puede pedir una revisión, pero no está en el modelo: nuestros datos de entrenamiento no tienen pulso en reposo."],
+  footer:"HeartPost · demo de seguimiento remoto con pacientes sintéticos · prototipo para el Veritas AI International High School Hackathon 2026 · no es consejo médico"
+ }
+};
+let lang="en";
+try{ const s=localStorage.getItem("hpLang"); if(s&&T[s]) lang=s; else if((navigator.language||"").startsWith("es")) lang="es"; }catch(e){}
+const $=id=>document.getElementById(id);
+
+/* ---------- the model (same maths as the clinic tool) ---------- */
+function predict(x){
+  const M=MODEL, contrib=[]; let logit=M.intercept, k=0;
+  for(const f of M.features_num){ const miss=x[f]==null; const v=miss?M.num_median[f]:x[f]; const c=M.coef[k++]*(v-M.num_mean[f])/M.num_scale[f]; logit+=c; contrib.push({f,c}); }
+  for(const f of M.features_cat){ const v=x[f]==null?M.cat_mode[f]:x[f]; const lv=M.cat_levels[f], cs=lv.map((_,i)=>M.coef[k+i]); const idx=lv.indexOf(v), c=idx>=0?cs[idx]:0; logit+=c; k+=lv.length; contrib.push({f,c:c-cs.reduce((a,b)=>a+b,0)/cs.length}); }
+  return {p:1/(1+Math.exp(-logit)),contrib};
+}
+const zoneOf=(sex,p)=>p>=MODEL.t_urgent?"red":p>=(sex===0?MODEL.t_women:MODEL.t_men)?"yellow":"green";
+
+/* ---------- dates ---------- */
+const DAY=86400000;
+const key=d=>{const z=new Date(d); return `${z.getFullYear()}-${String(z.getMonth()+1).padStart(2,"0")}-${String(z.getDate()).padStart(2,"0")}`;};
+const TODAY=new Date(); TODAY.setHours(12,0,0,0);
+const DAYS=[...Array(21)].map((_,i)=>key(TODAY.getTime()-(20-i)*DAY));   // oldest → today
+const fmtDate=k=>new Date(k+"T12:00:00").toLocaleDateString(lang==="es"?"es-US":"en-US",{month:"short",day:"numeric"});
+
+/* ---------- synthetic cohort (invented people, generated deterministically) ---------- */
+function rng(seed){ let s=seed>>>0; return ()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+const COHORT=[
+  {id:"p1",name:"Linda Ortiz",   age:58,sex:0,cp:2,chol:241,fbs:0,restecg:0,bp:136,hr:72,scen:"restToday"},
+  {id:"p2",name:"Robert Hale",   age:64,sex:1,cp:4,chol:268,fbs:1,restecg:2,bp:148,hr:70,scen:"stable"},
+  {id:"p3",name:"Daniel Reyes",  age:61,sex:1,cp:2,chol:230,fbs:0,restecg:1,bp:134,hr:74,scen:"bpRising"},
+  {id:"p4",name:"Mary Collins",  age:70,sex:0,cp:1,chol:255,fbs:0,restecg:0,bp:142,hr:76,scen:"breathToday"},
+  {id:"p5",name:"James Whitaker",age:52,sex:1,cp:3,chol:212,fbs:0,restecg:0,bp:128,hr:68,scen:"missing"},
+  {id:"p6",name:"Rosa Delgado",  age:55,sex:0,cp:4,chol:238,fbs:1,restecg:0,bp:132,hr:88,scen:"pulseHigh"},
+  {id:"p7",name:"Kevin Brooks",  age:39,sex:1,cp:3,chol:186,fbs:0,restecg:0,bp:118,hr:62,scen:"stable"},
+  {id:"p8",name:"Grace Thompson",age:47,sex:0,cp:3,chol:198,fbs:0,restecg:0,bp:122,hr:66,scen:"patientDemo"},
+  {id:"p9",name:"Walter Price",  age:67,sex:1,cp:2,chol:224,fbs:0,restecg:0,bp:138,hr:70,scen:"worsening"},
+];
+function generate(p,seed){
+  const r=rng(seed), out={};
+  DAYS.forEach((d,i)=>{
+    const last=i===20; if(last && p.scen!=="restToday" && p.scen!=="breathToday") return;      // most people haven't checked in yet today
+    if(p.scen==="missing" && i>=17) return;
+    if(r()<0.06 && i<19) return;                                                                 // the odd skipped day
+    let bp=Math.round(p.bp+ (r()-.5)*12), hr=Math.round(p.hr+(r()-.5)*8), pain="none", flags=[];
+    if(p.scen==="bpRising") bp=Math.round(p.bp+ i*1.6 + (r()-.5)*8);
+    if(p.scen==="pulseHigh" && i>=16 && i!==18) hr=101+Math.round(r()*9);
+    if((p.cp===1||p.cp===2) && r()<0.12) pain="exertion";
+    if(p.scen==="worsening" && i>=18) pain="worse";
+    if(p.scen==="restToday" && last){ pain="rest"; }
+    if(p.scen==="breathToday" && last){ flags=["breath"]; pain="exertion"; }
+    out[d]={pain,flags,sbp:r()<0.85?bp:null,hr:r()<0.9?hr:null,t:last?"08:14":null,src:"synthetic"};
+  });
+  return out;
+}
+const SYN={}; COHORT.forEach((p,i)=>SYN[p.id]=generate(p,1000+i*97));
+
+/* ---------- local storage: this browser only ---------- */
+function loadLocal(){ try{ return JSON.parse(localStorage.getItem("hpFollowup")||"{}"); }catch(e){ return {}; } }
+function saveLocal(o){ try{ localStorage.setItem("hpFollowup",JSON.stringify(o)); }catch(e){} }
+let LOCAL=loadLocal();
+function checkins(id){ return {...SYN[id], ...(LOCAL[id]||{})}; }
+
+/* ---------- safety rules + model, per patient ---------- */
+function assess(p){
+  const ci=checkins(p.id), t=T[lang];
+  const has=d=>ci[d]!=null;
+  const lastKey=[...DAYS].reverse().find(has);
+  const daysSince=lastKey? Math.round((TODAY-new Date(lastKey+"T12:00:00"))/DAY) : 99;
+  const recent=(n)=>DAYS.slice(-n).map(d=>ci[d]).filter(Boolean);
+  const today=ci[DAYS[20]];
+  const reasons=[]; let status="stable";
+  if(today){
+    if(today.pain==="rest"){ status="urgent"; reasons.push(t.rRest); }
+    if(today.flags.includes("breath")){ status="urgent"; reasons.push(t.rBreath); }
+    if(today.flags.includes("faint")){ status="urgent"; reasons.push(t.rFaint); }
+  }
+  const bpWeek=recent(7).map(c=>c.sbp).filter(v=>v!=null), bpPrev=DAYS.slice(-14,-7).map(d=>ci[d]).filter(Boolean).map(c=>c.sbp).filter(v=>v!=null);
+  const avg=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
+  const bpA=avg(bpWeek), bpB=avg(bpPrev);
+  if(status!=="urgent"){
+    if(recent(3).some(c=>c.pain==="worse")) reasons.push(t.rWorse);
+    else if(recent(7).some(c=>c.pain==="exertion") && !DAYS.slice(-21,-7).some(d=>ci[d]&&ci[d].pain==="exertion")) reasons.push(t.rExertion);
+    if(bpA!=null && bpA>=160) reasons.push(t.rBP(bpA)); else if(bpA!=null && bpB!=null && bpA-bpB>=15) reasons.push(t.rBPup(bpA-bpB));
+    if(recent(5).filter(c=>c.hr!=null&&c.hr>100).length>=3) reasons.push(t.rHR);
+    if(recent(3).some(c=>c.flags.includes("swelling"))) reasons.push(t.rSwelling);
+    if(daysSince>=3) reasons.push(t.rMissing(daysSince));
+    if(reasons.length) status = (daysSince>=3 && reasons.length===1) ? "missing" : "review";
+  }
+  if(!reasons.length) reasons.push(t.rStable);
+  const x={age:p.age,sex:p.sex,cp:p.cp,trestbps:bpA??p.bp,chol:p.chol,fbs:p.fbs,restecg:p.restecg};
+  const {p:score,contrib}=predict(x);
+  const dayStatus=DAYS.map(d=>{ const c=ci[d]; if(!c) return "none"; if(c.pain==="rest"||c.flags.includes("breath")||c.flags.includes("faint")) return "urgent"; if(c.pain==="worse"||c.pain==="exertion"||c.flags.includes("swelling")||(c.sbp&&c.sbp>=160)||(c.hr&&c.hr>100)) return "review"; return "stable"; });
+  return {status,reasons,score,zone:zoneOf(p.sex,score),contrib,lastKey,daysSince,dayStatus,ci,x};
+}
+const ORDER={urgent:0,review:1,missing:2,stable:3}, ZORDER={red:0,yellow:1,green:2};
+
+/* ---------- doctor view ---------- */
+let openId=null;
+function relDay(k){ const t=T[lang]; if(!k) return "—"; const n=Math.round((TODAY-new Date(k+"T12:00:00"))/DAY); return n===0?t.today:n===1?t.yesterday:t.daysAgo(n); }
+function renderDoctor(){
+  const t=T[lang];
+  const rows=COHORT.map(p=>({p,a:assess(p)})).sort((u,v)=>ORDER[u.a.status]-ORDER[v.a.status]||ZORDER[u.a.zone]-ZORDER[v.a.zone]||v.a.score-u.a.score);
+  const n=s=>rows.filter(r=>r.a.status===s).length;
+  $("counts").innerHTML=`<div class="u"><b>${n("urgent")}</b><span>${t.cUrgent}</span></div><div class="r"><b>${n("review")}</b><span>${t.cReview}</span></div><div><b>${n("missing")}</b><span>${t.cMissing}</span></div><div class="s"><b>${n("stable")}</b><span>${t.cStable}</span></div>`;
+  const sLabel={urgent:t.sUrgent,review:t.sReview,stable:t.sStable,missing:t.sMissing};
+  $("queue").innerHTML=`<div class="qhead" aria-hidden="true"><span>${t.hPatient}</span><span>${t.zoneTitle}</span><span>${t.hToday}</span><span>${t.hDays}</span><span></span></div>`+rows.map(({p,a})=>`
+   <div class="row ${a.status}" data-id="${p.id}" data-open="${openId===p.id}">
+    <button type="button" aria-expanded="${openId===p.id}">
+      <span class="pname"><b>${p.name}</b><small>${t.ageSex(p.age,p.sex)} · ${t.lastCI(relDay(a.lastKey))}</small></span>
+      <span class="zcell"><span class="chip z-${a.zone}" title="${t.zoneTitle}"><i></i>${t.zone[a.zone]}</span></span>
+      <span class="why"><span class="chip s-${a.status}">${sLabel[a.status]}</span> ${a.reasons[0]}${a.reasons.length>1?`<small>+ ${a.reasons.slice(1).join(" · ")}</small>`:""}</span>
+      <span class="days" aria-hidden="true">${a.dayStatus.map(s=>`<span class="${s}"></span>`).join("")}</span>
+      <svg class="caret" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2l5 5-5 5" fill="none" stroke="#1c2b4a" stroke-width="2"/></svg>
+    </button>
+    ${openId===p.id?detail(p,a):""}
+   </div>`).join("");
+  document.querySelectorAll(".row > button").forEach(b=>b.addEventListener("click",()=>{ const id=b.parentElement.dataset.id; openId=openId===id?null:id; renderDoctor(); }));
+  $("howList").innerHTML=t.how.map(h=>`<li>${h}</li>`).join("");
+}
+function detail(p,a){
+  const t=T[lang], maxAbs=Math.max(.5,...a.contrib.map(c=>Math.abs(c.c)));
+  const fac=a.contrib.slice().sort((u,v)=>Math.abs(v.c)-Math.abs(u.c)).map(c=>{const w=Math.abs(c.c)/maxAbs*50;return `<li><span>${t.f[c.f]}</span><span class="bar"><i style="left:${c.c>=0?50:50-w}%;width:${w}%;background:${c.c>=0?"var(--red)":"var(--green)"}"></i></span></li>`;}).join("");
+  const log=DAYS.slice(-7).reverse().map(d=>{const c=a.ci[d]; if(!c) return `<tr><td>${fmtDate(d)}</td><td colspan="4" class="hint">—</td></tr>`;
+    return `<tr><td>${fmtDate(d)}${c.t?` ${c.t}`:""}</td><td>${c.pain==="rest"?`<b style="color:var(--red)">${t.pain[c.pain]}</b>`:t.pain[c.pain]}</td><td>${c.flags.map(f=>t.flags[f]).join(", ")||"—"}</td><td>${c.sbp??"—"}</td><td>${c.hr??"—"}</td></tr>`;}).join("");
+  return `<div class="detail"><div><h3>${t.dWhy}</h3><ul class="factors">${fac}</ul></div>
+    <div><h3>${t.dLog}</h3><table><thead><tr>${t.dCols.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>${log}</tbody></table><p class="hint" style="margin:8px 0 0">${t.dNote}</p></div></div>`;
+}
+
+/* ---------- patient view ---------- */
+let me="p8";
+function renderPatient(){
+  const t=T[lang], p=COHORT.find(c=>c.id===me), a=assess(p), done=!!a.ci[DAYS[20]];
+  $("who").innerHTML=COHORT.map(c=>`<option value="${c.id}" ${c.id===me?"selected":""}>${c.name} (${t.ageSex(c.age,c.sex)})</option>`).join("");
+  $("reminder").classList.toggle("done",done);
+  $("remTitle").textContent=done?t.remDone:t.remDue; $("remBody").textContent=done?t.remDoneBody:t.remDueBody;
+  $("myStreak").innerHTML=a.dayStatus.map((s,i)=>`<span class="${s}${i===20?" today":""}" title="${fmtDate(DAYS[i])}"></span>`).join("");
+  // small chart: blood pressure and pulse
+  const svg=$("myChart"), bp=DAYS.map(d=>a.ci[d]?.sbp??null), hr=DAYS.map(d=>a.ci[d]?.hr??null);
+  const line=(vals,lo,hi,col,dash)=>{ let d="",pen=false; vals.forEach((v,i)=>{ if(v==null){pen=false;return;} const x=10+i*(380/20), y=110-(v-lo)/(hi-lo)*100; d+=(pen?"L":"M")+x.toFixed(1)+" "+y.toFixed(1); pen=true; }); return `<path d="${d}" fill="none" stroke="${col}" stroke-width="2" ${dash?'stroke-dasharray="5 4"':""} vector-effect="non-scaling-stroke"/>`; };
+  svg.innerHTML=`<line x1="0" x2="400" y1="${110-(160-90)/(190-90)*100}" y2="${110-(160-90)/(190-90)*100}" stroke="#f2c9c4" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>`+line(bp,90,190,"#1c2b4a")+line(hr,40,130,"#b3261e",true);
+}
+function notifyIfDue(){
+  try{
+    const p=COHORT.find(c=>c.id===me); const done=!!checkins(me)[DAYS[20]];
+    if(!done && localStorage.getItem("hpRemind")==="on" && "Notification" in window && Notification.permission==="granted")
+      new Notification("HeartPost", {body:T[lang].remDue+" — "+p.name});
+  }catch(e){}
+}
+$("notifyBtn").addEventListener("click",async()=>{
+  const t=T[lang];
+  try{
+    if(!("Notification" in window)) throw 0;
+    const perm=await Notification.requestPermission();
+    if(perm!=="granted") throw 0;
+    localStorage.setItem("hpRemind","on"); $("notifyBtn").textContent=t.notifyOn; notifyIfDue();
+  }catch(e){ $("remBody").textContent=t.notifyNo; }
+});
+$("who").addEventListener("change",e=>{ me=e.target.value; $("ciResult").innerHTML=""; renderPatient(); });
+
+// fitness band CSV: find a date column and a resting heart-rate column
+let bandData=null;
+$("bandFile").addEventListener("change",async e=>{
+  const t=T[lang], f=e.target.files[0]; if(!f) return;
+  try{
+    const lines=(await f.text()).trim().split(/\r?\n/), head=lines[0].split(/[,;]/).map(h=>h.trim().toLowerCase().replace(/"/g,""));
+    const di=head.findIndex(h=>h.includes("date")||h==="day"), hi=head.findIndex(h=>/resting|heart|pulse|\bhr\b|bpm/.test(h));
+    if(di<0||hi<0) throw 0;
+    bandData={};
+    for(const ln of lines.slice(1)){ const c=ln.split(/[,;]/).map(s=>s.trim().replace(/"/g,"")); const d=new Date(c[di]); const v=Math.round(parseFloat(c[hi])); if(!isNaN(d)&&v>25&&v<220) bandData[key(d.getTime()+12*3600000)]=v; }
+    const ks=Object.keys(bandData).sort(); if(!ks.length) throw 0;
+    const latest=bandData[ks[ks.length-1]]; $("hr").value=latest; $("bandMsg").textContent=t.bandOk(ks.length,latest);
+  }catch(err){ bandData=null; $("bandMsg").textContent=t.bandBad; }
+});
+
+$("ci").addEventListener("submit",e=>{
+  e.preventDefault(); const t=T[lang];
+  const num=id=>{const s=$(id).value.trim(); return s===""?null:Math.round(Number(s));};
+  const sbp=num("sbp"), hr=num("hr"), err=$("ciErr");
+  if(sbp!=null&&(sbp<70||sbp>250)){ err.textContent=t.errBP; err.hidden=false; return; }
+  if(hr!=null&&(hr<30||hr>200)){ err.textContent=t.errHR; err.hidden=false; return; }
+  err.hidden=true;
+  const pain=document.querySelector("input[name=pain]:checked").value, flags=[...document.querySelectorAll("input[name=flag]:checked")].map(i=>i.value);
+  const now=new Date(), tm=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+  LOCAL[me]=LOCAL[me]||{};
+  if(bandData) for(const [d,v] of Object.entries(bandData)) if(DAYS.includes(d) && d!==DAYS[20]){ const prev=checkins(me)[d]; LOCAL[me][d]={...(prev||{pain:"none",flags:[],sbp:null,t:null}),hr:v,src:"band"}; }
+  LOCAL[me][DAYS[20]]={pain,flags,sbp,hr,t:tm,src:"patient"};
+  saveLocal(LOCAL);
+  const a=assess(COHORT.find(c=>c.id===me));
+  $("ciResult").innerHTML = a.status==="urgent"
+    ? `<div class="alarm" role="alert"><b>${t.urgentT}</b>${t.urgentB}</div>`
+    : `<div class="okmsg"><b>${t.sentT}</b><div>${a.status==="review"?t.sentReview:t.sentStable}</div></div>`;
+  renderPatient();
+});
+
+/* ---------- roles, language ---------- */
+function setRole(r){
+  document.querySelectorAll(".role").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.role===r)));
+  $("patientView").hidden=r!=="patient"; $("doctorView").hidden=r!=="doctor";
+  if(r==="doctor") renderDoctor(); else renderPatient();
+  if(location.hash!=="#"+r) history.replaceState(null,"","#"+r);
+}
+document.querySelectorAll(".role").forEach(b=>b.addEventListener("click",()=>setRole(b.dataset.role)));
+function applyLang(){
+  const t=T[lang]; document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const v=t[el.dataset.i18n]; if(typeof v==="string") el.textContent=v;});
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
+  try{ if(localStorage.getItem("hpRemind")==="on") $("notifyBtn").textContent=t.notifyOn; }catch(e){}
+  renderPatient(); if(!$("doctorView").hidden) renderDoctor();
+}
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang; try{localStorage.setItem("hpLang",lang);}catch(e){} applyLang();}));
+addEventListener("hashchange",()=>setRole(location.hash==="#doctor"?"doctor":"patient"));
+applyLang();
+setRole(location.hash==="#doctor"?"doctor":"patient");
+notifyIfDue();
+</script>
+</body>
+</html>

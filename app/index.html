@@ -33,6 +33,10 @@ h2{font:600 1.35rem/1.25 var(--serif);margin:0 0 10px}
 .brand{display:flex;align-items:center;gap:10px}
 .mark{width:40px;height:40px;flex-shrink:0}
 .name{font:600 1.3rem/1 var(--serif);letter-spacing:-.01em}
+.nav{display:flex;gap:6px;margin-left:auto;margin-right:12px}
+.nav a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 12px;border-radius:8px}
+.nav a[aria-current="page"]{background:var(--ink);color:var(--paper)}
+.nav a:hover:not([aria-current]){background:#fff}
 .lang{display:flex;border:1px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--card)}
 .lang button{border:0;background:transparent;font-weight:600;font-size:.82rem;padding:7px 11px;cursor:pointer;min-width:42px}
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
@@ -209,6 +213,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
   .d-perf{grid-row:auto}
   .x-counters{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hero-grid{grid-template-columns:1fr;gap:26px;margin-top:28px}
+  .top{flex-wrap:wrap}.nav{order:3;width:100%;margin:8px 0 0}
 }
 @media (max-width:560px){
   form{grid-template-columns:1fr;padding:18px}
@@ -236,6 +241,10 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
         </svg>
         <span class="name">HeartPost</span>
       </div>
+      <nav class="nav" aria-label="Pages">
+        <a href="./" aria-current="page" data-i18n="navClinic"></a>
+        <a href="followup.html" data-i18n="navFollow"></a>
+      </nav>
       <div class="lang" role="group" aria-label="Language / Idioma">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="es" aria-pressed="false">ES</button>
@@ -467,6 +476,7 @@ const T = {
   fair:(w,m)=>`<b>Women:</b> ${w.c} of ${w.s} sick caught, ${w.a} false alarms. &nbsp; <b>Men:</b> ${m.c} of ${m.s} sick caught, ${m.a} false alarms. Turn the women's threshold off to see the gap we found.`,
   lgHit:"sick, referred", lgMiss:"sick, missed", lgOk:"healthy, kept at the clinic", lgFA:"healthy, referred (false alarm)", lgShape:"● women   ■ men",
   tip:(u,ref,site)=>`${u[2]===0?"Woman":"Man"}, ${u[3]} · ${site}<br>score ${u[0].toFixed(2)} · ${u[1]?"had heart disease":"no heart disease"} · <b>${u[1]?(ref?"caught":"missed"):(ref?"false alarm":"kept at clinic")}</b>`,
+  navClinic:"Clinic tool", navFollow:"Remote follow-up (demo)",
   heroTitle:"Who needs the 87‑mile trip?",
   factsTitle:"Why this matters",
   fact1:"of US counties have no practicing cardiologist, including 86% of rural counties",
@@ -541,6 +551,7 @@ const T = {
   fair:(w,m)=>`<b>Mujeres:</b> ${w.c} de ${w.s} enfermas detectadas, ${w.a} falsas alarmas. &nbsp; <b>Hombres:</b> ${m.c} de ${m.s} enfermos detectados, ${m.a} falsas alarmas. Desactive el umbral para mujeres y verá la brecha que encontramos.`,
   lgHit:"enfermo, referido", lgMiss:"enfermo, no detectado", lgOk:"sano, sigue en la clínica", lgFA:"sano, referido (falsa alarma)", lgShape:"● mujeres   ■ hombres",
   tip:(u,ref,site)=>`${u[2]===0?"Mujer":"Hombre"}, ${u[3]} · ${site}<br>puntaje ${u[0].toFixed(2)} · ${u[1]?"con enfermedad cardíaca":"sin enfermedad cardíaca"} · <b>${u[1]?(ref?"detectado":"no detectado"):(ref?"falsa alarma":"sigue en la clínica")}</b>`,
+  navClinic:"Herramienta de clínica", navFollow:"Seguimiento remoto (demo)",
   heroTitle:"¿Quién necesita el viaje de 87 millas?",
   factsTitle:"Por qué importa",
   fact1:"de los condados de EE. UU. no tienen cardiólogo en ejercicio, incluido el 86% de los condados rurales",
