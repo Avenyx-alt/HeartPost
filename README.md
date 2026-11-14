@@ -23,6 +23,10 @@ Heart disease is the leading cause of death in the US, and in 2019 the heart-dis
 ## What we built
 A browser tool for the rural clinician. **In:** the 7 things a small clinic can measure: age, sex, chest-pain type, resting blood pressure, cholesterol (point-of-care test), fasting glucose (glucometer) and resting ECG. Cholesterol, sugar and ECG can be left blank. **Out:** a 🟢 green, 🟡 yellow or 🔴 red zone with a concrete action (follow up at the clinic / routine cardiology referral / refer soon or call 911), a bar chart of what drove the score, and warnings where we know the model is weak. The tool runs fully in the browser in English or Spanish, and it works offline, which matters where rural internet is unreliable. No patient data leaves the device. Two more features: **"Try a real patient"** buttons load unseen test patients and reveal their true angiography result (including one the model gets wrong), and **"Copy referral note"** turns the result into text for the paper referral form.
 
+**Every patient the model never saw.** The app also plots all 678 unseen test patients at once, placed by their score, with sick patients above the line and healthy ones below. Judges can drag the referral threshold and watch missed cases, false alarms and "87-mile trips avoided" update live. They can filter by hospital or sex, switch the women's threshold off to see the gap we found, and hover any mark to see that real patient. The counters at our settings match the notebook exactly (35 missed, 115 false alarms).
+
+![Interactive view of all 678 unseen patients with a draggable threshold](figures/app_explorer.png)
+
 ## What we added
 We started from the suggested project *4.1.2 Heart disease risk from checkup data* and added:
 1. **Our own user and setting:** a rural clinic with no cardiologist. We limit the model to inputs such a clinic actually has. Stress tests, fluoroscopy and thallium scans are only available at the cardiology centre the patient hasn't reached yet.

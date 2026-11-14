@@ -154,6 +154,51 @@ th{font-weight:600}
 .small{font-size:.85rem;color:var(--ink-soft)}
 footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-size:.8rem;color:var(--ink-soft)}
 
+/* ---------- explorer: every unseen patient ---------- */
+.explorer{padding:56px 0 52px;border-top:1px solid var(--rule)}
+.x-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:22px}
+.explorer h2{font-size:clamp(1.5rem,2.6vw,2rem);margin-bottom:8px}
+.x-lead{margin:0;max-width:64ch;color:var(--ink-soft)}
+.x-filters{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.x-sel{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--ink-soft);font-weight:600}
+.x-sel select{min-height:40px;padding:6px 10px;width:auto}
+.x-seg{display:flex;border:1px solid var(--field);border-radius:8px;overflow:hidden;background:#fff}
+.x-seg button{border:0;background:transparent;padding:9px 14px;cursor:pointer;font-weight:600;font-size:.88rem;min-height:40px}
+.x-seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.x-counters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.x-counters > div{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.x-counters b{font:700 1.7rem/1.05 var(--serif);font-variant-numeric:tabular-nums}
+.x-counters span{font-size:.84rem;color:var(--ink-soft)}
+.x-counters .c-miss b{color:var(--red)}
+.x-counters .c-fa b{color:var(--amber)}
+.x-counters .c-trip b{color:var(--green)}
+.x-plot{position:relative;background:#fff7f6;border:1px solid var(--grid);border-radius:8px;touch-action:none;cursor:ew-resize;
+  background-image:linear-gradient(90deg,var(--grid-fine) 1px,transparent 1px);background-size:25px 100%}
+#xSvg{display:block;width:100%}
+#xSvg .dot{transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .6s,fill .25s,stroke .25s}
+#xSvg .dot.pre{opacity:0}
+#xSvg .lane-label{font:600 12px var(--sans);fill:var(--ink-soft)}
+#xSvg .tick{font:11px var(--sans);fill:var(--ink-soft)}
+#xSvg .thr-label{font:700 12px var(--sans)}
+.x-tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--paper);font-size:.82rem;line-height:1.35;padding:7px 10px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 10px));z-index:3}
+.x-controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:16px}
+.x-range{display:flex;align-items:center;gap:12px;font-weight:600;font-size:.92rem;flex:1 1 380px}
+.x-range input{flex:1;accent-color:var(--ink);min-height:30px}
+.x-toggle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.92rem;cursor:pointer}
+.x-toggle input{width:20px;height:20px;accent-color:var(--red)}
+.x-reset{border:1px solid var(--ink);background:#fff;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer;min-height:40px}
+.x-reset:hover{background:var(--ink);color:var(--paper)}
+.x-fair{margin:14px 0 0;font-size:.95rem}
+.x-fair b{font-variant-numeric:tabular-nums}
+.x-legend{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.84rem;color:var(--ink-soft)}
+.x-legend li{display:flex;align-items:center;gap:7px}
+.x-legend .d{width:11px;height:11px;border-radius:50%;display:inline-block;box-sizing:border-box}
+.d.sick-hit{background:var(--ink)}
+.d.sick-miss{background:var(--red);box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--red)}
+.d.ok{border:1.6px solid #9aa3b5;background:#fff}
+.d.fa{border:1.6px solid var(--amber);background:#fff3dc}
+.x-legend li.shapes{margin-left:auto}
+
 /* ---------- narrow screens: one column, result appears after the form ---------- */
 @media (max-width:959px){
   .shell{padding:0 18px}
@@ -162,6 +207,7 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
   .strip.empty{display:none}
   .story-grid,.about-grid{grid-template-columns:1fr}
   .d-perf{grid-row:auto}
+  .x-counters{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hero-grid{grid-template-columns:1fr;gap:26px;margin-top:28px}
 }
 @media (max-width:560px){
@@ -317,6 +363,61 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--rule);font-si
   </div>
 </main>
 
+<section class="explorer" id="explorer" aria-labelledby="xTitle">
+  <div class="shell">
+    <div class="x-head">
+      <div>
+        <h2 id="xTitle" data-i18n="xTitle"></h2>
+        <p class="x-lead" data-i18n="xLead"></p>
+      </div>
+      <div class="x-filters">
+        <label class="x-sel"><span data-i18n="xHospital"></span>
+          <select id="xSite">
+            <option value="" data-i18n="xAll"></option>
+            <option value="C">Cleveland</option>
+            <option value="H" data-i18n="xH"></option>
+            <option value="S" data-i18n="xS"></option>
+            <option value="V">Long Beach VA</option>
+          </select>
+        </label>
+        <div class="x-seg" role="group" aria-label="Sex">
+          <button type="button" data-sex="" aria-pressed="true" data-i18n="xAllPeople"></button>
+          <button type="button" data-sex="0" aria-pressed="false" data-i18n="xWomen"></button>
+          <button type="button" data-sex="1" aria-pressed="false" data-i18n="xMen"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="x-counters" aria-live="polite">
+      <div><b id="cCaught"></b><span data-i18n="cCaught"></span></div>
+      <div class="c-miss"><b id="cMissed"></b><span data-i18n="cMissed"></span></div>
+      <div class="c-fa"><b id="cFA"></b><span data-i18n="cFA"></span></div>
+      <div class="c-trip"><b id="cTrips"></b><span id="cTripsLabel"></span></div>
+    </div>
+
+    <div class="x-plot" id="xPlot">
+      <svg id="xSvg" role="img" aria-labelledby="xTitle"></svg>
+      <div class="x-tip" id="xTip" hidden></div>
+    </div>
+
+    <div class="x-controls">
+      <label class="x-range"><span id="xThrLabel"></span>
+        <input type="range" id="xThr" min="0.02" max="0.9" step="0.005">
+      </label>
+      <label class="x-toggle"><input type="checkbox" id="xWomen"><span data-i18n="xToggle"></span></label>
+      <button type="button" class="x-reset" id="xReset" data-i18n="xReset"></button>
+    </div>
+    <p class="x-fair" id="xFair"></p>
+    <ul class="x-legend">
+      <li><i class="d sick-hit"></i><span data-i18n="lgHit"></span></li>
+      <li><i class="d sick-miss"></i><span data-i18n="lgMiss"></span></li>
+      <li><i class="d ok"></i><span data-i18n="lgOk"></span></li>
+      <li><i class="d fa"></i><span data-i18n="lgFA"></span></li>
+      <li class="shapes"><span data-i18n="lgShape"></span></li>
+    </ul>
+  </div>
+</section>
+
 <section class="story" aria-labelledby="storyTitle">
   <div class="shell">
     <h2 id="storyTitle" data-i18n="storyTitle"></h2>
@@ -350,9 +451,22 @@ const MODEL = /*MODEL_JSON*/null;
 const PERF = /*PERF_JSON*/null;
 const EXAMPLES = /*EXAMPLES_JSON*/null;
 const STORY = /*STORY_JSON*/null;
+const UNSEEN = /*UNSEEN_JSON*/null;  // [score, sick, sex(0=f), age, site]
 
 const T = {
  en:{
+  xTitle:"Every patient the model never saw",
+  xLead:`Each mark is one of the ${UNSEEN.length} real test patients from four hospitals, placed by the score our model gave them. Patients who had heart disease are above the line; patients who didn't are below. Drag the threshold across the chart and watch the trade-off between missed patients and false alarms.`,
+  xHospital:"Hospital", xAll:"All four", xH:"Hungary", xS:"Switzerland", xAllPeople:"Everyone", xWomen:"Women", xMen:"Men",
+  cCaught:"sick patients referred", cMissed:"sick patients missed", cFA:"false alarms (healthy, referred)",
+  cTrips:(mi)=>`healthy patients spared the trip (${mi} miles of driving)`,
+  laneSick:"had heart disease (angiography)", laneHealthy:"no heart disease", axisLabel:"model score →",
+  thrMen:"men", thrAll:"everyone", thrWomen:"women", pin:"your patient",
+  thrSlider:(w)=>w?"Referral threshold for men":"Referral threshold for everyone",
+  xToggle:`Separate threshold for women (${MODEL.t_women.toFixed(2)})`, xReset:"Back to our settings",
+  fair:(w,m)=>`<b>Women:</b> ${w.c} of ${w.s} sick caught, ${w.a} false alarms. &nbsp; <b>Men:</b> ${m.c} of ${m.s} sick caught, ${m.a} false alarms. Turn the women's threshold off to see the gap we found.`,
+  lgHit:"sick, referred", lgMiss:"sick, missed", lgOk:"healthy, kept at the clinic", lgFA:"healthy, referred (false alarm)", lgShape:"● women   ■ men",
+  tip:(u,ref,site)=>`${u[2]===0?"Woman":"Man"}, ${u[3]} · ${site}<br>score ${u[0].toFixed(2)} · ${u[1]?"had heart disease":"no heart disease"} · <b>${u[1]?(ref?"caught":"missed"):(ref?"false alarm":"kept at clinic")}</b>`,
   heroTitle:"Who needs the 87‑mile trip?",
   factsTitle:"Why this matters",
   fact1:"of US counties have no practicing cardiologist, including 86% of rural counties",
@@ -415,6 +529,18 @@ const T = {
   setNames:{}
  },
  es:{
+  xTitle:"Cada paciente que el modelo nunca vio",
+  xLead:`Cada marca es uno de los ${UNSEEN.length} pacientes reales de prueba de cuatro hospitales, ubicado según el puntaje que le dio el modelo. Los que tenían enfermedad cardíaca están arriba de la línea; los que no, abajo. Arrastre el umbral por el gráfico y vea el equilibrio entre pacientes no detectados y falsas alarmas.`,
+  xHospital:"Hospital", xAll:"Los cuatro", xH:"Hungría", xS:"Suiza", xAllPeople:"Todos", xWomen:"Mujeres", xMen:"Hombres",
+  cCaught:"enfermos referidos", cMissed:"enfermos no detectados", cFA:"falsas alarmas (sanos referidos)",
+  cTrips:(mi)=>`sanos que se ahorraron el viaje (${mi} millas de manejo)`,
+  laneSick:"con enfermedad cardíaca (angiografía)", laneHealthy:"sin enfermedad cardíaca", axisLabel:"puntaje del modelo →",
+  thrMen:"hombres", thrAll:"todos", thrWomen:"mujeres", pin:"su paciente",
+  thrSlider:(w)=>w?"Umbral de referencia para hombres":"Umbral de referencia para todos",
+  xToggle:`Umbral separado para mujeres (${MODEL.t_women.toFixed(2)})`, xReset:"Volver a nuestra configuración",
+  fair:(w,m)=>`<b>Mujeres:</b> ${w.c} de ${w.s} enfermas detectadas, ${w.a} falsas alarmas. &nbsp; <b>Hombres:</b> ${m.c} de ${m.s} enfermos detectados, ${m.a} falsas alarmas. Desactive el umbral para mujeres y verá la brecha que encontramos.`,
+  lgHit:"enfermo, referido", lgMiss:"enfermo, no detectado", lgOk:"sano, sigue en la clínica", lgFA:"sano, referido (falsa alarma)", lgShape:"● mujeres   ■ hombres",
+  tip:(u,ref,site)=>`${u[2]===0?"Mujer":"Hombre"}, ${u[3]} · ${site}<br>puntaje ${u[0].toFixed(2)} · ${u[1]?"con enfermedad cardíaca":"sin enfermedad cardíaca"} · <b>${u[1]?(ref?"detectado":"no detectado"):(ref?"falsa alarma":"sigue en la clínica")}</b>`,
   heroTitle:"¿Quién necesita el viaje de 87 millas?",
   factsTitle:"Por qué importa",
   fact1:"de los condados de EE. UU. no tienen cardiólogo en ejercicio, incluido el 86% de los condados rurales",
@@ -512,6 +638,7 @@ function applyLang(){
   $("chips").innerHTML=EXAMPLES.map((e,i)=>`<button type="button" class="chip" data-ex="${i}" aria-pressed="${activeExample===e}">${t.exLabel(e)}<small>${t.siteName[e.site]||e.site}</small></button>`).join("");
   $("chips").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>loadExample(+b.dataset.ex)));
   renderStory();
+  if(typeof X!=="undefined" && X.geo) xLayout(false);
   if(last) render(last);
 }
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang; try{localStorage.setItem("hpLang",lang);}catch(e){} applyLang();}));
@@ -576,6 +703,7 @@ function render(state){
     tb.style.borderColor = (ex.sick&&!referred)?"var(--red)":"var(--ink)";
     tb.hidden=false;
   } else tb.hidden=true;
+  X.pin=p; xUpdate();
   $("warnTypical").hidden = x.cp!==1;
   $("warnYoung").hidden = !(x.age<50 && (x.cp===2||x.cp===3) && zone==="green");
   $("copied").textContent=""; $("noteBox").hidden=true;
@@ -617,9 +745,121 @@ $("copyNote").addEventListener("click",async()=>{
 });
 
 try{ const s=localStorage.getItem("hpLang"); if(s&&T[s]) lang=s; else if((navigator.language||"").startsWith("es")) lang="es"; }catch(e){}
+/* ---------- explorer: every unseen patient, live ---------- */
+const X={tM:MODEL.t_men, womenOn:true, site:"", sex:"", pin:null, drag:false, dots:[], geo:null, intro:false};
+const SITE_FULL={C:"Cleveland",H:"Hungary",S:"Switzerland",V:"Long Beach VA"};
+const NS="http://www.w3.org/2000/svg";
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); parent&&parent.appendChild(e); return e;}
+function referred(u){ return u[0] >= ((u[2]===0 && X.womenOn) ? MODEL.t_women : X.tM); }
+function inFilter(u){ return (!X.site||u[4]===X.site) && (X.sex===""||u[2]===+X.sex); }
+
+function xLayout(animate){
+  const svg=$("xSvg"), W=$("xPlot").clientWidth; svg.innerHTML="";
+  const padL=14,padR=14,plotW=W-padL-padR;
+  const d=Math.max(5,Math.min(9.5,plotW/112)), nb=Math.floor(plotW/d), r=d*0.42;
+  const stacks={}; let maxS=0,maxH=0;
+  const order=UNSEEN.map((u,i)=>i).sort((a,b)=>UNSEEN[a][0]-UNSEEN[b][0]);
+  const pos=new Array(UNSEEN.length);
+  for(const i of order){ const u=UNSEEN[i], b=Math.min(nb-1,Math.floor(u[0]*nb)), k=b+"_"+u[1]; const n=stacks[k]=(stacks[k]||0)+1; pos[i]=[b,n]; if(u[1]) maxS=Math.max(maxS,n); else maxH=Math.max(maxH,n); }
+  const top=34, laneS=maxS*d+8, axisY=top+laneS, laneH=maxH*d+8, H=axisY+26+laneH+12;
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.setAttribute("height",H);
+  const t=T[lang];
+  el("text",{x:padL,y:20,class:"lane-label"},svg).textContent="▲ "+t.laneSick;
+  el("text",{x:padL,y:H-6,class:"lane-label"},svg).textContent="▼ "+t.laneHealthy;
+  el("line",{x1:padL,x2:W-padR,y1:axisY+1,y2:axisY+1,stroke:"#1c2b4a","stroke-width":1},svg);
+  for(let v=0;v<=10;v+=(W<600?2:1)){ const x=padL+plotW*v/10; el("line",{x1:x,x2:x,y1:axisY+1,y2:axisY+6,stroke:"#1c2b4a"},svg);
+    el("text",{x:x,y:axisY+19,class:"tick","text-anchor":v===0?"start":v===10?"end":"middle"},svg).textContent=(v/10).toFixed(1); }
+  if(W>=600) el("text",{x:W-padR,y:20,class:"tick","text-anchor":"end"},svg).textContent=t.axisLabel;
+  const g=el("g",{},svg);
+  X.dots=UNSEEN.map((u,i)=>{
+    const [b,n]=pos[i], cx=padL+(b+.5)*d, cy= u[1] ? axisY-4-(n-.5)*d : axisY+26+(n-.5)*d;
+    const shape = u[2]===0 ? el("circle",{cx,cy,r,class:"dot"},g) : el("rect",{x:cx-r,y:cy-r,width:2*r,height:2*r,rx:1.2,class:"dot"},g);
+    return {u,cx,cy,node:shape};
+  });
+  X.geo={padL,plotW,axisY,H,W,top,lineG:el("g",{},svg)};
+  if(animate && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+    X.dots.forEach(o=>{o.node.classList.add("pre"); o.node.style.transform=`translateY(${o.u[1]?-60:60}px)`; o.node.style.transitionDelay=(0.9*o.cx/W).toFixed(2)+"s";});
+  }
+  xUpdate();
+}
+function xIntro(){
+  if(X.intro) return; X.intro=true;
+  X.dots.forEach(o=>{o.node.classList.remove("pre"); o.node.style.transform="";});
+  setTimeout(()=>X.dots.forEach(o=>o.node.style.transitionDelay=""),2200);
+}
+function xLine(gp,x,color,dash,label,anchorTop){
+  const {axisY,H,top}=X.geo;
+  el("line",{x1:x,x2:x,y1:top-4,y2:H-18,stroke:color,"stroke-width":2,"stroke-dasharray":dash||""},gp);
+  el("text",{x:x+5,y:anchorTop,class:"thr-label",fill:color},gp).textContent=label;
+}
+function xUpdate(){
+  if(!X.geo) return;
+  const t=T[lang], tW=MODEL.t_women;
+  let sick=0,caught=0,missed=0,fa=0,spared=0;
+  for(const o of X.dots){
+    const u=o.u, ref=referred(u), on=inFilter(u), n=o.node;
+    let fill,stroke,sw=1.4;
+    if(u[1]&&ref){fill="#1c2b4a";stroke="#1c2b4a";}
+    else if(u[1]){fill="#b3261e";stroke="#ffffff";sw=0.8;}
+    else if(ref){fill="#fff3dc";stroke="#b9790c";}
+    else {fill="#ffffff";stroke="#9aa3b5";}
+    n.setAttribute("fill",fill); n.setAttribute("stroke",stroke); n.setAttribute("stroke-width",sw);
+    n.style.opacity = n.classList.contains("pre") ? "" : (on?1:.1);
+    if(on){ if(u[1]){sick++; ref?caught++:missed++;} else { ref?fa++:spared++; } }
+  }
+  $("cCaught").textContent=`${caught} / ${sick}`; $("cMissed").textContent=missed; $("cFA").textContent=fa;
+  $("cTrips").textContent=spared; $("cTripsLabel").textContent=t.cTrips((spared*87).toLocaleString(lang==="es"?"es-US":"en-US"));
+  // threshold lines
+  const gp=X.geo.lineG; gp.innerHTML="";
+  const xOf=v=>X.geo.padL+X.geo.plotW*v;
+  xLine(gp,xOf(X.tM),"#1c2b4a","",(X.womenOn?t.thrMen:t.thrAll)+" "+X.tM.toFixed(2),X.geo.top+8);
+  if(X.womenOn) xLine(gp,xOf(tW),"#b3261e","5 4",t.thrWomen+" "+tW.toFixed(2),X.geo.top+24);
+  if(X.pin!=null){
+    // a pin standing above the stacks, pointing at the patient's score on the axis
+    const px=xOf(X.pin), y=X.geo.axisY, yTop=X.geo.top+44, right=px<X.geo.W*0.8;
+    el("line",{x1:px,x2:px,y1:yTop,y2:y,stroke:"#b9790c","stroke-width":2},gp);
+    el("circle",{cx:px,cy:yTop,r:5,fill:"#b9790c",stroke:"#fff","stroke-width":1.5},gp);
+    const lb=el("text",{x:px+(right?9:-9),y:yTop+4,"text-anchor":right?"start":"end",class:"thr-label",fill:"#b9790c"},gp); lb.textContent=t.pin;
+    lb.setAttribute("paint-order","stroke"); lb.setAttribute("stroke","#fff7f6"); lb.setAttribute("stroke-width","4");
+  }
+  $("xThr").value=X.tM; $("xThrLabel").textContent=t.thrSlider(X.womenOn)+" "+X.tM.toFixed(2);
+  $("xWomen").checked=X.womenOn;
+  // fairness readout across the chosen hospital, both sexes
+  const f=[0,1].map(sx=>{let s=0,c=0,a=0; for(const o of X.dots){const u=o.u; if((X.site&&u[4]!==X.site)||u[2]!==sx) continue; const ref=referred(u); if(u[1]){s++; if(ref)c++;} else if(ref)a++;} return {s,c,a};});
+  $("xFair").innerHTML=t.fair(f[0],f[1]);
+  document.querySelectorAll(".x-seg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.sex===X.sex)));
+}
+function xFromEvent(e){ const rect=$("xSvg").getBoundingClientRect(); return {x:(e.clientX-rect.left)*X.geo.W/rect.width, y:(e.clientY-rect.top)*X.geo.H/rect.height, rect}; }
+function xSetThr(px){ X.tM=Math.max(0.02,Math.min(0.9,(px-X.geo.padL)/X.geo.plotW)); xUpdate(); }
+$("xPlot").addEventListener("pointerdown",e=>{ X.drag=true; $("xPlot").setPointerCapture(e.pointerId); xSetThr(xFromEvent(e).x); $("xTip").hidden=true; });
+$("xPlot").addEventListener("pointermove",e=>{
+  const p=xFromEvent(e);
+  if(X.drag){ xSetThr(p.x); return; }
+  let best=null,bd=81; for(const o of X.dots){ if(!inFilter(o.u)) continue; const dd=(o.cx-p.x)**2+(o.cy-p.y)**2; if(dd<bd){bd=dd;best=o;} }
+  const tip=$("xTip");
+  if(!best){ tip.hidden=true; return; }
+  const u=best.u, t=T[lang], ref=referred(u);
+  tip.innerHTML=t.tip(u, ref, t.siteName[SITE_FULL[u[4]]]||SITE_FULL[u[4]]);
+  tip.style.left=(best.cx*p.rect.width/X.geo.W)+"px"; tip.style.top=(best.cy*p.rect.height/X.geo.H)+"px"; tip.hidden=false;
+});
+const endDrag=()=>{X.drag=false;}; $("xPlot").addEventListener("pointerup",endDrag); $("xPlot").addEventListener("pointercancel",endDrag);
+$("xPlot").addEventListener("pointerleave",()=>{ if(!X.drag) $("xTip").hidden=true; });
+$("xThr").addEventListener("input",e=>{X.tM=+e.target.value; xUpdate();});
+$("xWomen").addEventListener("change",e=>{X.womenOn=e.target.checked; xUpdate();});
+$("xSite").addEventListener("change",e=>{X.site=e.target.value; xUpdate();});
+document.querySelectorAll(".x-seg button").forEach(b=>b.addEventListener("click",()=>{X.sex=b.dataset.sex; xUpdate();}));
+$("xReset").addEventListener("click",()=>{X.tM=MODEL.t_men; X.womenOn=true; X.site=""; X.sex=""; $("xSite").value=""; xUpdate();});
+let xResizeT; addEventListener("resize",()=>{clearTimeout(xResizeT); xResizeT=setTimeout(()=>xLayout(false),150);});
+function xStart(){
+  xLayout(true);
+  if("IntersectionObserver" in window){ const io=new IntersectionObserver(es=>{ if(es.some(en=>en.isIntersecting)){ xIntro(); io.disconnect(); } },{threshold:.25}); io.observe($("xPlot")); }
+  else xIntro();
+}
+
 // on a wide screen there is room to show the "about" notes open
 if(matchMedia("(min-width: 960px)").matches) document.querySelectorAll(".about details").forEach(d=>d.open=true);
 applyLang();
+xStart();
 </script>
 </body>
 </html>

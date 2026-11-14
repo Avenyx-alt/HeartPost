@@ -549,6 +549,13 @@ STORY = {"ext_sick": int(n_sick_ext),
          "women_caught_before": int(UNSEEN[UNSEEN.sex == 0].y.sum() - FIX.loc["A · one threshold", "women: missed"]),
          "women_caught_after": int(UNSEEN[UNSEEN.sex == 0].y.sum() - FIX.loc["D · group threshold (chosen)", "women: missed"])}
 with open("app/story.json", "w") as fh: json.dump(STORY, fh, indent=1)
+
+# Every unseen patient (public UCI data, no identifiers) for the app's interactive explorer
+SITE_CODE = {"Cleveland (internal test)": "C", "Hungary": "H", "Switzerland": "S", "Long Beach VA": "V"}
+UNSEEN_EXPORT = [[round(float(r.p), 4), int(r.y), int(r.sex), int(r.age), SITE_CODE[r.test_set]]
+                 for r in UNSEEN.itertuples()]
+with open("app/unseen.json", "w") as fh: json.dump(UNSEEN_EXPORT, fh, separators=(",", ":"))
+print("exported", len(UNSEEN_EXPORT), "unseen patients: [score, sick, sex, age, site]")
 print(STORY)
 display(pd.DataFrame(EX))
 print("saved app/model.json")
