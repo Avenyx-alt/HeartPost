@@ -95,5 +95,5 @@ Accuracy alone hides what matters here. On the Cleveland test, our model, the on
 | `app/*.json` | Exported model, test results, real example patients and story numbers (all written by the notebook) |
 | `data/` | The four UCI hospital files |
 | `figures/` | All charts (made by the notebook) and app screenshots |
-| `docs/` | Demo-video script |
+| `docs/` | One-page write-up (`WRITEUP.md`, `HeartPost_writeup.pdf`), demo-video script and voice-over subtitles |
 | `tools/` | Rebuild everything: `python3 tools/build_notebook.py notebook_src.py HeartPost.ipynb`, then `python3 tools/build_app.py .` |
